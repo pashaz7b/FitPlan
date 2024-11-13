@@ -14,7 +14,7 @@ class UserRegisterSchema(BaseModel):
     # image: Optional[str]
 
 
-class UserRegisterResponse(BaseModel):
+class UserRegisterResponseSchema(BaseModel):
     id: int
     user_name: str
     name: str
@@ -26,5 +26,5 @@ class UserRegisterResponse(BaseModel):
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        orm_mode = True
+    # class Config:
+    #     orm_mode = True

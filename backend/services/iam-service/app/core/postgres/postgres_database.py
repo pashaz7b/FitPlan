@@ -9,6 +9,14 @@ DATABASE_URL = "postgresql://postgres:admin@localhost/fitplan_db"
 engine = create_engine(DATABASE_URL, future=True)
 session_local = sessionmaker(autoflush=False, autocommit=False, bind=engine)
 
+EntityBase = declarative_base()
+
+
+def init_db() -> bool:
+    EntityBase.metadata.create_all(bind=engine)
+    logger.info("Database Initialized")
+    return True
+
 
 def get_db():
     db = session_local()
