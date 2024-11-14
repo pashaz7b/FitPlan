@@ -12,19 +12,24 @@ class UserRegisterSchema(BaseModel):
     gender: Optional[constr(max_length=10)]
     date_of_birth: Optional[str]
     # image: Optional[str]
+    # is_verified : bool
 
 
 class UserRegisterResponseSchema(BaseModel):
     id: int
-    user_name: str
-    name: str
-    email: EmailStr
-    phone_number: Optional[str]
-    gender: Optional[str]
-    date_of_birth: Optional[str]
-    image: Optional[str]
+    # user_name: str
+    # name: str
+    # email: EmailStr
+    # phone_number: Optional[str]
+    # gender: Optional[str]
+    # date_of_birth: Optional[str]
+    # image: Optional[str]
+    is_verified: bool
     created_at: datetime
     updated_at: datetime
+    message: str
 
-    # class Config:
-    #     orm_mode = True
+
+class UserDeleteSchema(BaseModel):
+    email: EmailStr
+    password: str

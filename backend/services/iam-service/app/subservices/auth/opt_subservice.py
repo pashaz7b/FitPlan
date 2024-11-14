@@ -18,7 +18,6 @@ class OTPSubservice(BaseService):
 
     def send_email(self, email: str, otp: str):
         try:
-            # ساختن ایمیل
             message = MIMEMultipart()
             message["From"] = self.config.EMAIL_FROM
             message["To"] = email
@@ -26,9 +25,8 @@ class OTPSubservice(BaseService):
             body = f"Your OTP code is: {otp}"
             message.attach(MIMEText(body, "plain"))
 
-            # اتصال به سرور SMTP
             with smtplib.SMTP(self.config.SMTP_SERVER, self.config.SMTP_PORT) as server:
-                server.starttls()  # برای امنیت بیشتر
+                server.starttls()
                 server.login(self.config.SMTP_USERNAME, self.config.SMTP_PASSWORD)
                 server.sendmail(self.config.EMAIL_FROM, email, message.as_string())
 
@@ -43,7 +41,7 @@ class OTPSubservice(BaseService):
     def send_otp(self, email: str):
         otp = self.__generate_otp()
         self.redis_client.setex(email, self.config.OTP_EXPIRE_TIME, otp)
-        self.send_email(email, otp) #-------
+        #self.send_email(email, otp) #-------
         logger.info(f"OTP {otp} sent to email {email}")
         return otp
 
