@@ -26,7 +26,7 @@ class UserRepository:
         )
         self.db.commit()
         self.db.refresh(db_user)
-        logger.info(f"[+] User With Id ---> {user_id} updated")
+        logger.info(f"[+] User With Id ---> {user_id} Updated")
         return db_user
 
     def delete_user(self, user: User) -> None:

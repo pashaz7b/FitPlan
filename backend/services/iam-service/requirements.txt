@@ -15,4 +15,5 @@ bcrypt==4.0.1
 sqlalchemy-utils
 loguru
 pydantic[email]
+python-multipart
 

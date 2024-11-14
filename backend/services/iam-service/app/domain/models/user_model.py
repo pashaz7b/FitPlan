@@ -17,5 +17,5 @@ class User(Base):
     date_of_birth = Column(String(15))
     image = Column(Text)
     created_at = Column(TIMESTAMP, server_default=func.now())
-    updated_at = Column(TIMESTAMP, server_default=func.now(), onupdate=func.now())
+    updated_at = Column(TIMESTAMP, server_default=func.now())
     is_verified = Column(Boolean, default=False)

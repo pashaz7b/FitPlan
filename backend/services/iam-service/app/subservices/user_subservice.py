@@ -6,13 +6,15 @@ from app.domain.models.user_model import User
 from app.domain.schemas.user_schema import UserRegisterSchema
 from app.infrastructure.repositories.user_repository import UserRepository
 from app.subservices.auth.hash_subservice import HashService
+from app.subservices.baseconfig import BaseService
 
 
-class UserSubService():
+class UserSubService(BaseService):
     def __init__(self,
                  user_repo: Annotated[UserRepository, Depends()],
                  hash_subservice: Annotated[HashService, Depends()]
                  ) -> None:
+        super().__init__()
         self.user_repo = user_repo
         self.hash_subservice = hash_subservice
 

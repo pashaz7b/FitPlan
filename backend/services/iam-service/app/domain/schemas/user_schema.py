@@ -33,3 +33,39 @@ class UserRegisterResponseSchema(BaseModel):
 class UserDeleteSchema(BaseModel):
     email: EmailStr
     password: str
+
+
+# ********************************************************************************
+
+class VerifyOTPSchema(BaseModel):
+    email: EmailStr
+    OTP: str
+
+
+class VerifyOTPResponseSchema(BaseModel):
+    verified: bool
+    message: str
+
+
+class ResendOTPSchema(BaseModel):
+    email: EmailStr
+
+
+class ResendOTPResponseSchema(BaseModel):
+    email: str
+    message: str
+
+
+#**********************************************************************
+
+class UserLoginSchema(BaseModel):
+    email: EmailStr
+    password: str
+
+#**********************************************************************
+
+class UserSchema(BaseModel):
+    id: int
+    is_verified: bool
+    created_at: Optional[datetime]
+    updated_at: Optional[datetime]
