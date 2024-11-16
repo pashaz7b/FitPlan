@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Optional
-from pydantic import BaseModel, Field, EmailStr, constr
+from pydantic import BaseModel, EmailStr, constr
 
 
 class UserRegisterSchema(BaseModel):
@@ -8,7 +8,7 @@ class UserRegisterSchema(BaseModel):
     user_name: str
     name: str
     email: EmailStr
-    phone_number: Optional[constr(max_length=20)]
+    phone_number: constr(max_length=20)
     gender: Optional[constr(max_length=10)]
     date_of_birth: Optional[str]
     # image: Optional[str]

@@ -25,14 +25,13 @@ class OTPSubservice(BaseService):
             body = f"Your OTP code is: {otp}"
             message.attach(MIMEText(body, "plain"))
 
-            with smtplib.SMTP(self.config.SMTP_SERVER, self.config.SMTP_PORT) as server:
-                server.starttls()
+            with smtplib.SMTP_SSL(self.config.SMTP_SERVER, self.config.SMTP_PORT) as server:
                 server.login(self.config.SMTP_USERNAME, self.config.SMTP_PASSWORD)
                 server.sendmail(self.config.EMAIL_FROM, email, message.as_string())
 
-            logger.info(f"OTP {otp} sent to email {email}")
+            logger.info(f"[+] OTP {otp} Sent To Email {email}")
         except Exception as e:
-            logger.error(f"Failed to send email: {e}")
+            logger.error(f"Failed To Send Email: {e}")
 
     @staticmethod
     def __generate_otp() -> str:

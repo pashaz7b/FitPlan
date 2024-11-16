@@ -21,10 +21,10 @@ class Settings(BaseSettings):
     OTP_EXPIRE_TIME: int = 60
     #*************************
     SMTP_SERVER: str = "smtp.gmail.com"
-    SMTP_PORT: int = 587
-    SMTP_USERNAME: str = "your_email@gmail.com"
-    SMTP_PASSWORD: str = "your_email_password"
-    EMAIL_FROM: str = "your_email@gmail.com"
+    SMTP_PORT: int = 465
+    SMTP_USERNAME: str = "asldy3097@gmail.com"
+    SMTP_PASSWORD: str = "xrtwqctuprcgeiyj"
+    EMAIL_FROM: str = "asldy3097@gmail.com"
     # model_config = SettingsConfigDict(env_file=str(Path(__file__).resolve().parent / ".env"))
 
 
