@@ -3,10 +3,13 @@ import Login_component from "../components/login_component";
 export default function User_login() {
     return(
         <div className="bg-black h-screen flex flex-col justify-center items-center sm:text-[13px] lg:text-[25px] text-mintCream font-iranyekan">
-        <img 
-        src="Images/Fit-Logo-Resized.png" 
-        className="sm:w-[40%] md:w-[25%] lg:w-[17%] sm:h-[150px] md:h-[100px] lg:h-[80px] mb-0 object-contain object-center"
-        alt="logo" />
+        <a href="/landing" className="sm:w-[40%] md:w-[25%] lg:w-[17%] sm:h-[150px] md:h-[100px] lg:h-[80px] mb-0">
+            <img 
+                src="Images/Fit-Logo-Resized.png" 
+                className="object-contain object-center"
+                alt="logo" 
+            />
+        </a>
         <a 
             href="/admin_login"
             className="mb-[28px] font-medium mt-4 hover:scale-110 hover:shadow-lg hover:text-superRed transition-all duration-300"
