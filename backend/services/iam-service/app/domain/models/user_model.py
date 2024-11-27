@@ -1,4 +1,15 @@
-from sqlalchemy import Column, Integer, String, Text, TIMESTAMP, func, Boolean
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    Boolean,
+    Numeric,
+    Text,
+    ForeignKey,
+    TIMESTAMP,
+    func,
+)
+from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
@@ -19,3 +30,20 @@ class User(Base):
     created_at = Column(TIMESTAMP, server_default=func.now())
     updated_at = Column(TIMESTAMP, server_default=func.now())
     is_verified = Column(Boolean, default=False)
+
+    metrics = relationship("UserMetrics", back_populates="user", uselist=False)
+
+
+class UserMetrics(Base):
+    __tablename__ = 'user_metrics'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    user_id = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'))
+    height = Column(Numeric(5, 2))
+    weight = Column(Numeric(5, 2))
+    waist = Column(Numeric(5, 2))
+    injuries = Column(Text)
+    created_at = Column(TIMESTAMP, server_default=func.now())
+    updated_at = Column(TIMESTAMP, server_default=func.now())
+
+    user = relationship("User", back_populates="metrics")

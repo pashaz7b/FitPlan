@@ -3,6 +3,7 @@ from loguru import logger
 from fastapi import Depends
 
 from app.domain.models.user_model import User
+from app.domain.models.user_model import UserMetrics
 from app.domain.schemas.user_schema import UserRegisterSchema
 from app.infrastructure.repositories.user_repository import UserRepository
 from app.subservices.auth.hash_subservice import HashService
@@ -20,6 +21,7 @@ class UserSubService(BaseService):
 
     async def create_user(self, user_struct: UserRegisterSchema) -> User:
         logger.info(f"[+] Creating User With Email ---> {user_struct.email}")
+
         new_user = User(password=self.hash_subservice.hash_password(user_struct.password),
                         user_name=user_struct.user_name,
                         name=user_struct.name,
@@ -28,7 +30,18 @@ class UserSubService(BaseService):
                         gender=user_struct.gender,
                         date_of_birth=user_struct.date_of_birth)
 
-        return self.user_repo.create_user(new_user)
+        created_user = self.user_repo.create_user(new_user)
+
+        user_metrics = UserMetrics(
+            user_id=created_user.id,
+            height=user_struct.height,
+            weight=user_struct.weight,
+            # waist=user_struct.waist,
+            # injuries=user_struct.injuries,
+        )
+        self.user_repo.create_user_metrics(user_metrics)
+
+        return new_user
 
     async def update_user(self, user_id: int, update_fields: Dict) -> User:
         logger.info(f"Updating user with id {user_id}")

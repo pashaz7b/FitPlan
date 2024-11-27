@@ -11,15 +11,18 @@ class UserRegisterSchema(BaseModel):
     phone_number: constr(max_length=20)
     gender: Optional[constr(max_length=10)]
     date_of_birth: Optional[str]
+    height: Optional[float]
+    weight: Optional[float]
+    # waist: Optional[float]
+    # injuries: Optional[str]
     # image: Optional[str]
-    # is_verified : bool
 
 
 class UserRegisterResponseSchema(BaseModel):
     id: int
-    # user_name: str
-    # name: str
-    # email: EmailStr
+    user_name: str
+    name: str
+    email: EmailStr
     # phone_number: Optional[str]
     # gender: Optional[str]
     # date_of_birth: Optional[str]
@@ -56,16 +59,26 @@ class ResendOTPResponseSchema(BaseModel):
     message: str
 
 
-#**********************************************************************
+# **********************************************************************
 
 class UserLoginSchema(BaseModel):
     email: EmailStr
     password: str
 
-#**********************************************************************
+
+# **********************************************************************
 
 class UserSchema(BaseModel):
     id: int
     is_verified: bool
     created_at: Optional[datetime]
     updated_at: Optional[datetime]
+
+
+# **********************************************************************
+class UserForgetPasswordSchema(BaseModel):
+    email: str
+
+class UserForgetPasswordResponseSchema(BaseModel):
+    email: str
+    message: str

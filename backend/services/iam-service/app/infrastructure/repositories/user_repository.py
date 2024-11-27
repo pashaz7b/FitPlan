@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 from app.core.postgres.postgres_database import get_db
 from app.domain.models.user_model import User
+from app.domain.models.user_model import UserMetrics
 
 
 class UserRepository:
@@ -17,6 +18,13 @@ class UserRepository:
         self.db.refresh(user)
         logger.info(f"[+] User Created With Id ---> {user.id} And Email ---> {user.email}")
         return user
+
+    def create_user_metrics(self, metrics: UserMetrics) -> UserMetrics:
+        self.db.add(metrics)
+        self.db.commit()
+        self.db.refresh(metrics)
+        logger.info(f"[+] Metrics Created For Coach Id ---> {metrics.user_id}")
+        return metrics
 
     def update_user(self, user_id: int, updated_user: Dict):
         user_query = self.db.query(User).filter(User.id == user_id)

@@ -11,13 +11,14 @@ from app.domain.schemas.user_schema import (UserRegisterSchema,
                                             ResendOTPSchema,
                                             ResendOTPResponseSchema,
                                             UserLoginSchema,
-                                            UserSchema)
+                                            UserSchema,
+                                            UserForgetPasswordSchema, UserForgetPasswordResponseSchema)
 
 from app.domain.schemas.token_schema import TokenSchema
 from app.domain.models.user_model import User
 from app.mainservices.user_register_mainservice import RegisterMainService
 from app.infrastructure.repositories.user_repository import UserRepository
-from app.mainservices.user_login_mainservice import AuthService, get_current_user
+from app.mainservices.user_login_mainservice import AuthService, PasswordManager, get_current_user
 
 user_router = APIRouter()
 
@@ -46,6 +47,15 @@ async def resend_otp(
     return await register_service.resend_otp(resend_otp_schema)
 
 
+@user_router.post("/forget_password", response_model=UserForgetPasswordResponseSchema, status_code=status.HTTP_200_OK)
+async def forget_password(
+        user: UserForgetPasswordSchema,
+        password_service: Annotated[PasswordManager, Depends()],
+):
+    logger.info(f"[...] Start Sending Password_OTP For User With Email ---> {user.email}")
+    return await password_service.forget_password(user)
+
+
 @user_router.post("/login", response_model=TokenSchema, status_code=status.HTTP_200_OK)
 async def login(
         form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
@@ -55,7 +65,6 @@ async def login(
     return await auth_service.authenticate_user(
         UserLoginSchema(email=form_data.username, password=form_data.password)
     )
-
 
 
 @user_router.get("/panel", response_model=UserSchema, status_code=status.HTTP_200_OK)

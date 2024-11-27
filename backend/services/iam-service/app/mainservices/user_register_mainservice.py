@@ -60,6 +60,9 @@ class RegisterMainService(BaseService):
         logger.info(f"[+] User With Email --> {user.email} Created Successfully")
         response = UserRegisterResponseSchema(
             id=new_user.id,
+            user_name = new_user.user_name,
+            name = new_user.name,
+            email = new_user.email,
             is_verified=new_user.is_verified,
             created_at=new_user.created_at,
             updated_at=new_user.updated_at,

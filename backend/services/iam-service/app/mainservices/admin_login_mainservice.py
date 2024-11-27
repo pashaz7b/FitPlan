@@ -5,66 +5,66 @@ import jwt
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 
-from app.domain.models.coach_model import Coach
+from app.domain.models.admin_model import Admin
 from app.domain.schemas.token_schema import TokenSchema
-from app.domain.schemas.coach_schema import CoachLoginSchema
+from app.domain.schemas.admin_schema import AdminLoginSchema
 from app.subservices.auth.hash_subservice import HashService
 from app.subservices.baseconfig import BaseService
-from app.subservices.coach_subservice import CoachSubService
+from app.subservices.admin_subservice import AdminSubService
 from app.validators.regex_checker import RegexChecker
 
-coach_oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v1/coach/login")
+admin_oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v1/admin/login")
 
 class AuthService(BaseService):
     def __init__(
             self,
             hash_service: Annotated[HashService, Depends()],
-            coach_service: Annotated[CoachSubService, Depends()],
+            admin_service: Annotated[AdminSubService, Depends()],
     ) -> None:
         super().__init__()
-        self.coach_service = coach_service
+        self.admin_service = admin_service
         self.hash_service = hash_service
 
-    async def authenticate_coach(self, coach: CoachLoginSchema) -> TokenSchema:
+    async def authenticate_admin(self, admin: AdminLoginSchema) -> TokenSchema:
 
-        email_regex_check = RegexChecker.is_valid_email(coach.email)
+        email_regex_check = RegexChecker.is_valid_email(admin.email)
 
         if not email_regex_check:
-            logger.error(f"[-] Invalid Email ---> {coach.email} format")
+            logger.error(f"[-] Invalid Email ---> {admin.email} format")
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Invalid Email Format"
             )
 
-        existing_coach = await self.coach_service.get_coach_by_email(
-            coach.email
+        existing_admin = await self.admin_service.get_admin_by_email(
+            admin.email
         )
-        logger.info(f"[...] Authenticating Coach With Email ---> {coach.email}")
+        logger.info(f"[...] Authenticating Admin With Email ---> {admin.email}")
 
-        if not existing_coach:
-            logger.error(f"[-] Coach With Email ---> {coach.email} Does Not Exist")
+        if not existing_admin:
+            logger.error(f"[-] Admin With Email ---> {admin.email} Does Not Exist")
             raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST, detail="Coach Does Not Exist"
+                status_code=status.HTTP_400_BAD_REQUEST, detail="Admin Does Not Exist"
             )
 
-        if not existing_coach.is_verified:
-            logger.error(f"[-] Coach with Email {coach.email} Is Not Verified")
+        if not existing_admin.is_verified:
+            logger.error(f"[-] Admin with Email {admin.email} Is Not Verified")
             raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST, detail="Coach Is Not Verified"
+                status_code=status.HTTP_400_BAD_REQUEST, detail="Admin Is Not Verified"
             )
 
         if not self.hash_service.verify_password(
-                coach.password, existing_coach.password
+                admin.password, existing_admin.password
         ):
-            logger.error(f"[-] Invalid Password For Coach With Email ---> {coach.email}")
+            logger.error(f"[-] Invalid Password For Admin With Email ---> {admin.email}")
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Incorrect username or password",
                 headers={"WWW-Authenticate": "Bearer"},
             )
-        access_token = self.create_access_token(data={"sub": str(existing_coach.id)})
+        access_token = self.create_access_token(data={"sub": str(existing_admin.id)})
 
-        logger.info(f"[+] Coach With Email ---> {coach.email} Authenticated Successfully")
+        logger.info(f"[+] Admin With Email ---> {admin.email} Authenticated Successfully")
         return TokenSchema(access_token=access_token, token_type="bearer")
 
     def create_access_token(self, data: dict) -> str:
@@ -80,10 +80,10 @@ class AuthService(BaseService):
         return encoded_jwt
 
 
-async def get_current_coach(
-        token: Annotated[str, Depends(coach_oauth2_scheme)],
-        coach_service: Annotated[CoachSubService, Depends()],
-) -> Coach:
+async def get_current_admin(
+        token: Annotated[str, Depends(admin_oauth2_scheme)],
+        admin_service: Annotated[AdminSubService, Depends()],
+) -> Admin:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could Not Validate Credentials",
@@ -93,17 +93,17 @@ async def get_current_coach(
     try:
         payload = jwt.decode(
             token,
-            coach_service.config.JWT_SECRET_KEY,
-            algorithms=[coach_service.config.JWT_ALGORITHM],
+            admin_service.config.JWT_SECRET_KEY,
+            algorithms=[admin_service.config.JWT_ALGORITHM],
         )
-        coach_id: int = payload.get("sub")
-        coach = await coach_service.get_coach(coach_id)
-        if coach_id is None:
+        admin_id: int = payload.get("sub")
+        admin = await admin_service.get_admin(admin_id)
+        if admin_id is None:
             logger.error("[-] Could Not Validate Credentials")
             raise credentials_exception
     except jwt.PyJWTError:
         logger.error("[-] Error Decoding Token")
         raise credentials_exception
 
-    logger.info(f"[+] Coach With Id ---> {coach_id} Validated Successfully")
-    return coach
+    logger.info(f"[+] Admin With Id ---> {admin_id} Validated Successfully")
+    return admin
