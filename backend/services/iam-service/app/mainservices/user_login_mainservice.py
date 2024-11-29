@@ -7,15 +7,12 @@ from fastapi.security import OAuth2PasswordBearer
 
 from app.domain.models.user_model import User
 from app.domain.schemas.token_schema import TokenSchema
-from app.domain.schemas.user_schema import (UserLoginSchema,
-                                            UserForgetPasswordSchema,
-                                            UserForgetPasswordResponseSchema)
+from app.domain.schemas.user_schema import (UserLoginSchema)
 from app.subservices.auth.hash_subservice import HashService
-from app.subservices.auth.otp_subservice import OTPSubservice
 from app.subservices.baseconfig import BaseService
 from app.subservices.user_subservice import UserSubService
 
-user_oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v1/users/login")
+user_oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v1/users/login", scheme_name="UserOAuth2")
 
 
 class AuthService(BaseService):
@@ -73,49 +70,6 @@ class AuthService(BaseService):
         return encoded_jwt
 
 
-class PasswordManager:
-    def __init__(
-            self,
-            otp_subservice: Annotated[OTPSubservice, Depends()],
-            user_service: Annotated[UserSubService, Depends()],
-    ) -> None:
-        self.otp_subservice = otp_subservice
-        self.user_service = user_service
-
-    async def forget_password(self, user: UserForgetPasswordSchema) -> UserForgetPasswordResponseSchema:
-        logger.info(f"[...] Checking if user with email {user.email} exists")
-        existing_user = await self.user_service.get_user_by_email(user.email)
-
-        if not existing_user:
-            logger.error(f"[-] User with email {user.email} does not exist")
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="User with this email does not exist",
-            )
-
-        if not existing_user.is_verified:
-            logger.error(f"[-] User with email {user.email} is not verified")
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="User email is not verified",
-            )
-
-        try:
-            logger.info(f"[...] Sending Password_OTP to user with email {user.email}")
-            self.otp_subservice.send_otp(email=user.email)
-        except Exception as e:
-            logger.error(f"[-] Failed to send Password_OTP to {user.email}: {str(e)}")
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Failed to send Password_OTP",
-            )
-
-        logger.info(f"[+] Password_OTP successfully sent to user with email {user.email}")
-        message = f"Password_OTP has been sent to the email {user.email}"
-        response = UserForgetPasswordResponseSchema(email=user.email, message=message)
-        return response
-
-
 async def get_current_user(
         token: Annotated[str, Depends(user_oauth2_scheme)],
         user_service: Annotated[UserSubService, Depends()],
@@ -143,41 +97,3 @@ async def get_current_user(
 
     logger.info(f"[+] User With Id ---> {user_id} Validated Successfully")
     return user
-
-
-# async def forget_password(
-#         user: UserForgetPasswordSchema,
-#         otp_subservice: Annotated[OTPSubservice, Depends()],
-#         user_service: Annotated[UserSubService, Depends()],
-# ):
-#     logger.info(f"[...] Checking if user with email {user.email} exists")
-#     existing_user = await user_service.get_user_by_email(user.email)
-#
-#     if not existing_user:
-#         logger.error(f"[-] User with email {user.email} does not exist")
-#         raise HTTPException(
-#             status_code=status.HTTP_404_NOT_FOUND,
-#             detail="User with this email does not exist",
-#         )
-#
-#     if not existing_user.is_verified:
-#         logger.error(f"[-] User with email {user.email} is not verified")
-#         raise HTTPException(
-#             status_code=status.HTTP_400_BAD_REQUEST,
-#             detail="User email is not verified",
-#         )
-#
-#     try:
-#         logger.info(f"[...] Sending Password_OTP to user with email {user.email}")
-#         otp_subservice.send_otp(email=user.email)
-#     except Exception as e:
-#         logger.error(f"[-] Failed to send Password_OTP to {user.email}: {str(e)}")
-#         raise HTTPException(
-#             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-#             detail="Failed to send Password_OTP",
-#         )
-#
-#     logger.info(f"[+] Password_OTP successfully sent to user with email {user.email}")
-#     message = f" Password_OTP has been sent to the email {user.email}"
-#     response = UserForgetPasswordResponseSchema(email=user.email, message=message)
-#     return response

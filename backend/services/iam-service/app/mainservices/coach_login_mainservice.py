@@ -13,7 +13,7 @@ from app.subservices.baseconfig import BaseService
 from app.subservices.coach_subservice import CoachSubService
 from app.validators.regex_checker import RegexChecker
 
-coach_oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v1/coach/login")
+coach_oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v1/coach/login", scheme_name="CoachOAuth2")
 
 class AuthService(BaseService):
     def __init__(

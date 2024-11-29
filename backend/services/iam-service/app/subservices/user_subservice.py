@@ -47,6 +47,10 @@ class UserSubService(BaseService):
         logger.info(f"Updating user with id {user_id}")
         return self.user_repo.update_user(user_id, update_fields)
 
+    async def update_user_by_email(self, email: str, update_fields: Dict) -> User:
+        logger.info(f"Updating user with Email ---> {email}")
+        return self.user_repo.update_user_by_email(email, update_fields)
+
     async def delete_user(self, user: User) -> None:
         logger.info(f"Deleting user with id {user.id}")
         return self.user_repo.delete_user(user)

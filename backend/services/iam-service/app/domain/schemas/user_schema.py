@@ -76,9 +76,30 @@ class UserSchema(BaseModel):
 
 
 # **********************************************************************
-class UserForgetPasswordSchema(BaseModel):
-    email: str
-
-class UserForgetPasswordResponseSchema(BaseModel):
-    email: str
-    message: str
+# class UserForgetPasswordSchema(BaseModel):
+#     email: str
+#
+#
+# class UserForgetPasswordResponseSchema(BaseModel):
+#     email: str
+#     message: str
+#
+#
+# class VerifyPasswordOTPSchema(BaseModel):
+#     email: str
+#     OTP: str
+#
+#
+# class VerifyPasswordOTPResponseSchema(BaseModel):
+#     message : str
+#
+#
+# class ChangePasswordSchema(BaseModel):
+#     token: str
+#     new_password: str
+#     repeat_new_password: str
+#
+#
+# class ChangePasswordResponseSchema(BaseModel):
+#     email: str
+#     message: str

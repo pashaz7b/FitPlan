@@ -37,6 +37,17 @@ class UserRepository:
         logger.info(f"[+] User With Id ---> {user_id} Updated")
         return db_user
 
+    def update_user_by_email(self, user_email: str, updated_user: Dict):
+        user_query = self.db.query(User).filter(User.email == user_email)
+        db_user = user_query.first()
+        user_query.filter(User.email == user_email).update(
+            updated_user, synchronize_session=False
+        )
+        self.db.commit()
+        self.db.refresh(db_user)
+        logger.info(f"[+] User With Email ---> {user_email} Updated")
+        return db_user
+
     def delete_user(self, user: User) -> None:
         self.db.delete(user)
         self.db.commit()

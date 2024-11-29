@@ -13,7 +13,7 @@ from app.subservices.baseconfig import BaseService
 from app.subservices.admin_subservice import AdminSubService
 from app.validators.regex_checker import RegexChecker
 
-admin_oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v1/admin/login")
+admin_oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v1/admin/login", scheme_name="AdminOAuth2")
 
 class AuthService(BaseService):
     def __init__(

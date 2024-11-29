@@ -25,6 +25,10 @@ class Settings(BaseSettings):
     SMTP_USERNAME: str = "asldy3097@gmail.com"
     SMTP_PASSWORD: str = "xrtwqctuprcgeiyj"
     EMAIL_FROM: str = "asldy3097@gmail.com"
+    # *****************************************
+    Password_OTP_EXPIRE_TIME: int = 120
+    Password_TOKEN_EXPIRE_MINUTES: int = 10
+
     # model_config = SettingsConfigDict(env_file=str(Path(__file__).resolve().parent / ".env"))
 
 
