@@ -48,6 +48,11 @@ class CoachSubService(BaseService):
         logger.info(f"Updating coach with id {coach_id}")
         return self.coach_repo.update_coach(coach_id, update_fields)
 
+    async def update_coach_by_email(self, email: str, update_fields: Dict) -> Coach:
+        logger.info(f"Updating coach with Email ---> {email}")
+        return self.coach_repo.update_coach_by_email(email, update_fields)
+
+
     async def delete_coach(self, coach: Coach) -> None:
         logger.info(f"Deleting coach with id {coach.id}")
         return self.coach_repo.delete_coach(coach)

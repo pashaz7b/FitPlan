@@ -37,6 +37,10 @@ class AdminSubService(BaseService):
         logger.info(f"Updating admin with id {admin_id}")
         return self.admin_repo.update_admin(admin_id, update_fields)
 
+    async def update_admin_by_email(self, email: str, update_fields: Dict) -> Admin:
+        logger.info(f"Updating Admin With Email ---> {email}")
+        return self.admin_repo.update_admin_by_email(email, update_fields)
+
     async def delete_admin(self, admin: Admin) -> None:
         logger.info(f"Deleting admin with id {admin.id}")
         return self.admin_repo.delete_admin(admin)

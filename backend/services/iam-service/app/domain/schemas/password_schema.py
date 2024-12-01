@@ -31,7 +31,6 @@ class ResendPasswordOTPResponseSchema(BaseModel):
 
 
 class ChangePasswordSchema(BaseModel):
-    token: str
     new_password: str
     repeat_new_password: str
 

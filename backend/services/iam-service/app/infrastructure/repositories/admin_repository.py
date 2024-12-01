@@ -29,6 +29,18 @@ class AdminRepository:
         logger.info(f"[+] Admin With Id ---> {admin_id} Updated")
         return db_admin
 
+    def update_admin_by_email(self, admin_email: str, updated_admin: Dict):
+        admin_query = self.db.query(Admin).filter(Admin.email == admin_email)
+        db_admin = admin_query.first()
+        admin_query.filter(Admin.email == admin_email).update(
+            updated_admin, synchronize_session=False
+        )
+        self.db.commit()
+        self.db.refresh(db_admin)
+        logger.info(f"[+] Admin With Email ---> {admin_email} Updated")
+        return db_admin
+
+
     def delete_admin(self, admin: Admin) -> None:
         self.db.delete(admin)
         self.db.commit()
