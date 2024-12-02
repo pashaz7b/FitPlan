@@ -50,7 +50,7 @@ export default function Login_component({role}) {
                 گذرواژه خود را فراموش کرده‌اید؟
             </a>
 
-            <a href="" className="my-2 mb-3 text-[15px] hover:text-superRed transition-all duration-300">
+            <a href="/user_signup" className="my-2 mb-3 text-[15px] hover:text-superRed transition-all duration-300">
                 حساب کاربری ندارید؟
             </a>
 
