@@ -49,6 +49,17 @@ class CoachRepository:
         logger.info(f"[+] Metrics For Coach Id ---> {coach_id} Updated")
         return db_metrics
 
+    def update_coach_by_email(self, coach_email: str, updated_coach: Dict):
+        coach_query = self.db.query(Coach).filter(Coach.email == coach_email)
+        db_coach = coach_query.first()
+        coach_query.filter(Coach.email == coach_email).update(
+            updated_coach, synchronize_session=False
+        )
+        self.db.commit()
+        self.db.refresh(db_coach)
+        logger.info(f"[+] Coach With Email ---> {coach_email} Updated")
+        return db_coach
+
     def delete_coach(self, coach: Coach) -> None:
         self.db.delete(coach)
         self.db.commit()

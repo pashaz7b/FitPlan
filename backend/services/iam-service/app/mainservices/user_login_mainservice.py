@@ -7,12 +7,12 @@ from fastapi.security import OAuth2PasswordBearer
 
 from app.domain.models.user_model import User
 from app.domain.schemas.token_schema import TokenSchema
-from app.domain.schemas.user_schema import UserLoginSchema
+from app.domain.schemas.user_schema import (UserLoginSchema)
 from app.subservices.auth.hash_subservice import HashService
 from app.subservices.baseconfig import BaseService
 from app.subservices.user_subservice import UserSubService
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v1/users/login")
+user_oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v1/users/login", scheme_name="UserOAuth2")
 
 
 class AuthService(BaseService):
@@ -71,7 +71,7 @@ class AuthService(BaseService):
 
 
 async def get_current_user(
-        token: Annotated[str, Depends(oauth2_scheme)],
+        token: Annotated[str, Depends(user_oauth2_scheme)],
         user_service: Annotated[UserSubService, Depends()],
 ) -> User:
     credentials_exception = HTTPException(

@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from loguru import logger
 
+from app.api.v1.endpoints.admin_api import admin_router
 from app.api.v1.endpoints.coach_api import coach_router
 from app.core.postgres.postgres_database import init_db
 from app.api.v1.endpoints.user_api import user_router
@@ -26,6 +27,7 @@ app.add_middleware(
 
 app.include_router(user_router, prefix="/api/v1/users", tags=["users"])
 app.include_router(coach_router, prefix="/api/v1/coach", tags=["coach"])
+app.include_router(admin_router, prefix="/api/v1/admin", tags=["admin"])
 
 @app.get("/")
 async def root():
