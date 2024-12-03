@@ -1,3 +1,11 @@
+-- Create the database
+CREATE DATABASE fitplan_db;
+
+-- Connect to the new database
+\c fitplan_db;
+
+--**********************************************************************************************
+
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -86,7 +94,7 @@ CREATE TABLE users (
     image TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    is_verified boolean DEFAULT false,
+    is_verified boolean DEFAULT false
 );
 
 

@@ -304,5 +304,6 @@ $RECYCLE.BIN/
 
 
 *.rdb
+backend/services/iam-service/data/dump.rdb
 
 # End of https://www.toptal.com/developers/gitignore/api/python,pycharm+all,linux,windows
