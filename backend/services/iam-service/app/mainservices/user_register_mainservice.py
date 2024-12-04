@@ -33,21 +33,21 @@ class RegisterMainService(BaseService):
         # coach and admin user_duplicate
 
         if existing_user_email:
-            logger.error(f"[-] User Email ---> {user.email} Already Exists!!")
+            logger.error(f"[-] User Email ---> {user.email} Already Exists")
             raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST, detail="[-] User With This Email Already Exists!!"
+                status_code=status.HTTP_400_BAD_REQUEST, detail="User With This Email Already Exists"
             )
 
         if existing_user_phone_number:
-            logger.error(f"[-] User Phone Number ---> {user.phone_number} Already Exists!!")
+            logger.error(f"[-] User Phone Number ---> {user.phone_number} Already Exists")
             raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST, detail="[-] User With This Phone Number Already  Exists!!"
+                status_code=status.HTTP_400_BAD_REQUEST, detail="User With This Phone Number Already  Exists"
             )
 
         if existing_user_name:
-            logger.error(f"[-] User Name ---> {user.user_name} Already Exists!!")
+            logger.error(f"[-] User Name ---> {user.user_name} Already Exists")
             raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST, detail="[-] User With This User Name Already Exists!!"
+                status_code=status.HTTP_400_BAD_REQUEST, detail="User With This User Name Already Exists"
             )
 
     async def register_user(self, user: UserRegisterSchema) -> UserRegisterResponseSchema:
@@ -60,13 +60,13 @@ class RegisterMainService(BaseService):
         logger.info(f"[+] User With Email --> {user.email} Created Successfully")
         response = UserRegisterResponseSchema(
             id=new_user.id,
-            user_name = new_user.user_name,
-            name = new_user.name,
-            email = new_user.email,
+            user_name=new_user.user_name,
+            name=new_user.name,
+            email=new_user.email,
             is_verified=new_user.is_verified,
             created_at=new_user.created_at,
             updated_at=new_user.updated_at,
-            message="[+] User Created Successfully, OTP Sent To The Email"
+            message="User Created Successfully, OTP Sent To The Email"
         )
         return response
 
