@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import fit_logo from "/Images/Fit-Logo-Resized.png";
 import header_img from "/Images/header-athlete.png";
+import where_we_began from "/Images/charles-gaudreault-xXofYCc3hqc-unsplash.jpg";
 
 export default function Landing(){
 
@@ -12,7 +13,7 @@ export default function Landing(){
     return(
         <>
             <div className="h-full w-full bg-mintCream">
-                <div className="absolute z-10 text-white w-[75%] h-[100px] rounded-b-[30px] flex justify-center items-center text-[20px] py-[15px] px-[40px] mx-[15%] font-iranyekan">
+                <div className="absolute z-10 text-mintCream w-[75%] h-[100px] rounded-b-[30px] flex justify-center items-center text-[20px] py-[15px] px-[40px] mx-[15%] font-iranyekan">
                     <div className="flex justify-between items-center w-full">
                         <img src={fit_logo} alt="Logo" className="h-[70px]" />
                         <div className="flex justify-center gap-[26px] items-center h-[50px] pt-[15px] text-[20px] font-medium text-center">
@@ -33,7 +34,7 @@ export default function Landing(){
                     >
                         <div className="relative flex text-white">
                             <img src={header_img} alt="" className="absolute object-contain object-center h-[1200px] top-[20px] right-[200px]" />
-                            <div className="absolute right-[710px] top-[110px] text-[70px] font-bold flex flex-col text-right">
+                            <div className="absolute right-[710px] top-[110px] text-[70px] font-bold flex flex-col text-right text-mintCream">
                                 <p>مثل یک</p>
                                 <p><span className="text-superRed">قهرمان</span> بجنگ</p>
                             </div>
@@ -56,7 +57,30 @@ export default function Landing(){
                         </div>
                     </div>
                 </div>
-                <div></div>
+                
+            </div>
+            {/* sections below the header section */}
+            <div className="bg-mintCream w-full h-full text-black font-iranyekan">
+                {/* where we began section  */}
+                <div className="w-[70%] mx-auto flex justify-center gap-5 pb-[100px] overflow-hidden ">
+                    <div className="w-1/2 aspect-video overflow-hidden rounded-[20px] h-[450px]">
+                        <img src={where_we_began} alt="A man with six packs" className="object-contain object-center w-full h-full scale-[190%]" />
+                    </div>
+                    <div className="flex flex-col gap-3 text-right w-1/2">
+                        <div className="flex">
+                            <div className="w-[5px] h-[60px] bg-superRed ml-4 rounded-[15px]"></div>
+                            <p className="font-bold text-[50px]">از کجا شروع کردیم...</p>
+                        </div>
+                        <p className="leading-10 text-justify text-[22px]">شروع ما از یک علاقه ساده به سلامت و تناسب اندام بود. از جلسات کوچک با دوستان در باشگاه‌های محلی، تا مطالعه عمیق‌تر در مورد تکنیک‌های تمرین و تغذیه، ما قدم به قدم پیشرفت کردیم. هدف اصلی ما از همون اول، ایجاد بستری بود که بتونیم دانسته‌های خودمون رو با دیگران به اشتراک بذاریم و به علاقه‌مندان بدنسازی کمک کنیم تا به بهترین نسخه از خودشون تبدیل بشن. با تلاش‌های مستمر و با انگیزه قوی، این پلتفرم رو راه‌اندازی کردیم تا برای همه قابل دسترس باشه.</p>
+                        <div className="text-left">
+                            <a href="user_login" className="text-mintCream bg-superRed  py-[10px] px-[10px] rounded-[10px] hover:bg-crimsonRed transition-all duration-300">با ما همراه شوید</a>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Coaches Introduction section */}
+                <div className="flex flex-col"></div>
+
             </div>
         </>
     );
