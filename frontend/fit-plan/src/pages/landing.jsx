@@ -10,6 +10,35 @@ export default function Landing(){
         navigate("./user_login");
     };
 
+    const coaches = [
+        {
+            name: "آرش فانی",
+            image: "/Images/Coach-Arash-Faani.jpg",
+            description: "قهرمان مسابقات بین‌المللی بدنسازی سال ۲۰۱۸ در اسپانیا",
+            adjustmentClass: "object-top"
+        },
+        {
+            name: "آرش فانی",
+            image: "/Images/Coach-Arash-Faani.jpg",
+            description: "قهرمان مسابقات بین‌المللی بدنسازی سال ۲۰۱۸ در اسپانیا"
+        },
+        {
+            name: "آرش فانی",
+            image: "/Images/Coach-Arash-Faani.jpg",
+            description: "قهرمان مسابقات بین‌المللی بدنسازی سال ۲۰۱۸ در اسپانیا"
+        },
+        {
+            name: "آرش فانی",
+            image: "/Images/Coach-Arash-Faani.jpg",
+            description: "قهرمان مسابقات بین‌المللی بدنسازی سال ۲۰۱۸ در اسپانیا"
+        },
+        {
+            name: "آرش فانی",
+            image: "/Images/Coach-Arash-Faani.jpg",
+            description: " قهرمان مسابقات بین‌المللی بدنسازی سال ۲۰۱۸ در اسپانیا"
+        }
+    ];
+
     return(
         <>
             <div className="h-full w-full bg-mintCream">
@@ -62,24 +91,51 @@ export default function Landing(){
             {/* sections below the header section */}
             <div className="bg-mintCream w-full h-full text-black font-iranyekan">
                 {/* where we began section  */}
-                <div className="w-[70%] mx-auto flex justify-center gap-5 pb-[100px] overflow-hidden ">
+                <div className="w-[70%] mx-auto max-h-[450px] flex justify-center gap-5 pb-[100px] overflow-hidden ">
                     <div className="w-1/2 aspect-video overflow-hidden rounded-[20px] h-[450px]">
                         <img src={where_we_began} alt="A man with six packs" className="object-contain object-center w-full h-full scale-[190%]" />
                     </div>
-                    <div className="flex flex-col gap-3 text-right w-1/2">
+                    <div className="flex flex-col h-[450px] max-h-[440px] gap-3 text-right w-1/2">
                         <div className="flex">
                             <div className="w-[5px] h-[60px] bg-superRed ml-4 rounded-[15px]"></div>
                             <p className="font-bold text-[50px]">از کجا شروع کردیم...</p>
                         </div>
-                        <p className="leading-10 text-justify text-[22px]">شروع ما از یک علاقه ساده به سلامت و تناسب اندام بود. از جلسات کوچک با دوستان در باشگاه‌های محلی، تا مطالعه عمیق‌تر در مورد تکنیک‌های تمرین و تغذیه، ما قدم به قدم پیشرفت کردیم. هدف اصلی ما از همون اول، ایجاد بستری بود که بتونیم دانسته‌های خودمون رو با دیگران به اشتراک بذاریم و به علاقه‌مندان بدنسازی کمک کنیم تا به بهترین نسخه از خودشون تبدیل بشن. با تلاش‌های مستمر و با انگیزه قوی، این پلتفرم رو راه‌اندازی کردیم تا برای همه قابل دسترس باشه.</p>
+                        <p className="leading-10 text-justify text-[22px] max-h-[450px] flex-wrap overflow-hidden">شروع ما از یک علاقه ساده به سلامت و تناسب اندام بود. از جلسات کوچک با دوستان در باشگاه‌های محلی، تا مطالعه عمیق‌تر در مورد تکنیک‌های تمرین و تغذیه، ما قدم به قدم پیشرفت کردیم. هدف اصلی ما از همون اول، ایجاد بستری بود که بتونیم دانسته‌های خودمون رو با دیگران به اشتراک بذاریم و به علاقه‌مندان بدنسازی کمک کنیم تا به بهترین نسخه از خودشون تبدیل بشن. با تلاش‌های مستمر و با انگیزه قوی، این پلتفرم رو راه‌اندازی کردیم تا برای همه قابل دسترس باشه.</p>
                         <div className="text-left">
-                            <a href="user_login" className="text-mintCream bg-superRed  py-[10px] px-[10px] rounded-[10px] hover:bg-crimsonRed transition-all duration-300">با ما همراه شوید</a>
+                            <a href="user_login" className="text-mintCream bg-superRed py-[10px] px-[10px] rounded-[10px] hover:bg-crimsonRed transition-all duration-300">با ما همراه شوید</a>
                         </div>
                     </div>
                 </div>
 
                 {/* Coaches Introduction section */}
-                <div className="flex flex-col"></div>
+                <div className="w-[80%] flex flex-col mt-[50px] justify-center text-center mx-auto">
+                    <div className="flex flex-col text-center justify-center mx-auto mb-[50px]">
+                        <p className="font-bold text-[40px]">مربی‌ها</p>
+                        <div className="bg-superRed h-[5px] w-[135px] justify-center text-center mx-auto rounded-[20px]"></div>
+                    </div>
+                    <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                        {coaches.map((coach, index) => (
+                            <div
+                                key={index}
+                                className="rounded-lg p-4 group transition-all transform hover:scale-105 duration-300"
+                            >
+                                <img
+                                    src={coach.image}
+                                    alt={coach.name}
+                                    className={`w-full h-60 w-60 mx-auto object-cover rounded-full group-hover:shadow-2xl transition-all duration-300
+                                    ${
+                                        coach.adjustmentClass || "object-top"
+                                    }`}
+                                />
+                                <div className="mt-4">
+                                    <h3 className="font-medium text-[40px] font-semibold">{coach.name}</h3>
+                                    <p className="text-coal mt-2">{coach.description}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+                {/* Footer section */}
 
             </div>
         </>
