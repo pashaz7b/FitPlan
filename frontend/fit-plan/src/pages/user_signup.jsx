@@ -11,11 +11,13 @@ export default function User_signup() {
     const [password, setPassword] = useState("");
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
-    const [gender, setGender ] = useState("");
+    const [gender, setGender ] = useState("آقا");
     const [height, setHeight ] = useState("");
     const [weight, setWeight ] = useState("");
     const [showError, setShowError] = useState(false);
     const [phoneError, setPhoneError] = useState(false);
+    const [weightError, setWeightError] = useState(false);
+    const [heightError, setHeightError] = useState(false);
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
@@ -40,11 +42,45 @@ export default function User_signup() {
     const handleSubmit = (e) => {
         e.preventDefault();
         handlePhone();
+        handleHeight(e);
+        handleWeight(e);
 
         if (!nameSurname || !birthDate || !username || !password || !email || !phone || !gender || !height || !weight){
             setShowError(true);
         } else {
             setShowError(false);
+            console.log("Submit Successful!")
+        }
+    };
+
+    const handleWeight = (e) => {
+        const value = e.target.value || ""; // Fallback to an empty string if undefined
+        const sanitizedValue = value
+          .replace(/[^\d.]/g, "") // Allow only numbers and dots
+          .replace(/(\..*?)\..*/g, "$1"); // Prevent multiple dots
+
+        if(value == ""){
+            setWeightError(true);
+        }
+        else {
+            setWeightError(false);
+            setWeight(sanitizedValue);
+        }
+    };
+
+    const handleHeight = (e) => {
+        const value = e.target.value || ""; // Fallback to an empty string if undefined
+        const sanitizedValue = value
+          .replace(/[^\d.]/g, "") // Allow only numbers and dots
+          .replace(/(\..*?)\..*/g, "$1"); // Prevent multiple dots
+
+        if(sanitizedValue == ""){
+
+            setHeightError(true);
+        }
+        else {
+            setHeightError(false);
+            setHeight(sanitizedValue);
         }
     };
 
@@ -70,17 +106,17 @@ export default function User_signup() {
                         type="text"
                         value={nameSurname}
                         onChange={(e) => setNameSurname(e.target.value)}
-                        className={`text-center text-[15px] px-[30px] w-[100%] py-2 bg-coal border rounded-[10px] ${showError && !password ? "border-superRed" : "border-white"}`} 
+                        className={`text-center text-[15px] px-[30px] w-[100%] py-2 bg-coal border rounded-[10px] ${showError && !nameSurname ? "border-superRed" : "border-white"}`} 
                         placeholder="فرداد فریدون"
                         />
                     </div>
                     <div className="max-sm:flex max-sm:flex-col max-sm:text-center max-sm:mx-auto flex flex-col text-right">
-                        <label htmlFor="first_surname" className="mb-3">تاریخ تولد</label>
+                        <label htmlFor="birthDate" className="mb-3">تاریخ تولد</label>
                         <input 
                         type="text"
                         value={birthDate}
                         onChange={(e) => setBirthDate(e.target.value)}
-                        className={`text-center text-[15px] px-[30px] w-[100%] py-2 bg-coal border rounded-[10px] ${showError && !password ? "border-superRed" : "border-white"}`} 
+                        className={`text-center text-[15px] px-[30px] w-[100%] py-2 bg-coal border rounded-[10px] ${showError && !birthDate ? "border-superRed" : "border-white"}`} 
                         placeholder="1380/8/22"
                         />
                     </div>
@@ -120,17 +156,17 @@ export default function User_signup() {
                 <p className="max-sm:flex max-sm:flex-col max-sm:text-center max-sm:mx-auto text-superRed text-[30px] font-medium mt-10">اطلاعات کاربری</p>
                 <div className="max-sm:flex max-sm:flex-col max-sm:gap-5 max-sm:text-center max-sm:mx-auto flex justify-between align-bottom items-end mt-auto">
                     <div className="max-sm:flex max-sm:flex-col max-sm:text-center max-sm:mx-auto flex flex-col text-right">
-                        <label htmlFor="first_surname" className="mb-3">نام کاربری</label>
+                        <label htmlFor="username" className="mb-3">نام کاربری</label>
                         <input 
                         type="text"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
-                        className={`text-center text-[15px] px-[30px] w-[100%] py-2 bg-coal border rounded-[10px] ${showError && !password ? "border-superRed" : "border-white"}`} 
+                        className={`text-center text-[15px] px-[30px] w-[100%] py-2 bg-coal border rounded-[10px] ${showError && !username ? "border-superRed" : "border-white"}`} 
                         placeholder="FardadFer"
                         />
                     </div>
                     <div className="max-sm:flex max-sm:flex-col max-sm:text-center max-sm:mx-auto flex flex-col text-right">
-                        <label htmlFor="first_surname" className="mb-3">گذرواژه</label>
+                        <label htmlFor="password" className="mb-3">گذرواژه</label>
                         <input 
                         type="text"
                         value={password}
@@ -140,23 +176,23 @@ export default function User_signup() {
                         />
                     </div>
                     <div className="max-sm:flex max-sm:flex-col max-sm:text-center max-sm:mx-auto flex flex-col text-right">
-                        <label htmlFor="first_surname" className="mb-3">آدرس ایمیل</label>
+                        <label htmlFor="mailAddress" className="mb-3">آدرس ایمیل</label>
                         <input 
                         type="text"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className={`text-center text-[15px] px-[30px] w-[100%] py-2 bg-coal border rounded-[10px] ${showError && !password ? "border-superRed" : "border-white"}`} 
+                        className={`text-center text-[15px] px-[30px] w-[100%] py-2 bg-coal border rounded-[10px] ${showError && !email ? "border-superRed" : "border-white"}`} 
                         placeholder="fardad.frydn@gmail.com"
                         />
                     </div>
                     <div className="max-sm:flex max-sm:flex-col max-sm:text-center max-sm:mx-auto flex flex-col text-right">
-                        <label htmlFor="first_surname" className="mb-3">شماره تماس</label>
+                        <label htmlFor="phoneNumber" className="mb-3">شماره تماس</label>
                         <p className={`text-superRed text-[15px] ${phoneError ? "block" : "hidden"}`}>لطفا شماره تماس را بدون صفر وارد کنید</p>
                         <input 
                         type="text"
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
-                        className={`text-center text-[15px] px-[30px] w-[100%] py-2 bg-coal border rounded-[10px] ${showError && !password ? "border-superRed" : "border-white"}`} 
+                        className={`text-center text-[15px] px-[30px] w-[100%] py-2 bg-coal border rounded-[10px] ${showError && !phone ? "border-superRed" : "border-white"}`} 
                         placeholder="9123456789"
                         // pattern="^9\d{9}$"
                         />
@@ -167,33 +203,37 @@ export default function User_signup() {
                 <p className="max-sm:flex max-sm:flex-col max-sm:text-center max-sm:mx-auto text-superRed text-[30px] font-medium mt-10">اطلاعات بیولوژیکی</p>
                 <div className="max-sm:flex max-sm:flex-col max-sm:gap-5 max-sm:text-center max-sm:mx-auto flex justify-evenly align-bottom gap-2 items-end">
                     <div className="max-sm:flex max-sm:flex-col max-sm:text-center max-sm:mx-auto flex flex-col text-right">
-                        <label htmlFor="first_surname" className="mb-3">جنسیت</label>
+                        <label htmlFor="gender" className="mb-3">جنسیت</label>
                         <select 
                         name="gender" 
                         id="gender" 
                         value={gender}
                         onChange={(e) => setGender(e.target.value)}
-                        className={`text-right text-[15px] w-auto py-2 bg-coal border rounded-[10px] ${showError && !password ? "border-superRed" : "border-white"}`}>
-                            <option value="male">آقا</option>
-                            <option value="female">خانم</option>
+                        className={`text-right text-[15px] w-auto py-2 bg-coal border rounded-[10px] ${showError ? "border-superRed" : "border-white"}`}>
+                            <option value="آقا">آقا</option>
+                            <option value="خانم">خانم</option>
                         </select>
                     </div>
                     <div className="max-sm:flex max-sm:flex-col max-sm:text-center max-sm:mx-auto flex flex-col text-right">
-                        <label htmlFor="first_surname" className="mb-3">قد(سانتی‌متر)</label>
+                        <label htmlFor="height" className="mb-3">قد(سانتی‌متر)</label>
                         <input 
-                        type="text"
+                        type="number"
                         value={height}
+                        step="0.01"
+                        min="0.00"
                         onChange={(e) => setHeight(e.target.value)}
-                        className={`text-center text-[15px] px-[30px] w-[100%] py-2 bg-coal border rounded-[10px] ${showError && !password ? "border-superRed" : "border-white"}`} 
+                        className={`text-center text-[15px] px-[30px] w-[100%] py-2 bg-coal border rounded-[10px] ${showError && !height ? "border-superRed" : "border-white"}`} 
                         />
                     </div>
                     <div className="max-sm:flex max-sm:flex-col max-sm:text-center max-sm:mx-auto flex flex-col text-right">
-                        <label htmlFor="first_surname" className="mb-3">وزن(کیلوگرم)</label>
+                        <label htmlFor="weight" className="mb-3">وزن(کیلوگرم)</label>
                         <input 
-                        type="text"
+                        type="number"
+                        step="0.01"
+                        min="30"
                         value={weight}
                         onChange={(e) => setWeight(e.target.value)}
-                        className={`text-center text-[15px] px-[30px] w-[100%] py-2 bg-coal border rounded-[10px] ${showError && !password ? "border-superRed" : "border-white"}`} 
+                        className={`text-center text-[15px] px-[30px] w-[100%] py-2 bg-coal border rounded-[10px] ${showError && !weight ? "border-superRed" : "border-white"}`} 
                         />
                     </div>
                 </div>

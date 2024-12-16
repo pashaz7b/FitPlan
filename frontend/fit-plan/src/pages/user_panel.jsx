@@ -1,4 +1,22 @@
+import { useState } from "react";
+
 export default function User_panel(){
+    const [userInfo, setUserInfo] = useState({
+        nameSurname: "آونگ روزبه",
+        username: "AAAvng",
+        password: "********",
+        phoneNumber: "989123456789+",
+        email: "avng.rzbh@gmail.com",
+        birthDate: "1365/7/18",
+        gender: "آقا",
+        height: "175",
+        weight: "65",
+        image: "/Images/payton-tuttle-RFFR1JjkJx8-unsplash.jpg"
+    });
+
+    const [tempInfo, setTempInfo] = useState(userInfo);
+    const [profilePhoto, setProfilePhoto] = useState(null);
+
     return(
         <div className="bg-black w-full h-full flex justify-start pr-[400px] gap-[35px] mx-auto font-iranyekan">
                 <div className="fixed top-[48px] right-[51px] w-[320px] h-[700px] overflow-hidden bg-coal rounded-[15px] shadow-lg font-iranyekan">
@@ -63,18 +81,18 @@ export default function User_panel(){
             <div className="flex flex-col gap-5 justify-start w-[95%] py-[40px]">
                 <div className="flex justify-between">
                     <h1 className="text-[45px] font-bold text-mintCream">اطلاعات کاربر</h1>
-                    <a href="/user_panel/user_info_edit" className="text-superRed text-[25px] font-semibold border-[2px] border-superRed rounded-[15px] max-h-[59px] pt-2 px-8 hover:bg-superRed hover:text-black transition-all duration-300">ویرایش</a>
+                    <a href="/user_panel/info_edit" className="text-superRed text-[25px] font-semibold border-[2px] border-superRed rounded-[15px] max-h-[59px] pt-2 px-8 hover:bg-superRed hover:text-black transition-all duration-300">ویرایش</a>
                 </div>
                 <div className="border mb-[22px] rounded-[10px] h-[618px] overflow-hidden flex justify-start gap-5 text-mintCream">
                     <div className="h-full w-[25%] overflow-hidden">
-                        <img src="/Images/payton-tuttle-RFFR1JjkJx8-unsplash.jpg" alt="user_image" className="object-contain object-center h-full scale-[320%]"/>
+                        <img src={userInfo.image} alt="user_image" className="object-contain object-center h-full scale-[320%]"/>
                     </div>
                     <div className="w-[70%] py-5 px-2 flex flex-col gap-11">
-                        <h1 className="text-[45px] font-medium">آونگ روزبه</h1>
+                        <h1 className="text-[45px] font-medium">{userInfo.nameSurname}</h1>
                         <div className="w-full flex justify-between gap-11">
                             <div className="w-full flex justify-between">
                                 <p className="font-medium text-[20px]">نام کاربری:</p>
-                                <p className="text-[20px] font-light">AAAvng</p>
+                                <p className="text-[20px] font-light">{userInfo.username}</p>
                             </div>
                             <div className="w-full flex justify-between">
                                 <p className="font-medium text-[20px]">گذرواژه:</p>
@@ -84,31 +102,31 @@ export default function User_panel(){
                         <div className="w-full flex justify-between gap-11">
                             <div className="w-full flex justify-between">
                                 <p className="font-medium text-[20px]">شماره تماس:</p>
-                                <p className="text-[20px] font-light">989123456789+</p>
+                                <p className="text-[20px] font-light">{userInfo.phoneNumber}</p>
                             </div>
                             <div className="w-full flex justify-between">
                                 <p className="font-medium text-[20px]">آدرس ایمیل:</p>
-                                <p className="text-[15px] font-light">avng.rzbh@gmail.com</p>
+                                <p className="text-[15px] font-light">{userInfo.email}</p>
                             </div>
                         </div>
                         <div className="w-full flex justify-between gap-11">
                             <div className="w-full flex justify-between">
                                 <p className="font-medium text-[20px]">تاریخ تولد:</p>
-                                <p className="text-[20px] font-light">1365/7/18</p>
+                                <p className="text-[20px] font-light">{userInfo.birthDate}</p>
                             </div>
                             <div className="w-full flex justify-between">
                                 <p className="font-medium text-[20px]">جنسیت:</p>
-                                <p className="text-[20px] font-light">آقا</p>
+                                <p className="text-[20px] font-light">{userInfo.gender}</p>
                             </div>
                         </div>
                         <div className="w-full flex justify-between gap-11">
                             <div className="w-full flex justify-between">
                                 <p className="font-medium text-[20px]">قد(سانتی متر):</p>
-                                <p className="text-[20px] font-light">175</p>
+                                <p className="text-[20px] font-light">{userInfo.height}</p>
                             </div>
                             <div className="w-full flex justify-between">
                                 <p className="font-medium text-[20px]">وزن(کیلوگرم):</p>
-                                <p className="text-[20px] font-light">65</p>
+                                <p className="text-[20px] font-light">{userInfo.weight}</p>
                             </div>
                         </div>
                     </div>
