@@ -9,6 +9,10 @@ import Otp_page from "./pages/otp_page";
 import User_panel from "./pages/user_panel";
 import Coach_panel from "./pages/coach_panel";
 import Admin_panel from "./pages/admin_panel";
+import About_us from "./pages/about_us";
+import Coaches from "./pages/coaches";
+import Podcasts from "./pages/podcasts";
+import User_info_edit from "./pages/user_info_edit";
 
 function App() {
   // const [count, setCount] = useState(0);
@@ -26,8 +30,12 @@ function App() {
           <Route path="/forgot_password/:role" element={<Forgot_Password />} />
           <Route path="/user_signup" element={<User_signup />} />
           <Route path="/user_panel" element={<User_panel />} />
+          <Route path="/user_panel/info_edit" element={<User_info_edit />} />
           <Route path="/coach_panel" element={<Coach_panel />} />
           <Route path="/admin_panel" element={<Admin_panel />} />
+          <Route path="/about_us" element={<About_us />} />
+          <Route path="/coaches" element={<Coaches />} />
+          <Route path="/podcasts" element={<Podcasts />} />
         </Routes>
       </BrowserRouter>
     </>

@@ -41,7 +41,7 @@ export default function Footer_comp() {
                 </div>
             </div>  
             <div className="bg-black flex justify-center text-center w-full max-h-[40px]">
-                <div className="w-[50%] py-2 bg-superRed text-mintCream rounded-t-[15px]">
+                <div className="w-[50%] py-1 bg-superRed text-mintCream rounded-t-[15px]">
                     <p>طراحی شده و توسعه یافته توسط ارمیا زواری و امیرحسین پاشا - پائیز 1403</p>
                 </div>
             </div>

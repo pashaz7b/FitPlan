@@ -40,7 +40,7 @@ export default function User_login() {
     return(
         <>
         <div id="user_submit" className="bg-black h-screen flex flex-col justify-center items-center sm:text-[13px] lg:text-[25px] text-mintCream font-iranyekan">
-        <a href="/landing" className="sm:w-[40%] md:w-[25%] lg:w-[17%] sm:h-[150px] md:h-[100px] lg:h-[80px] mb-0">
+        <a href="/" className="sm:w-[40%] md:w-[25%] lg:w-[17%] sm:h-[150px] md:h-[100px] lg:h-[80px] mb-0">
             <img 
                 src={fit_logo} 
                 className="object-contain object-center"
@@ -60,7 +60,7 @@ export default function User_login() {
         <Login_component role={role}/>
     </div>
     <div id="coach_submit" className="bg-black h-screen hidden flex-col justify-center items-center sm:text-[13px] lg:text-[25px] text-mintCream font-iranyekan">
-        <a href="/landing" className="sm:w-[40%] md:w-[25%] lg:w-[17%] sm:h-[150px] md:h-[100px] lg:h-[80px] mb-0">
+        <a href="/" className="sm:w-[40%] md:w-[25%] lg:w-[17%] sm:h-[150px] md:h-[100px] lg:h-[80px] mb-0">
             <img 
                 src={fit_logo} 
                 className="object-contain object-center"
