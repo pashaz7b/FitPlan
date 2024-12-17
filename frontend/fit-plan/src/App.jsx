@@ -13,6 +13,11 @@ import About_us from "./pages/about_us";
 import Coaches from "./pages/coaches";
 import Podcasts from "./pages/podcasts";
 import User_info_edit from "./pages/user_info_edit";
+import User_coach from "./pages/user_coach";
+import User_tutorial from "./pages/user_tutorial";
+import User_mealPlan from "./pages/user_mealPlan";
+import User_exercisePlan from "./pages/user_ExercisePlan";
+import User_transactions from "./pages/user_transactions";
 
 function App() {
   // const [count, setCount] = useState(0);
@@ -31,6 +36,11 @@ function App() {
           <Route path="/user_signup" element={<User_signup />} />
           <Route path="/user_panel" element={<User_panel />} />
           <Route path="/user_panel/info_edit" element={<User_info_edit />} />
+          <Route path="/user_panel/user_coach" element={<User_coach />} />
+          <Route path="/user_panel/user_tutorial" element={<User_tutorial />} />
+          <Route path="/user_panel/user_mealPlan" element={<User_mealPlan />} />
+          <Route path="/user_panel/user_exercisePlanPlan" element={<User_exercisePlan />} />
+          <Route path="/user_panel/user_transactions" element={<User_transactions />} />
           <Route path="/coach_panel" element={<Coach_panel />} />
           <Route path="/admin_panel" element={<Admin_panel />} />
           <Route path="/about_us" element={<About_us />} />

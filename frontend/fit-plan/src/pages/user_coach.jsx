@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function User_panel(){
+export default function User_coach(){
     const [userInfo, setUserInfo] = useState({
         nameSurname: "آونگ روزبه",
         username: "AAAvng",
@@ -12,6 +12,21 @@ export default function User_panel(){
         height: "175",
         weight: "65",
         image: "/Images/payton-tuttle-RFFR1JjkJx8-unsplash.jpg"
+    });
+
+    const [coachInfo, setCoachInfo] = useState({
+        nameSurname: "آرش فانی",
+        username: "Arash.Funny",
+        password: "********",
+        phoneNumber: "989123456789+",
+        email: "Arash.fun@gmail.com",
+        birthDate: "1365/7/18",
+        gender: "آقا",
+        height: "178",
+        weight: "70",
+        image: "/Images/Coach-Arash-Faani.jpg",
+        status: "در دسترس",
+        about: "آرش از جوانی به ورزش علاقه‌مند بود و بعد از ورود به دانشگاه رشته تربیت بدنی، به طور جدی وارد دنیای بدنسازی شد. او بیش از ۱۰ سال است که به عنوان مربی حرفه‌ای فعالیت می‌کند و با تمرکز بر روی تمرینات قدرتی و استقامتی، به ویژه برای ورزشکاران رشته‌های دو و میدانی و فوتبال شناخته شده است. آرش به توانمندسازی شاگردان خود در بهبود عملکرد ورزشی‌شان افتخار می‌کند."
     });
 
     const [tempInfo, setTempInfo] = useState(userInfo);
@@ -34,14 +49,14 @@ export default function User_panel(){
               {/* Scrollable List Section */}
               <div className="overflow-y-auto font-medium max-h-[330px] scrollbar-thin scrollbar-thumb-superRed scrollbar-track-coal" >
                 <div className="flex flex-col gap-1 p-2">
-                    <a href="/user_panel" className="w-[90%] border-crimsonRed bg-crimsonRed text-black text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300">
+                    <a href="/user_panel" className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300">
                         <p>اطلاعات کاربر</p>
-                        <svg xmlns="http://www.w3.org/2000/svg" height="35px" viewBox="0 -960 960 960" width="35px" fill="#000000"><path d="M480-492.31q-57.75 0-98.87-41.12Q340-574.56 340-632.31q0-57.75 41.13-98.87 41.12-41.13 98.87-41.13 57.75 0 98.87 41.13Q620-690.06 620-632.31q0 57.75-41.13 98.88-41.12 41.12-98.87 41.12ZM180-248.46v-28.16q0-29.38 15.96-54.42 15.96-25.04 42.66-38.5 59.3-29.07 119.65-43.61 60.35-14.54 121.73-14.54t121.73 14.54q60.35 14.54 119.65 43.61 26.7 13.46 42.66 38.5Q780-306 780-276.62v28.16q0 25.3-17.73 43.04-17.73 17.73-43.04 17.73H240.77q-25.31 0-43.04-17.73Q180-223.16 180-248.46Zm60 .77h480v-28.93q0-12.15-7.04-22.5-7.04-10.34-19.11-16.88-51.7-25.46-105.42-38.58Q534.7-367.69 480-367.69q-54.7 0-108.43 13.11-53.72 13.12-105.42 38.58-12.07 6.54-19.11 16.88-7.04 10.35-7.04 22.5v28.93Zm240-304.62q33 0 56.5-23.5t23.5-56.5q0-33-23.5-56.5t-56.5-23.5q-33 0-56.5 23.5t-23.5 56.5q0 33 23.5 56.5t56.5 23.5Zm0-80Zm0 384.62Z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" height="35px" viewBox="0 -960 960 960" width="35px" fill="#e8eaed"><path d="M480-492.31q-57.75 0-98.87-41.12Q340-574.56 340-632.31q0-57.75 41.13-98.87 41.12-41.13 98.87-41.13 57.75 0 98.87 41.13Q620-690.06 620-632.31q0 57.75-41.13 98.88-41.12 41.12-98.87 41.12ZM180-248.46v-28.16q0-29.38 15.96-54.42 15.96-25.04 42.66-38.5 59.3-29.07 119.65-43.61 60.35-14.54 121.73-14.54t121.73 14.54q60.35 14.54 119.65 43.61 26.7 13.46 42.66 38.5Q780-306 780-276.62v28.16q0 25.3-17.73 43.04-17.73 17.73-43.04 17.73H240.77q-25.31 0-43.04-17.73Q180-223.16 180-248.46Zm60 .77h480v-28.93q0-12.15-7.04-22.5-7.04-10.34-19.11-16.88-51.7-25.46-105.42-38.58Q534.7-367.69 480-367.69q-54.7 0-108.43 13.11-53.72 13.12-105.42 38.58-12.07 6.54-19.11 16.88-7.04 10.35-7.04 22.5v28.93Zm240-304.62q33 0 56.5-23.5t23.5-56.5q0-33-23.5-56.5t-56.5-23.5q-33 0-56.5 23.5t-23.5 56.5q0 33 23.5 56.5t56.5 23.5Zm0-80Zm0 384.62Z"/></svg>
                     </a>
-                    <a href="/user_panel/user_coach" className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300">
+                    <a href="/user_panel/user_coach" className="w-[90%] border-[2px] border-crimsonRed bg-crimsonRed text-black text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300">
                         <p>مربی</p>
                         <div className="h-[30px]">
-                            <img src="/Images/bodybuilding-White.png" alt="coaches_icon" className="h-full" />
+                            <img src="/Images/bodybuilding-Black.png" alt="coaches_icon" className="h-full" />
                         </div>
                     </a>
                     <a href="/user_panel/user_tutorial" className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300">
@@ -80,55 +95,59 @@ export default function User_panel(){
             </div>
             <div className="flex flex-col gap-5 justify-start w-[95%] py-[40px]">
                 <div className="flex justify-between">
-                    <h1 className="text-[45px] font-bold text-mintCream">اطلاعات کاربر</h1>
-                    <a href="/user_panel/info_edit" className="text-superRed text-[25px] font-semibold border-[2px] border-superRed rounded-[15px] max-h-[59px] pt-2 px-8 hover:bg-superRed hover:text-black transition-all duration-300">ویرایش</a>
+                    <h1 className="text-[45px] font-bold text-mintCream">اطلاعات مربی</h1>
                 </div>
                 <div className="border mb-[22px] rounded-[10px] h-[618px] overflow-hidden flex justify-start gap-5 text-mintCream">
-                    <div className="h-full w-[25%] overflow-hidden">
-                        <img src={userInfo.image} alt="user_image" className="object-contain object-center h-full scale-[320%]"/>
+                    <div className="relative h-full w-[25%] overflow-hidden">
+                        <img src={coachInfo.image} alt="user_image" className="object-contain object-bottom h-full scale-[320%]"/>
                     </div>
-                    <div className="w-[70%] py-5 px-2 flex flex-col gap-11">
-                        <h1 className="text-[45px] font-medium">{userInfo.nameSurname}</h1>
+                    <div className="w-[70%] py-5 px-2 flex flex-col gap-8">
+                        <h1 className="text-[45px] font-medium">{coachInfo.nameSurname}</h1>
                         <div className="w-full flex justify-between gap-11">
                             <div className="w-full flex justify-between">
                                 <p className="font-medium text-[20px]">نام کاربری:</p>
-                                <p className="text-[20px] font-light">{userInfo.username}</p>
+                                <p className="text-[20px] font-light">{coachInfo.username}</p>
                             </div>
                             <div className="w-full flex justify-between">
-                                <p className="font-medium text-[20px]">گذرواژه:</p>
-                                <p className="text-[20px] font-light">********</p>
+                                <p className="font-medium text-[20px]">تاریخ تولد:</p>
+                                <p className="text-[20px] font-light">{coachInfo.birthDate}</p>
                             </div>
                         </div>
                         <div className="w-full flex justify-between gap-11">
                             <div className="w-full flex justify-between">
                                 <p className="font-medium text-[20px]">شماره تماس:</p>
-                                <p className="text-[20px] font-light">{userInfo.phoneNumber}</p>
+                                <p className="text-[20px] font-light">{coachInfo.phoneNumber}</p>
                             </div>
                             <div className="w-full flex justify-between">
                                 <p className="font-medium text-[20px]">آدرس ایمیل:</p>
-                                <p className="text-[15px] font-light">{userInfo.email}</p>
+                                <p className="text-[15px] font-light">{coachInfo.email}</p>
                             </div>
                         </div>
                         <div className="w-full flex justify-between gap-11">
-                            <div className="w-full flex justify-between">
-                                <p className="font-medium text-[20px]">تاریخ تولد:</p>
-                                <p className="text-[20px] font-light">{userInfo.birthDate}</p>
-                            </div>
+                            
                             <div className="w-full flex justify-between">
                                 <p className="font-medium text-[20px]">جنسیت:</p>
-                                <p className="text-[20px] font-light">{userInfo.gender}</p>
+                                <p className="text-[20px] font-light">{coachInfo.gender}</p>
+                            </div>
+                            <div className="w-full flex justify-between">
+                                <p className="font-medium text-[20px]">وضعیت:</p>
+                                <p className="text-[20px] font-light">{coachInfo.status}</p>
                             </div>
                         </div>
                         <div className="w-full flex justify-between gap-11">
                             <div className="w-full flex justify-between">
                                 <p className="font-medium text-[20px]">قد(سانتی متر):</p>
-                                <p className="text-[20px] font-light">{userInfo.height}</p>
+                                <p className="text-[20px] font-light">{coachInfo.height}</p>
                             </div>
                             <div className="w-full flex justify-between">
                                 <p className="font-medium text-[20px]">وزن(کیلوگرم):</p>
-                                <p className="text-[20px] font-light">{userInfo.weight}</p>
+                                <p className="text-[20px] font-light">{coachInfo.weight}</p>
                             </div>
                         </div>
+                            <div className="w-full flex justify-between gap-5">
+                                <p className="font-medium text-[20px] w-[50%]">درباره مربی:</p>
+                                <p className="text-[20px] font-light">{coachInfo.about}</p>
+                            </div>
                     </div>
                 </div>
 
