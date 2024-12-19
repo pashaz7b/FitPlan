@@ -1,4 +1,6 @@
 import { useState } from "react";
+import VideoOverlay from "../components/VideoOverlay";
+import Card from "../components/card";
 
 export default function User_tutorial(){
     const [userInfo, setUserInfo] = useState({
@@ -13,22 +15,23 @@ export default function User_tutorial(){
         weight: "65",
         image: "/Images/payton-tuttle-RFFR1JjkJx8-unsplash.jpg"
     });
-    
-    const [coachInfo, setCoachInfo] = useState({
-        nameSurname: "آونگ روزبه",
-        username: "AAAvng",
-        password: "********",
-        phoneNumber: "989123456789+",
-        email: "avng.rzbh@gmail.com",
-        birthDate: "1365/7/18",
-        gender: "آقا",
-        height: "175",
-        weight: "65",
-        image: "/Images/payton-tuttle-RFFR1JjkJx8-unsplash.jpg"
-    });
 
-    const [tempInfo, setTempInfo] = useState(userInfo);
-    const [profilePhoto, setProfilePhoto] = useState(null);
+    const movements = [
+        {name: "ددلیفت", image: "/Images/Dead-lift.webp", video: "/Videos/Dead-lift.mp4"},
+        {name: "پرس سینه", image: "/Images/Bench-press.webp", video: "/Videos/bench-press.mp4"},
+        {name: "اسکوات", image: "/Images/Squat.webp", video: "/Videos/Squat-with-Barbell.mp4"},
+        {name: "جلوبازو دمبل", image: "/Images/Incline-Dumbbell-Curl.jpg", video: "/Videos/Incline-Dumbbell-Curl.mp4"}
+    ];
+
+    const [selectedVideo, setSelectedVideo] = useState(null);
+
+    const handleCardClick = (video) => {
+      setSelectedVideo(video);
+    };
+    
+    const closeOverlay = () => {
+      setSelectedVideo(null);
+    };
 
     return(
         <div className="bg-black w-full h-full flex justify-start pr-[400px] gap-[35px] mx-auto font-iranyekan">
@@ -95,10 +98,22 @@ export default function User_tutorial(){
                 <div className="flex justify-between">
                     <h1 className="text-[45px] font-bold text-mintCream">آموزش حرکات</h1>
                 </div>
-                <div className="border mb-[22px] rounded-[10px] h-[618px] overflow-hidden flex justify-start gap-5 text-mintCream">
-                    
+                {/* Scrollable list of videos */}
+                <div className="border mb-[22px] rounded-[10px] h-[618px] overflow-hidden flex justify-center  pr-[25px] gap-5 pt-[15px] text-mintCream">
+                  <div className="overflow-y-auto w-full mx-auto gap-6 grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 font-medium max-h-[600px] scrollbar-thin scrollbar-thumb-superRed scrollbar-track-coal" >
+                    {movements.map((movement) => (
+                        <Card
+                          key={movement.name}
+                          name={movement.name}
+                          image={movement.image}
+                          onClick={() => handleCardClick(movement.video)}
+                        />
+                      ))}
+                      {selectedVideo && (
+                        <VideoOverlay videoSrc={selectedVideo} onClose={closeOverlay} />
+                      )}
+                  </div>
                 </div>
-
             </div>
         </div>
     );
