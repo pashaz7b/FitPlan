@@ -1,8 +1,7 @@
 import { useState } from "react";
-import Plan_card from "../components/plan_card";
 import { Navigate, useNavigate } from "react-router-dom";
 
-export default function User_mealPlan(){
+export default function Mealplan_req(){
     const [userInfo, setUserInfo] = useState({
         nameSurname: "آونگ روزبه",
         username: "AAAvng",
@@ -16,30 +15,89 @@ export default function User_mealPlan(){
         image: "/Images/payton-tuttle-RFFR1JjkJx8-unsplash.jpg"
     });
 
-    const [coachInfo, setCoachInfo] = useState({
-        nameSurname: "آرش فانی",
-        username: "Arash.Funny",
-        password: "********",
-        phoneNumber: "989123456789+",
-        email: "Arash.fun@gmail.com",
-        birthDate: "1365/7/18",
-        gender: "آقا",
-        height: "178",
-        weight: "70",
-        image: "/Images/Coach-Arash-Faani.jpg",
-        status: "در دسترس",
-        about: "آرش از جوانی به ورزش علاقه‌مند بود و بعد از ورود به دانشگاه رشته تربیت بدنی، به طور جدی وارد دنیای بدنسازی شد. او بیش از ۱۰ سال است که به عنوان مربی حرفه‌ای فعالیت می‌کند و با تمرکز بر روی تمرینات قدرتی و استقامتی، به ویژه برای ورزشکاران رشته‌های دو و میدانی و فوتبال شناخته شده است. آرش به توانمندسازی شاگردان خود در بهبود عملکرد ورزشی‌شان افتخار می‌کند."
-    });
-
-    const mealPlans = [
-        {name: coachInfo.nameSurname, image: coachInfo.image, description: "شما یک برنامه غذایی جدید دریافت کردید!"}
-    ];
+    const [weight, setWeight] = useState("");
+    const [weightError, setWeightError] = useState(false);
+    const [waistSize, setWaistSize] = useState("");
+    const [waistSizeError, setWaistSizeError] = useState(false);
+    const [showError, setShowError] = useState(false);
+    const [selectedPlan, setSelectedPlan] = useState("");
+    const [images, setImages] = useState([]);
+    const [preview, setPreview] = useState(false);
 
     const navigate = useNavigate();
-    const handleCardClick = (mealPlan) =>{
-        navigate("/my_mealPlan");
+    
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        handleWeight(e);
+        handleWaistSize(e);
+
+        if (!waistSize || !weight){
+            setShowError(true);
+        } else {
+            setShowError(false);
+            console.log("Submit Successful!");
+            console.log(waistSize);
+            console.log(weight);
+            navigate("/user_panel/user_mealPlan");
+        }
     };
 
+    const handleWeight = (e) => {
+        const value = e.target.value || ""; 
+        const sanitizedValue = value
+          .replace(/[^\d.]/g, "") 
+          .replace(/(\..*?)\..*/g, "$1"); 
+
+        if(value == ""){
+            setWeightError(true);
+        }
+        else {
+            setWeightError(false);
+            setWeight(sanitizedValue);
+            console.log(e.value.target);
+        }
+    };
+
+    const handleWaistSize = (e) => {
+        const value = e.target.value || ""; 
+        const sanitizedValue = value
+          .replace(/[^\d.]/g, "") 
+          .replace(/(\..*?)\..*/g, "$1"); 
+
+        if(sanitizedValue == ""){
+            console.log("No Size");
+            setWaistSizeError(true);
+        }
+        else {
+            setWaistSizeError(false);
+            setWaistSize(sanitizedValue);
+            console.log(e.value.target);
+        }
+    };
+
+
+    const handlePlanType = (event) => {
+      setSelectedPlan(event.target.value);
+    };
+
+
+    const handleFileChange = (event) => {
+      setPreview(true)
+
+      const selectedFiles = Array.from(event.target.files);
+      setImages((prevImages) => [...prevImages, ...selectedFiles]);
+    };
+
+    const handleDownload = () => {
+        const link = document.createElement('a');
+        link.href = "/Files/Measuring.pdf";
+        link.download = 'Measuring.pdf';
+        document.body.appendChild(link); 
+        link.click(); 
+        document.body.removeChild(link); 
+        window.URL.revokeObjectURL(url);
+
+    };
     return(
         <div className="bg-black w-full h-full flex justify-start pr-[400px] gap-[35px] mx-auto font-iranyekan">
                 <div className="fixed top-[48px] right-[51px] w-[320px] h-[700px] overflow-hidden bg-coal rounded-[15px] shadow-lg font-iranyekan">
@@ -103,32 +161,112 @@ export default function User_mealPlan(){
             </div>
             <div className="flex flex-col gap-5 justify-start w-[95%] py-[40px]">
                 <div className="flex justify-between">
-                    <h1 className="text-[45px] font-bold text-mintCream">برنامه غذایی</h1>
-                    <a href="./mealplan_request" className="flex">
-                        <button className="text-irishGreen text-[20px] border-[2px] border-irishGreen rounded-[15px] mt-[30px] py-2 px-5 hover:bg-irishGreen hover:text-black transition-all duration-300">درخواست برنامه غذایی</button>
-                    </a>
+                    <h1 className="text-[45px] font-bold text-mintCream">درخواست برنامه غذایی</h1>
                 </div>
-                <div id="no-plan-then-request" className="mb-[22px] rounded-[10px] h-[618px] overflow-hidden hidden justify-centert gap-5 text-mintCream">
-                    <div className="flex flex-col justify-center text-center max-h-[600px] mx-auto">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="248px" viewBox="0 -960 960 960" width="243px" fill="#e8eaed" className="flex justify-center mx-auto"><path d="m734.61-339.23-61.84-61.85v-7.69h-7.69l-99.69-99.69V-680q0-37.08 12.38-71.23 12.38-34.15 31.73-60.65t42.73-42.31Q675.61-870 697.61-870q16.85 0 26.93 12.08 10.07 12.07 10.07 30.31v488.38ZM853.39-65.08q-9.31 9.31-21.39 9.31t-21.38-9.31l-95.7-95.08h19.69v40.78q0 12.76-8.61 21.38-8.62 8.61-21.39 8.61-12.76 0-21.38-8.61-8.62-8.62-8.62-21.38v-81.08L72.92-802.15q-8.92-8.93-9.11-21.5-.19-12.58 9.11-21.89 9.31-9.31 21.39-9.31t21.38 9.31l737.7 738.31q8.92 8.92 9.11 20.88.19 11.96-9.11 21.27ZM465.38-608.46l-59.99-60V-840q0-12.77 8.61-21.38 8.62-8.62 21.38-8.62 12.77 0 21.39 8.62 8.61 8.61 8.61 21.38v231.54ZM350-723.85l-60-60V-840q0-12.77 8.62-21.38Q307.23-870 320-870t21.38 8.62Q350-852.77 350-840v116.15ZM234.61-839.23 203.85-870q12.84 0 21.8 8.96t8.96 21.81ZM320-90q-12.77 0-21.38-8.62Q290-107.23 290-120v-333.69q-48.69-10.54-82.04-49.27-33.34-38.73-33.34-92.42V-786l59.99 60v130.62H290v-75.23l60 59.99v15.24h15.23l77.31 77.3q-15.23 24.54-39.31 41.43-24.08 16.88-53.23 22.96V-120q0 12.77-8.62 21.38Q332.77-90 320-90Z"/></svg>
-                        <h1 className="font-medium text-[25px]">شما هیچ درخواستی برای برنامه غذایی ندارید</h1>
-                        <a href="./mealplan_request">
-                            <button className="text-irishGreen text-[20px] border-[2px] border-irishGreen rounded-[15px] mt-[30px] py-2 px-5 hover:bg-irishGreen hover:text-black transition-all duration-300">درخواست برنامه غذایی</button>
-                        </a>
-                    </div>
-                </div>
-                <div id="already-have-plans" className="mb-[22px] rounded-[10px] h-[618px] overflow-hidden flex justify-centert gap-5 text-mintCream">
-                    <div className="flex flex-col justify-center text-center max-h-[600px] mx-auto">
-                    {mealPlans.map((mealPlan) => (
-                        <Plan_card
-                          key={mealPlan.name}
-                          name={mealPlan.name}
-                          image={mealPlan.image}
-                          description={mealPlan.description}
-                          onClick={() => handleCardClick(mealPlan)}
-                        />
-                      ))}                      
-                    </div>
+                <div className="my-[50px] rounded-[10px] h-full overflow-hidden flex justify-centert text-mintCream">
+                    <form className="flex flex-col gap-[20px] justify-center text-center text-mintCream w-full">
+                        <h1 className="text-[35px] font-medium">لطفا اطلاعات خواسته شده را وارد کنید</h1>
+                        <div className="flex justify-between w-full">
+                            <div className="flex flex-col gap-2 justify-center text-center">
+                                <label htmlFor="weight" className="font-medium">وزن(کیلوگرم):</label>
+                                <input 
+                                type="number" 
+                                name="weight" 
+                                id="weight"
+                                step="0.01"
+                                value={weight}
+                                onChange={(e) => setWeight(e.target.value)}
+                                placeholder="80.00"
+                                className={`text-center text-[15px] w-[100%] py-2 bg-coal border-[2px] rounded-[10px] ${showError && !weight ? "border-superRed" : "border-white"}`} 
+                                />
+                            </div>
+                            <div className="flex flex-col gap-2 justify-center text-center">
+                                <label htmlFor="weight" className="font-medium">دور کمر(سانتی‌متر):</label>
+                                <input 
+                                type="number" 
+                                name="weight" 
+                                id="weight"
+                                step="0.01"
+                                value={waistSize}
+                                onChange={(e) => setWaistSize(e.target.value)}
+                                placeholder="50.00"
+                                className={`text-center text-[15px] w-[100%] py-2 bg-coal border-[2px] rounded-[10px] ${showError && !weight ? "border-superRed" : "border-white"}`} 
+                                />
+                            </div>
+                            <div className="flex gap-2 justify-center text-center">
+                              <label className="flex items-center gap-2 border-[2px] text-[20px] font-medium rounded-[15px] px-[10px]">
+                                <input
+                                  type="radio"
+                                  name="exercisePlan"
+                                  value="کات"
+                                  checked={selectedPlan === "کات"}
+                                  onChange={handlePlanType}
+                                  className="appearance-none w-5 h-5 rounded-full border border-gray-300 checked:bg-irishGreen checked:border-irishGreen focus:outline-none focus:ring-2 focus:ring-irishGreen"/>
+                                <span className="ml-2 text-mintCream">کات</span>
+                              </label>
+                              <label className="flex items-center gap-2 border-[2px] text-[20px] font-medium rounded-[15px] px-[10px]">
+                                <input
+                                  type="radio"
+                                  name="exercisePlan"
+                                  value="حجم"
+                                  checked={selectedPlan === "حجم"}
+                                  onChange={handlePlanType}
+                                  className="appearance-none w-5 h-5 rounded-full border border-gray-300 checked:bg-irishGreen checked:border-irishGreen focus:outline-none focus:ring-2 focus:ring-irishGreen"
+                                />
+                                <span className="ml-2 text-mintCream">حجم</span>
+                              </label>
+                            </div>
+                            <div className="flex flex-col gap-2 justify-center text-center">
+                            <h1 className="font-medium">تصاویر شما</h1>
+                            <label
+                               htmlFor="file-input"
+                               className="flex items-center justify-center w-48 h-[40px] bg-mintCream text-black font-medium rounded-lg cursor-pointer hover:bg-irishGreen transition-all duration-300"
+                               >
+                               افزودن تصویر
+                             </label>
+                             <input
+                               id="file-input"
+                               type="file"
+                               accept="image/*"
+                               multiple
+                               className="hidden"
+                               onChange={handleFileChange}
+                               />
+                            </div>
+                        </div>
+                        <p className={`text-superRed ${showError ? "block" : "hidden"}`}>لطفا فیلدهای الزامی را پر کنید.</p>
+                        <div className="flex justify-normal">
+                            <p className={`text-[25px] font-medium pt-[55px] ${preview ? "block" : "hidden"}`}>تصاویر شما:</p>
+                            <div className="flex justify-center mx-auto gap-4 mt-6 ">
+                              {images.map((image, index) => (
+                                  <div key={index} className="relative w-32 h-32">
+                                  <img
+                                    src={URL.createObjectURL(image)}
+                                    alt={`preview ${index}`}
+                                    className="w-full h-full object-cover rounded-lg"
+                                    />
+                                </div>
+                              ))}
+                            </div>
+                        </div>
+                        <div className="flex flex-col gap-6 text-right text-midtoneGray text-[18px] mt-[20px]">
+                            <p>برای دریافت راهنمای اندازه‌گیری دور کمر 
+                                <span className="text-superRed hover:text-crimsonRed transition-all duration-300">
+                                    <button onClick={handleDownload}>اینجا</button>
+                                </span> کلیک کنید.
+                            </p>
+                            <p><span className="text-superRed">برنامه حجم </span>برنامه‌ای است برای افزایش توده عضلانی و قدرت</p>
+                            <p><span className="text-superRed">برنامه کات </span>برنامه‌ای است برای کاهش درصد چربی بدن و حفظ توده عضلانی</p>
+                            <p className="w-[517px]"><span className="text-superRed">تصویر ارسالی </span>باید از روبه رو و پشت (با فیگور جلو بازو) و از نیم‌رخ (با بازوانی که اندکی به سمت عقب نگاه داشته شده‌اند) باشد.</p>
+                        </div>
+
+                        <p className="mt-[60px] text-[25px] font-medium">مبلغ قابل پرداخت: 1,000,000 تومان</p>
+                        <button 
+                        type="submit"
+                        onClick={handleSubmit}
+                        className="text-irishGreen text-[20px] font-medium mt-[50px] border-[2px] border-irishGreen max-w-[282px] mx-auto py-1 px-5 rounded-[10px] hover:bg-irishGreen hover:text-black transition-all duration-300"
+                        >درخواست برنامه غذایی</button>
+                    </form>
                 </div>
 
             </div>

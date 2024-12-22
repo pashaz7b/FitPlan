@@ -1,6 +1,6 @@
 import fit_logo from "/Images/Fit-Logo-Resized.png";
 import peoson_svg from "/SVGs/person_24dp_E8EAED_FILL0_wght300_GRAD0_opsz24.svg";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 
 export default function User_signup() {
 
@@ -54,10 +54,10 @@ export default function User_signup() {
     };
 
     const handleWeight = (e) => {
-        const value = e.target.value || ""; // Fallback to an empty string if undefined
+        const value = e.target.value || "";
         const sanitizedValue = value
-          .replace(/[^\d.]/g, "") // Allow only numbers and dots
-          .replace(/(\..*?)\..*/g, "$1"); // Prevent multiple dots
+          .replace(/[^\d.]/g, "") 
+          .replace(/(\..*?)\..*/g, "$1"); 
 
         if(value == ""){
             setWeightError(true);
@@ -69,10 +69,10 @@ export default function User_signup() {
     };
 
     const handleHeight = (e) => {
-        const value = e.target.value || ""; // Fallback to an empty string if undefined
+        const value = e.target.value || ""; 
         const sanitizedValue = value
-          .replace(/[^\d.]/g, "") // Allow only numbers and dots
-          .replace(/(\..*?)\..*/g, "$1"); // Prevent multiple dots
+          .replace(/[^\d.]/g, "") 
+          .replace(/(\..*?)\..*/g, "$1"); 
 
         if(sanitizedValue == ""){
 
