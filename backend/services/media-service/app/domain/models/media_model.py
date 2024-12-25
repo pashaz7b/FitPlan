@@ -13,7 +13,7 @@ class MediaModel(BaseModel):
     size: int
     upload_date: datetime = datetime.now()
     metadata: dict = {}
-    user_id: int
+    user_email: str
 
 
 class MediaGridFSModel(MediaModel):

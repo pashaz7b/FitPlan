@@ -6,6 +6,7 @@ from pydantic import BaseModel, Field
 
 class TokenDataSchema(BaseModel):
     id: int
+    email: str
     is_verified: bool
     # first_name: str
     # last_name: str

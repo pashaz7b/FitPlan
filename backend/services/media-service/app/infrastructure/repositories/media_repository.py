@@ -29,7 +29,7 @@ class MediaRepository:
                 size=media["size"],
                 upload_date=media["upload_date"],
                 metadata=media["metadata"],
-                user_id=media["user_id"],
+                user_email=media["user_email"],
             )
             if media
             else None
