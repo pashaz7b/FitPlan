@@ -1,9 +1,7 @@
 import { useState } from "react";
-import Plan_card from "../components/plan_card";
 import { Navigate, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 
-export default function User_exercisePlan(){
+export default function Exerciseplan_req(){
     const [userInfo, setUserInfo] = useState({
         nameSurname: "آونگ روزبه",
         username: "AAAvng",
@@ -17,41 +15,90 @@ export default function User_exercisePlan(){
         image: "/Images/payton-tuttle-RFFR1JjkJx8-unsplash.jpg"
     });
 
-    const [coachInfo, setCoachInfo] = useState({
-        nameSurname: "آرش فانی",
-        username: "Arash.Funny",
-        password: "********",
-        phoneNumber: "989123456789+",
-        email: "Arash.fun@gmail.com",
-        birthDate: "1365/7/18",
-        gender: "آقا",
-        height: "178",
-        weight: "70",
-        image: "/Images/Coach-Arash-Faani.jpg",
-        status: "در دسترس",
-        about: "آرش از جوانی به ورزش علاقه‌مند بود و بعد از ورود به دانشگاه رشته تربیت بدنی، به طور جدی وارد دنیای بدنسازی شد. او بیش از ۱۰ سال است که به عنوان مربی حرفه‌ای فعالیت می‌کند و با تمرکز بر روی تمرینات قدرتی و استقامتی، به ویژه برای ورزشکاران رشته‌های دو و میدانی و فوتبال شناخته شده است. آرش به توانمندسازی شاگردان خود در بهبود عملکرد ورزشی‌شان افتخار می‌کند."
-    });
+    const [weight, setWeight] = useState("");
+    const [weightError, setWeightError] = useState(false);
+    const [waistSize, setWaistSize] = useState("");
+    const [waistSizeError, setWaistSizeError] = useState(false);
+    const [showError, setShowError] = useState(false);
+    const [selectedPlan, setSelectedPlan] = useState("");
+    const [images, setImages] = useState([]);
+    const [preview, setPreview] = useState(false);
 
+    const navigate = useNavigate();
     
-    const exercisePlans = [
-        {name: coachInfo.nameSurname, image: coachInfo.image, description: "شما یک برنامه غذایی جدید دریافت کردید!", breakfast: "تخم مرغ نیمرو + نان تست با کره بادام‌زمینی + اسموتی موز و شیر کامل + یک مشت آجیل + پرو ماست + کرومیوم", lunch: "برنج سفید + مرغ سرخ‌شده + سیب‌زمینی پخته + سالاد با سس ماست پرچرب + یک لیوان آب‌میوه طبیعی + ویتامین ث", dinner: "پاستا با سس گوشت و پنیر + نان سیر + سالاد با روغن زیتون + یک لیوان شیر کامل"}
-    ];
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        handleWeight(e);
+        handleWaistSize(e);
 
-    const [planExist, setPlanExist] = useState(false);
-    
-    const checkPlan = () => {
-        if(exercisePlans.length > 0){
-            setPlanExist(true);
-        }
-        else if (exercisePlans.length == 0){
-            setPlanExist(false);
+        if (!waistSize || !weight){
+            setShowError(true);
+        } else {
+            setShowError(false);
+            console.log("Submit Successful!");
+            console.log(waistSize);
+            console.log(weight);
+            navigate("/user_panel/user_exercisePlan");
         }
     };
 
-    useEffect(() => {
-        checkPlan(); // Call the function
-      }, []);
+    const handleWeight = (e) => {
+        const value = e.target.value || ""; 
+        const sanitizedValue = value
+          .replace(/[^\d.]/g, "") 
+          .replace(/(\..*?)\..*/g, "$1"); 
 
+        if(value == ""){
+            setWeightError(true);
+        }
+        else {
+            setWeightError(false);
+            setWeight(sanitizedValue);
+            console.log(e.value.target);
+        }
+    };
+
+    const handleWaistSize = (e) => {
+        const value = e.target.value || ""; 
+        const sanitizedValue = value
+          .replace(/[^\d.]/g, "") 
+          .replace(/(\..*?)\..*/g, "$1"); 
+
+        if(sanitizedValue == ""){
+            console.log("No Size");
+            setWaistSizeError(true);
+        }
+        else {
+            setWaistSizeError(false);
+            setWaistSize(sanitizedValue);
+            console.log(e.value.target);
+        }
+    };
+
+
+    const handlePlanType = (event) => {
+      setSelectedPlan(event.target.value);
+    };
+
+
+    const handleFileChange = (event) => {
+      setPreview(true)
+
+      const selectedFiles = Array.from(event.target.files);
+      setImages((prevImages) => [...prevImages, ...selectedFiles]);
+    };
+
+    const handleDownload = (e) => {
+        e.preventDefault();
+        const link = document.createElement('a');
+        link.href = "/Files/Measuring.pdf";
+        link.download = 'Measuring.pdf';
+        document.body.appendChild(link); 
+        link.click(); 
+        document.body.removeChild(link); 
+        window.URL.revokeObjectURL(url);
+
+    };
     return(
         <div className="bg-black w-full h-full flex justify-start pr-[400px] gap-[35px] mx-auto font-iranyekan">
                 <div className="fixed top-[48px] right-[51px] w-[320px] h-[700px] overflow-hidden bg-coal rounded-[15px] shadow-lg font-iranyekan">
@@ -101,6 +148,7 @@ export default function User_exercisePlan(){
                         </clipPath>
                         </defs>
                         </svg>
+
                     </a>
                     <a href="/user_panel/user_transactions" className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300">
                         <p>تراکنش‌ها</p>
@@ -114,42 +162,114 @@ export default function User_exercisePlan(){
             </div>
             <div className="flex flex-col gap-5 justify-start w-[95%] py-[40px]">
                 <div className="flex justify-between">
-                    <h1 className="text-[45px] font-bold text-mintCream">برنامه تمرینی</h1>
-                    <a href="./mealplan_request" className="flex">
-                        <button className={`text-irishGreen text-[20px] border-[2px] border-irishGreen rounded-[15px] mt-[30px] py-2 px-5 hover:bg-irishGreen hover:text-black transition-all duration-300 ${planExist ? "flex" : "hidden"}`}>درخواست برنامه غذایی</button>
-                    </a>
+                    <h1 className="text-[45px] font-bold text-mintCream">درخواست برنامه تمرینی</h1>
                 </div>
-                <div id="no-plan-then-request" className={`mb-[22px] rounded-[10px] h-[618px] overflow-hidden justify-centert gap-5 text-mintCream ${planExist ? "hidden" : "flex"}`}>
-                    <div className="flex flex-col justify-center text-center max-h-[600px] mx-auto">
-                        <svg width="248" height="248" viewBox="0 0 27 26" fill="#e8eaed" xmlns="http://www.w3.org/2000/svg" className="felx justify-center mx-auto mb-5">
-                            <g clip-path="url(#clip0_156_1578)">
-                            <path d="M24.5347 9.40209L23.0966 7.96395L23.9439 7.08221C24.0323 6.99384 24.0765 6.89445 24.0765 6.78405C24.0765 6.67364 24.0323 6.57437 23.9439 6.48623L20.0138 2.55607C19.9256 2.4677 19.8264 2.42351 19.716 2.42351C19.6055 2.42351 19.5062 2.4677 19.4178 2.55607L18.536 3.40339L17.0635 1.93082L17.9638 0.996054C18.43 0.529874 19.0047 0.302523 19.6881 0.314C20.3714 0.325476 20.9461 0.564304 21.4123 1.03048L25.4695 5.08769C25.9357 5.55387 26.1688 6.12288 26.1688 6.79472C26.1688 7.46656 25.9357 8.03557 25.4695 8.50175L24.5347 9.40209ZM9.00175 24.9695C8.53557 25.4357 7.96656 25.6688 7.29472 25.6688C6.62288 25.6688 6.05387 25.4357 5.58769 24.9695L1.58351 20.965C1.10837 20.4901 0.870809 19.9035 0.870809 19.2053C0.870809 18.507 1.10837 17.9204 1.58351 17.4452L2.43082 16.5979L3.90338 18.0705L3.03472 18.9178C2.94635 19.0062 2.90217 19.1055 2.90217 19.216C2.90217 19.3264 2.94635 19.4256 3.03472 19.5138L6.98623 23.4653C7.07437 23.5536 7.17364 23.5978 7.28405 23.5978C7.39445 23.5978 7.49384 23.5536 7.58221 23.4653L8.42952 22.5966L9.90209 24.0692L9.00175 24.9695ZM22.5378 14.5005L24.3017 12.7366C24.39 12.6482 24.4342 12.5467 24.4342 12.4319C24.4342 12.3171 24.39 12.2156 24.3017 12.1272L14.3728 2.19834C14.2844 2.10997 14.1829 2.06579 14.0681 2.06579C13.9533 2.06579 13.8518 2.10997 13.7634 2.19834L11.9995 3.96218C11.9114 4.05055 11.8673 4.14982 11.8673 4.26C11.8673 4.3704 11.9114 4.46979 11.9995 4.55816L21.9418 14.5005C22.0302 14.5886 22.1296 14.6327 22.24 14.6327C22.3502 14.6327 22.4494 14.5886 22.5378 14.5005ZM13.2022 23.8361L14.966 22.0509C15.0542 21.9628 15.0982 21.8635 15.0982 21.7531C15.0982 21.6427 15.0542 21.5434 14.966 21.4553L5.04473 11.534C4.95659 11.4458 4.85732 11.4018 4.74691 11.4018C4.63651 11.4018 4.53724 11.4458 4.4491 11.534L2.66391 13.2978C2.57554 13.3862 2.53136 13.4878 2.53136 13.6025C2.53136 13.7173 2.57554 13.8189 2.66391 13.9072L12.5928 23.8361C12.6811 23.9245 12.7827 23.9686 12.8975 23.9686C13.0122 23.9686 13.1138 23.9245 13.2022 23.8361ZM12.6114 16.1768L16.6638 12.1458L14.3542 9.83625L10.3232 13.8886L12.6114 16.1768ZM14.6613 25.2873C14.1864 25.7624 13.5985 26 12.8975 26C12.1965 26 11.6085 25.7624 11.1336 25.2873L1.2127 15.3664C0.737566 14.8915 0.5 14.3035 0.5 13.6025C0.5 12.9015 0.737566 12.3136 1.2127 11.8387L2.97654 10.0614C3.45144 9.58652 4.03801 9.34907 4.73624 9.34907C5.43471 9.34907 6.02139 9.58652 6.49629 10.0614L8.8506 12.4161L12.903 8.36403L10.5483 6.03072C10.0734 5.55582 9.83598 4.96558 9.83598 4.26C9.83598 3.55465 10.0734 2.96452 10.5483 2.48962L12.3256 0.712697C12.8005 0.237566 13.3871 0 14.0853 0C14.7835 0 15.3701 0.237566 15.845 0.712697L25.7873 10.655C26.2624 11.1299 26.5 11.7165 26.5 12.4147C26.5 13.1129 26.2624 13.6995 25.7873 14.1744L24.0104 15.9517C23.5355 16.4266 22.9454 16.664 22.24 16.664C21.5344 16.664 20.9442 16.4266 20.4693 15.9517L18.136 13.597L14.0839 17.6494L16.4386 20.0037C16.9135 20.4786 17.1509 21.0653 17.1509 21.7638C17.1509 22.462 16.9135 23.0486 16.4386 23.5235L14.6613 25.2873Z" fill="#FFF7ED"/>
-                            </g>
-                            <defs>
-                            <clipPath id="clip0_156_1578">
-                            <rect width="248" height="248" fill="white" transform="translate(0.5)"/>
-                            </clipPath>
-                            </defs>
-                        </svg>                        
-                        <h1 className="font-medium text-[25px]">شما هیچ درخواستی برای برنامه تمرینی ندارید</h1>
-                        <a href="./exercise_plan_req">
-                            <button className="text-irishGreen text-[20px] border-[2px] border-irishGreen rounded-[15px] mt-[30px] py-2 px-5 hover:bg-irishGreen hover:text-black transition-all duration-300">درخواست برنامه تمرینی</button>
-                        </a>
-                    </div>
+                <div className="my-[50px] rounded-[10px] h-full overflow-hidden flex justify-centert text-mintCream">
+                    <form className="flex flex-col gap-[20px] justify-center text-center text-mintCream w-full">
+                        <h1 className="text-[35px] font-medium">لطفا اطلاعات خواسته شده را وارد کنید</h1>
+                        <div className="flex justify-between w-full">
+                            <div className="flex flex-col gap-2 justify-center text-center">
+                                <label htmlFor="weight" className="font-medium">وزن(کیلوگرم):</label>
+                                <input 
+                                type="number" 
+                                name="weight" 
+                                id="weight"
+                                step="0.01"
+                                value={weight}
+                                onChange={(e) => setWeight(e.target.value)}
+                                placeholder="80.00"
+                                className={`text-center text-[15px] w-[100%] py-2 bg-coal border-[2px] rounded-[10px] ${showError && !weight ? "border-superRed" : "border-white"}`} 
+                                />
+                            </div>
+                            <div className="flex flex-col gap-2 justify-center text-center">
+                                <label htmlFor="weight" className="font-medium">دور کمر(سانتی‌متر):</label>
+                                <input 
+                                type="number" 
+                                name="weight" 
+                                id="weight"
+                                step="0.01"
+                                value={waistSize}
+                                onChange={(e) => setWaistSize(e.target.value)}
+                                placeholder="50.00"
+                                className={`text-center text-[15px] w-[100%] py-2 bg-coal border-[2px] rounded-[10px] ${showError && !weight ? "border-superRed" : "border-white"}`} 
+                                />
+                            </div>
+                            <div className="flex gap-2 justify-center text-center">
+                              <label className="flex items-center gap-2 border-[2px] text-[20px] font-medium rounded-[15px] px-[10px]">
+                                <input
+                                  type="radio"
+                                  name="exercisePlan"
+                                  value="کات"
+                                  checked={selectedPlan === "کات"}
+                                  onChange={handlePlanType}
+                                  className="appearance-none w-5 h-5 rounded-full border border-gray-300 checked:bg-irishGreen checked:border-irishGreen focus:outline-none focus:ring-2 focus:ring-irishGreen"/>
+                                <span className="ml-2 text-mintCream">کات</span>
+                              </label>
+                              <label className="flex items-center gap-2 border-[2px] text-[20px] font-medium rounded-[15px] px-[10px]">
+                                <input
+                                  type="radio"
+                                  name="exercisePlan"
+                                  value="حجم"
+                                  checked={selectedPlan === "حجم"}
+                                  onChange={handlePlanType}
+                                  className="appearance-none w-5 h-5 rounded-full border border-gray-300 checked:bg-irishGreen checked:border-irishGreen focus:outline-none focus:ring-2 focus:ring-irishGreen"
+                                />
+                                <span className="ml-2 text-mintCream">حجم</span>
+                              </label>
+                            </div>
+                            <div className="flex flex-col gap-2 justify-center text-center">
+                            <h1 className="font-medium">تصاویر شما</h1>
+                            <label
+                               htmlFor="file-input"
+                               className="flex items-center justify-center w-48 h-[40px] bg-mintCream text-black font-medium rounded-lg cursor-pointer hover:bg-irishGreen transition-all duration-300"
+                               >
+                               افزودن تصویر
+                             </label>
+                             <input
+                               id="file-input"
+                               type="file"
+                               accept="image/*"
+                               multiple
+                               className="hidden"
+                               onChange={handleFileChange}
+                               />
+                            </div>
+                        </div>
+                        <p className={`text-superRed ${showError ? "block" : "hidden"}`}>لطفا فیلدهای الزامی را پر کنید.</p>
+                        <div className="flex justify-normal">
+                            <p className={`text-[25px] font-medium pt-[55px] ${preview ? "block" : "hidden"}`}>تصاویر شما:</p>
+                            <div className="flex justify-center mx-auto gap-4 mt-6 ">
+                              {images.map((image, index) => (
+                                  <div key={index} className="relative w-32 h-32">
+                                  <img
+                                    src={URL.createObjectURL(image)}
+                                    alt={`preview ${index}`}
+                                    className="w-full h-full object-cover rounded-lg"
+                                    />
+                                </div>
+                              ))}
+                            </div>
+                        </div>
+                        <div className="flex flex-col gap-6 text-right text-midtoneGray text-[18px] mt-[20px]">
+                            <p>برای دریافت راهنمای اندازه‌گیری دور کمر 
+                                <span className="text-superRed hover:text-crimsonRed transition-all duration-300">
+                                    <button onClick={handleDownload}>اینجا</button>
+                                </span> کلیک کنید.
+                            </p>
+                            <p><span className="text-superRed">برنامه حجم </span>برنامه‌ای است برای افزایش توده عضلانی و قدرت</p>
+                            <p><span className="text-superRed">برنامه کات </span>برنامه‌ای است برای کاهش درصد چربی بدن و حفظ توده عضلانی</p>
+                            <p className="w-[517px]"><span className="text-superRed">تصویر ارسالی </span>باید از روبه رو و پشت (با فیگور جلو بازو) و از نیم‌رخ (با بازوانی که اندکی به سمت عقب نگاه داشته شده‌اند) باشد.</p>
+                        </div>
+
+                        <p className="mt-[60px] text-[25px] font-medium">مبلغ قابل پرداخت: 1,000,000 تومان</p>
+                        <button 
+                        type="submit"
+                        onClick={handleSubmit}
+                        className="text-irishGreen text-[20px] font-medium mt-[50px] border-[2px] border-irishGreen max-w-[282px] mx-auto py-1 px-5 rounded-[10px] hover:bg-irishGreen hover:text-black transition-all duration-300"
+                        >درخواست برنامه تمرینی</button>
+                    </form>
                 </div>
-                <div id="already-have-plans" className={`mb-[22px] rounded-[10px] h-[618px] overflow-hidden flex justify-centert gap-5 text-mintCream ${planExist ? "flex" : "hidden"}`}>
-                    <div className="flex flex-col justify-center text-center max-h-[600px] mx-auto w-full">
-                    {exercisePlans.map((exercisePlan) => (
-                        <Plan_card
-                          key={exercisePlan.name}
-                          name={exercisePlan.name}
-                          image={exercisePlan.image}
-                          description={exercisePlan.description}
-                          onClick={() => handleCardClick(exercisePlan)}
-                        />
-                      ))}   
-                    </div>
-                </div>
+
             </div>
         </div>
     );

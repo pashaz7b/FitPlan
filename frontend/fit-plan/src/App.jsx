@@ -16,10 +16,10 @@ import User_info_edit from "./pages/user_info_edit";
 import User_coach from "./pages/user_coach";
 import User_tutorial from "./pages/user_tutorial";
 import User_mealPlan from "./pages/user_mealPlan";
-import User_exercisePlan from "./pages/user_ExercisePlan";
 import User_transactions from "./pages/user_transactions";
 import Mealplan_req from "./pages/mealplan_request";
-import My_mealPlan from "./pages/my_mealPlan";
+import User_exercisePlan from "./pages/user_exercisePlan";
+import Exerciseplan_req from "./pages/exercisePlan_req";
 
 function App() {
   // const [count, setCount] = useState(0);
@@ -42,8 +42,8 @@ function App() {
           <Route path="/user_panel/user_tutorial" element={<User_tutorial />} />
           <Route path="/user_panel/user_mealPlan" element={<User_mealPlan />} />
           <Route path="/user_panel/mealplan_request" element={<Mealplan_req />} />
-          <Route path="/user_panel/my_mealPlan" element={<My_mealPlan />} />
-          <Route path="/user_panel/user_exercisePlanPlan" element={<User_exercisePlan />} />
+          <Route path="/user_panel/user_exercisePlan" element={<User_exercisePlan />} />
+          <Route path="/user_panel/exercise_plan_req" element={<Exerciseplan_req />} />
           <Route path="/user_panel/user_transactions" element={<User_transactions />} />
           <Route path="/coach_panel" element={<Coach_panel />} />
           <Route path="/admin_panel" element={<Admin_panel />} />

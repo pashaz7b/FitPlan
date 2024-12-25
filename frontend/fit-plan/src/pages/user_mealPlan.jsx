@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Plan_card from "../components/plan_card";
 import { Navigate, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 export default function User_mealPlan(){
     const [userInfo, setUserInfo] = useState({
@@ -31,14 +32,25 @@ export default function User_mealPlan(){
         about: "آرش از جوانی به ورزش علاقه‌مند بود و بعد از ورود به دانشگاه رشته تربیت بدنی، به طور جدی وارد دنیای بدنسازی شد. او بیش از ۱۰ سال است که به عنوان مربی حرفه‌ای فعالیت می‌کند و با تمرکز بر روی تمرینات قدرتی و استقامتی، به ویژه برای ورزشکاران رشته‌های دو و میدانی و فوتبال شناخته شده است. آرش به توانمندسازی شاگردان خود در بهبود عملکرد ورزشی‌شان افتخار می‌کند."
     });
 
+    
     const mealPlans = [
-        {name: coachInfo.nameSurname, image: coachInfo.image, description: "شما یک برنامه غذایی جدید دریافت کردید!"}
+        {name: coachInfo.nameSurname, image: coachInfo.image, description: "شما یک برنامه غذایی جدید دریافت کردید!", breakfast: "تخم مرغ نیمرو + نان تست با کره بادام‌زمینی + اسموتی موز و شیر کامل + یک مشت آجیل + پرو ماست + کرومیوم", lunch: "برنج سفید + مرغ سرخ‌شده + سیب‌زمینی پخته + سالاد با سس ماست پرچرب + یک لیوان آب‌میوه طبیعی + ویتامین ث", dinner: "پاستا با سس گوشت و پنیر + نان سیر + سالاد با روغن زیتون + یک لیوان شیر کامل"}
     ];
 
-    const navigate = useNavigate();
-    const handleCardClick = (mealPlan) =>{
-        navigate("/my_mealPlan");
+    const [planExist, setPlanExist] = useState(false);
+    
+    const checkPlan = () => {
+        if(mealPlans.length > 0){
+            setPlanExist(true);
+        }
+        else if (mealPlans.length == 0){
+            setPlanExist(false);
+        }
     };
+
+    useEffect(() => {
+        checkPlan();
+      }, []);
 
     return(
         <div className="bg-black w-full h-full flex justify-start pr-[400px] gap-[35px] mx-auto font-iranyekan">
@@ -71,13 +83,14 @@ export default function User_mealPlan(){
                         <p>آموزش حرکات</p>
                         <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e8eaed"><path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h480q33 0 56.5 23.5T720-720v180l126-126q10-10 22-5t12 19v344q0 14-12 19t-22-5L720-420v180q0 33-23.5 56.5T640-160H160Zm0-80h480v-480H160v480Zm0 0v-480 480Z"/></svg>
                     </a>
-                    <a href="/user_panel/user_mealPlan" className="w-[90%] border-[2px] border-crimsonRed bg-crimsonRed text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300">
+                    <a href="/user_panel/user_mealPlan" className="w-[90%] border-[2px] border-crimsonRed bg-crimsonRed text-black text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300">
                         <p>برنامه غذایی</p>
-                        <svg width="28" height="28" viewBox="0 0 28 28" fill="#e8eaed" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M7.41475 10.154V2C7.41475 1.71667 7.51235 1.47922 7.70756 1.28767C7.90276 1.09589 8.14457 1 8.43296 1C8.72159 1 8.96328 1.09589 9.15803 1.28767C9.35301 1.47922 9.4505 1.71667 9.4505 2V10.154H11.3298V2C11.3298 1.71667 11.4273 1.47922 11.6223 1.28767C11.8175 1.09589 12.0594 1 12.3481 1C12.6364 1 12.8781 1.09589 13.0731 1.28767C13.2679 1.47922 13.3652 1.71667 13.3652 2V10.154C13.3652 11.3471 12.9882 12.374 12.234 13.2347C11.4797 14.0953 10.5518 14.6428 9.4505 14.877V26C9.4505 26.2833 9.3529 26.5208 9.15769 26.7123C8.96248 26.9041 8.72068 27 8.43228 27C8.14366 27 7.90197 26.9041 7.70722 26.7123C7.51224 26.5208 7.41475 26.2833 7.41475 26V14.877C6.31341 14.6428 5.38556 14.0953 4.6312 13.2347C3.87707 12.374 3.5 11.3471 3.5 10.154V2C3.5 1.71667 3.5976 1.47922 3.79281 1.28767C3.98779 1.09589 4.22959 1 4.51821 1C4.80661 1 5.0483 1.09589 5.24328 1.28767C5.43803 1.47922 5.53541 1.71667 5.53541 2V10.154H7.41475ZM20.4642 16.3333H17.9867C17.6359 16.3333 17.3434 16.2179 17.1093 15.987C16.8754 15.7559 16.7585 15.4697 16.7585 15.1283V7.33333C16.7585 5.658 17.2517 4.18367 18.2382 2.91033C19.2246 1.63678 20.2267 1 21.2446 1C21.6258 1 21.9303 1.13422 22.1583 1.40267C22.3861 1.67089 22.5 2.00767 22.5 2.413V26C22.5 26.2833 22.4024 26.5208 22.2072 26.7123C22.0122 26.9041 21.7704 27 21.4818 27C21.1934 27 20.9517 26.9041 20.7567 26.7123C20.5617 26.5208 20.4642 26.2833 20.4642 26V16.3333Z" fill="#FFF7ED"/>
+                        <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M7.41475 10.154V2C7.41475 1.71667 7.51235 1.47922 7.70756 1.28767C7.90276 1.09589 8.14457 1 8.43296 1C8.72159 1 8.96328 1.09589 9.15803 1.28767C9.35301 1.47922 9.4505 1.71667 9.4505 2V10.154H11.3298V2C11.3298 1.71667 11.4273 1.47922 11.6223 1.28767C11.8175 1.09589 12.0594 1 12.3481 1C12.6364 1 12.8781 1.09589 13.0731 1.28767C13.2679 1.47922 13.3652 1.71667 13.3652 2V10.154C13.3652 11.3471 12.9882 12.374 12.234 13.2347C11.4797 14.0953 10.5518 14.6428 9.4505 14.877V26C9.4505 26.2833 9.3529 26.5208 9.15769 26.7123C8.96248 26.9041 8.72068 27 8.43228 27C8.14366 27 7.90197 26.9041 7.70722 26.7123C7.51224 26.5208 7.41475 26.2833 7.41475 26V14.877C6.31341 14.6428 5.38556 14.0953 4.6312 13.2347C3.87707 12.374 3.5 11.3471 3.5 10.154V2C3.5 1.71667 3.5976 1.47922 3.79281 1.28767C3.98779 1.09589 4.22959 1 4.51821 1C4.80661 1 5.0483 1.09589 5.24328 1.28767C5.43803 1.47922 5.53541 1.71667 5.53541 2V10.154H7.41475ZM20.4642 16.3333H17.9867C17.6359 16.3333 17.3434 16.2179 17.1093 15.987C16.8754 15.7559 16.7585 15.4697 16.7585 15.1283V7.33333C16.7585 5.658 17.2517 4.18367 18.2382 2.91033C19.2246 1.63678 20.2267 1 21.2446 1C21.6258 1 21.9303 1.13422 22.1583 1.40267C22.3861 1.67089 22.5 2.00767 22.5 2.413V26C22.5 26.2833 22.4024 26.5208 22.2072 26.7123C22.0122 26.9041 21.7704 27 21.4818 27C21.1934 27 20.9517 26.9041 20.7567 26.7123C20.5617 26.5208 20.4642 26.2833 20.4642 26V16.3333Z" fill="black"/>
                         </svg>
+
                     </a>
-                    <a href="/user_panel/user_exercisePlanPlan" className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300">
+                    <a href="/user_panel/user_exercisePlan" className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300">
                         <p>برنامه تمرینی</p>
                         <svg width="27" height="26" viewBox="0 0 27 26" fill="#e8eaed" xmlns="http://www.w3.org/2000/svg">
                             <g clip-path="url(#clip0_156_1578)">
@@ -105,10 +118,10 @@ export default function User_mealPlan(){
                 <div className="flex justify-between">
                     <h1 className="text-[45px] font-bold text-mintCream">برنامه غذایی</h1>
                     <a href="./mealplan_request" className="flex">
-                        <button className="text-irishGreen text-[20px] border-[2px] border-irishGreen rounded-[15px] mt-[30px] py-2 px-5 hover:bg-irishGreen hover:text-black transition-all duration-300">درخواست برنامه غذایی</button>
+                        <button className={`text-irishGreen text-[20px] border-[2px] border-irishGreen rounded-[15px] mt-[30px] py-2 px-5 hover:bg-irishGreen hover:text-black transition-all duration-300 ${planExist ? "flex" : "hidden"}`}>درخواست برنامه غذایی</button>
                     </a>
                 </div>
-                <div id="no-plan-then-request" className="mb-[22px] rounded-[10px] h-[618px] overflow-hidden hidden justify-centert gap-5 text-mintCream">
+                <div id="no-plan-then-request" className={`mb-[22px] rounded-[10px] h-[618px] overflow-hidden justify-centert gap-5 text-mintCream ${planExist ? "hidden" : "flex"}`}>
                     <div className="flex flex-col justify-center text-center max-h-[600px] mx-auto">
                         <svg xmlns="http://www.w3.org/2000/svg" height="248px" viewBox="0 -960 960 960" width="243px" fill="#e8eaed" className="flex justify-center mx-auto"><path d="m734.61-339.23-61.84-61.85v-7.69h-7.69l-99.69-99.69V-680q0-37.08 12.38-71.23 12.38-34.15 31.73-60.65t42.73-42.31Q675.61-870 697.61-870q16.85 0 26.93 12.08 10.07 12.07 10.07 30.31v488.38ZM853.39-65.08q-9.31 9.31-21.39 9.31t-21.38-9.31l-95.7-95.08h19.69v40.78q0 12.76-8.61 21.38-8.62 8.61-21.39 8.61-12.76 0-21.38-8.61-8.62-8.62-8.62-21.38v-81.08L72.92-802.15q-8.92-8.93-9.11-21.5-.19-12.58 9.11-21.89 9.31-9.31 21.39-9.31t21.38 9.31l737.7 738.31q8.92 8.92 9.11 20.88.19 11.96-9.11 21.27ZM465.38-608.46l-59.99-60V-840q0-12.77 8.61-21.38 8.62-8.62 21.38-8.62 12.77 0 21.39 8.62 8.61 8.61 8.61 21.38v231.54ZM350-723.85l-60-60V-840q0-12.77 8.62-21.38Q307.23-870 320-870t21.38 8.62Q350-852.77 350-840v116.15ZM234.61-839.23 203.85-870q12.84 0 21.8 8.96t8.96 21.81ZM320-90q-12.77 0-21.38-8.62Q290-107.23 290-120v-333.69q-48.69-10.54-82.04-49.27-33.34-38.73-33.34-92.42V-786l59.99 60v130.62H290v-75.23l60 59.99v15.24h15.23l77.31 77.3q-15.23 24.54-39.31 41.43-24.08 16.88-53.23 22.96V-120q0 12.77-8.62 21.38Q332.77-90 320-90Z"/></svg>
                         <h1 className="font-medium text-[25px]">شما هیچ درخواستی برای برنامه غذایی ندارید</h1>
@@ -117,17 +130,20 @@ export default function User_mealPlan(){
                         </a>
                     </div>
                 </div>
-                <div id="already-have-plans" className="mb-[22px] rounded-[10px] h-[618px] overflow-hidden flex justify-centert gap-5 text-mintCream">
-                    <div className="flex flex-col justify-center text-center max-h-[600px] mx-auto">
+                <div id="already-have-plans" className={`mb-[22px] rounded-[10px] h-[618px] overflow-hidden flex justify-centert gap-5 text-mintCream ${planExist ? "flex" : "hidden"}`}>
+                    <div className="flex flex-col justify-center text-center max-h-[600px] mx-auto w-full">
                     {mealPlans.map((mealPlan) => (
                         <Plan_card
                           key={mealPlan.name}
                           name={mealPlan.name}
                           image={mealPlan.image}
                           description={mealPlan.description}
+                          breakfast={mealPlan.breakfast}
+                          lunch={mealPlan.lunch}
+                          dinner={mealPlan.dinner}
                           onClick={() => handleCardClick(mealPlan)}
                         />
-                      ))}                      
+                      ))}        
                     </div>
                 </div>
 

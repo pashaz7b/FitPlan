@@ -51,7 +51,7 @@ export default function User_signup() {
             setShowError(false);
             console.log("Submit Successful!")
         }
-    };
+    }; 
 
     const handleWeight = (e) => {
         const value = e.target.value || "";

@@ -8,19 +8,24 @@ export default {
     extend: {
       colors: {
         mintCream: '#FFF7ED',
-        black: '#000000',
+        black: '#000000', // Your custom black
         coal: '#282828',
         superRed: '#C5120B',
         crimsonRed: '#990000',
         irishGreen: '#018625',
         midtoneGray: '#7F7F7F',
-        tableBrightGray: '#414141'
+        tableBrightGray: '#414141',
       },
       fontFamily: {
         iranyekan: ['IranYekan', 'sans-serif'],
       },
     },
   },
-  plugins: [require('tailwind-scrollbar')],
-}
-
+  plugins: [
+    require('tailwind-scrollbar'),
+    require('daisyui'),
+  ],
+  daisyui: {
+    themes: false, // Disable DaisyUI's themes
+  },
+};
