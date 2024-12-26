@@ -70,6 +70,7 @@ class UserLoginSchema(BaseModel):
 
 class UserSchema(BaseModel):
     id: int
+    email: str
     is_verified: bool
     created_at: Optional[datetime]
     updated_at: Optional[datetime]

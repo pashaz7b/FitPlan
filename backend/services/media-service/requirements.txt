@@ -1,4 +1,5 @@
 fastapi
+uvicorn
 pymongo
 motor
 python-multipart
@@ -11,3 +12,7 @@ httpx
 tenacity
 aiobreaker
 loguru
+sqlalchemy
+databases
+sqlalchemy-utils
+psycopg2-binary
