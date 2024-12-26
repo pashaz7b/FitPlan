@@ -9,16 +9,15 @@ import React, { useState } from "react";
 
 export default function Landing(){
 
-    
-        const [isMenuOpen, setIsMenuOpen] = useState(false);
-      
-        const toggleMenu = () => {
-          setIsMenuOpen(!isMenuOpen);
-        };
-      
-        const closeMenu = (e) => {
-          setIsMenuOpen(false);
-        };
+    const [isOpen, setIsOpen] = useState(false);
+
+    const toggleMenu = () => {
+      setIsMenuOpen(!isMenuOpen);
+    };
+  
+    const closeMenu = () => {
+      setIsMenuOpen(false);
+    };
 
     const navigate = useNavigate();
     const handleNavigate = (e) =>{
@@ -57,7 +56,7 @@ export default function Landing(){
     return(
         <>
             <div className="h-full w-full bg-mintCream">
-            <div className="absolute z-10 text-mintCream w-[75%] h-[100px] rounded-b-[30px] flex justify-center items-center text-[20px] py-[15px] px-[40px] mx-[15%] font-iranyekan">
+                <div className="absolute z-10 max-lg:hidden text-mintCream w-[75%] h-[100px] rounded-b-[30px] flex justify-center items-center text-[20px] py-[15px] mx-[15%] font-iranyekan">
                     <div className="flex justify-between items-center w-full">
                         <img src={fit_logo} alt="Logo" className="h-[70px]" />
                         <div className="flex justify-center gap-[26px] items-center h-[50px] pt-[15px] text-[20px] font-medium text-center">
@@ -69,6 +68,70 @@ export default function Landing(){
                         </div>
                     </div>
                 </div>
+                <div className="bg-coal text-white font-iranyekan">
+                  {/* Navbar */}
+                  <nav className="flex lg:hidden items-center justify-between p-4 bg-black">
+                    {/* Hamburger Icon */}
+                    <a href="/" className="h-[50px] ">
+                        <img src={fit_logo} alt="fit_logo" className="h-full"/>
+                    </a>
+                    <div
+                      className="cursor-pointer text-2xl"
+                      onClick={() => setIsOpen(!isOpen)}
+                    >
+                        {isOpen ? "✖" : "☰"}
+                    </div>
+                  </nav>
+                
+                  {/* Sidebar */}
+                  <div
+                    className={`fixed z-10 top-0 left-0 h-full w-64 bg-[#1c1c1c] transform ${
+                      isOpen ? "translate-x-0" : "-translate-x-full"
+                    } transition-transform duration-300`}
+                  >
+                    {/* Close Button */}
+                    <div className="flex justify-between p-4">
+                      <div className="h-[50px]">
+                        <img src={fit_logo} alt="fit_logo" className="h-full"/>
+                      </div>
+                      <button
+                        className="text-white text-xl"
+                        onClick={() => setIsOpen(false)}
+                      >
+                        ✖
+                      </button>
+                    </div>
+                
+                    {/* Menu Items */}
+                    <ul className="text-white space-y-4 px-6 font-medium">
+                      <li className="my-5">
+                        <a href="./about_us" className="hover:text-superRed">
+                          فیت‌پلن
+                        </a>
+                      </li>
+                      <li className="my-5">
+                        <a href="./coaches" className="hover:text-superRed">
+                          مربی‌ها
+                        </a>
+                      </li>
+                      <li className="my-5">
+                        <a href="./podcasts" className="hover:text-superRed">
+                          پادکست
+                        </a>
+                      </li>
+                      <li className="my-5">
+                        <a href="./articles" className="hover:text-superRed">
+                          مقالات
+                        </a>
+                      </li>
+                      <li className="my-5">
+                        <a href="./user_login" className="hover:text-superRed">
+                          ورود
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
                 <div className="relative z-0 h-[550px] bg-mintCream font-iranyekan">
                     <div
                         className="absolute inset-0 bg-cover bg-center bg-black text-center"
@@ -77,14 +140,14 @@ export default function Landing(){
                         }}
                     >
                         <div className="relative flex text-white">
-                            <img src={header_img} alt="" className="absolute object-contain object-center h-[1200px] top-[20px] right-[200px]" />
-                            <div className="absolute right-[710px] top-[110px] text-[70px] font-bold flex flex-col text-right text-mintCream">
-                                <p>مثل یک</p>
-                                <p><span className="text-superRed">قهرمان</span> بجنگ</p>
+                            <img src={header_img} alt="" className="absolute object-contain object-center h-[1200px] top-[20px] right-[200px] max-sm:right-[0px] max-sm:top-[0px] max-sm:max-h-[650px] max-md:right-[0px] max-md:top-[0px] max-md:max-h-[950px] max-lg:right-[0px] max-lg:top-[0px] max-lg:max-h-[1050px]" />
+                            <div className="absolute right-[710px] top-[110px] text-[70px] font-bold flex flex-col text-right text-mintCream max-sm:right-[0px] max-sm:top-[70px] max-sm:scale-[60%] max-md:right-[100px] max-md:top-[120px] max-md:scale-[90%] max-lg:right-[100px] max-lg:top-[120px] max-lg:scale-[90%]">
+                                <p className="max-sm:drop-shadow-md max-md:drop-shadow-md max-lg:drop-shadow-md">مثل یک</p>
+                                <p className="max-sm:drop-shadow-md max-md:drop-shadow-md max-lg:drop-shadow-md"><span className="text-superRed">قهرمان</span> بجنگ</p>
                             </div>
                         </div>
                     </div>
-                    <div className="relative z-10 h-[152px] flex justify-evenly w-[32%] rounded-[15px] bg-mintCream shadow-[-20px_50px_70px_0px_rgba(197,18,11,0.3)] top-[320px] mx-auto">
+                    <div className="relative z-10 h-[152px] flex justify-evenly w-[32%] max-sm:w-[80%] max-md:w-[60%] max-lg:w-[45%] rounded-[15px] bg-mintCream shadow-[-20px_50px_70px_0px_rgba(197,18,11,0.3)] top-[320px] mx-auto">
                         <div className="group flex flex-col text-center justify-center hover:scale-[120%] transition-all duration-300">
                             <a href="">
                             <svg xmlns="http://www.w3.org/2000/svg" height="56px" viewBox="0 -960 960 960" width="55px" fill="#000000" className="group-hover:fill-superRed mx-auto transition-all duration-300"><path d="M290-595.38V-840q0-12.75 8.63-21.37 8.63-8.63 21.38-8.63 12.76 0 21.37 8.63Q350-852.75 350-840v244.62h55.39V-840q0-12.75 8.62-21.37 8.63-8.63 21.39-8.63 12.75 0 21.37 8.63 8.61 8.62 8.61 21.37v244.62q0 53.69-33.34 92.42-33.35 38.73-82.04 49.27V-120q0 12.75-8.63 21.37Q332.74-90 319.99-90q-12.76 0-21.37-8.63Q290-107.25 290-120v-333.69q-48.69-10.54-82.04-49.27-33.34-38.73-33.34-92.42V-840q0-12.75 8.63-21.37 8.62-8.63 21.38-8.63 12.75 0 21.37 8.63 8.61 8.62 8.61 21.37v244.62H290ZM674.61-410h-73.02q-15.51 0-25.86-10.39-10.34-10.4-10.34-25.76V-680q0-75.39 43.61-132.69Q652.61-870 697.61-870q16.85 0 26.93 12.08 10.07 12.07 10.07 30.31V-120q0 12.75-8.63 21.37Q717.36-90 704.6-90q-12.75 0-21.37-8.63-8.62-8.62-8.62-21.37v-290Z"/></svg>
@@ -106,17 +169,17 @@ export default function Landing(){
             {/* sections below the header section */}
             <div className="bg-mintCream w-full text-black font-iranyekan">
                 {/* where we began section  */}
-                <div className="w-[70%] mx-auto max-h-[450px] flex justify-center gap-5 pb-[100px] overflow-hidden ">
-                    <div className="w-1/2 aspect-video overflow-hidden rounded-[20px] h-[450px]">
-                        <img src={where_we_began} alt="A man with six packs" className="object-contain object-center w-full h-full scale-[190%]" />
+                <div className="w-[70%] mx-auto max-h-[450px] flex justify-center gap-5 pb-[100px] overflow-hidden max-md:flex-col max-md:w-[80%] max-md:max-h-[700px]">
+                    <div className="w-1/2 aspect-video overflow-hidden rounded-[20px] h-[450px] max-md:text-center max-md:justify-center max-md:w-full max-md:mx-auto">
+                        <img src={where_we_began} alt="A man with six packs" className="object-contain object-center w-full h-full scale-[190%] max-md:text-center max-md:justify-center max-md:w-full max-md:mx-auto max-md:scale-[120%] max-md:object-cover" />
                     </div>
-                    <div className="flex flex-col h-[450px] max-h-[440px] gap-3 text-right w-1/2">
+                    <div className="flex flex-col h-[450px] max-h-[440px] gap-3 text-right w-1/2 max-md:text-center max-md:justify-center max-md:w-full max-md:mx-auto">
                         <div className="flex">
-                            <div className="w-[5px] h-[60px] bg-superRed ml-4 rounded-[15px]"></div>
+                            <div className="w-[5px] h-[60px] bg-superRed ml-4 rounded-[15px] max-md:hidden"></div>
                             <p className="font-bold text-[50px]">از کجا شروع کردیم...</p>
                         </div>
-                        <p className="leading-10 text-justify text-[21px] max-h-[450px] flex-wrap overflow-hidden">شروع ما از یک علاقه ساده به سلامت و تناسب اندام بود. از جلسات کوچک با دوستان در باشگاه‌های محلی، تا مطالعه عمیق‌تر در مورد تکنیک‌های تمرین و تغذیه، ما قدم به قدم پیشرفت کردیم. هدف اصلی ما از همون اول، ایجاد بستری بود که بتونیم دانسته‌های خودمون رو با دیگران به اشتراک بذاریم و به علاقه‌مندان بدنسازی کمک کنیم تا به بهترین نسخه از خودشون تبدیل بشن. با تلاش‌های مستمر و با انگیزه قوی، این پلتفرم رو راه‌اندازی کردیم تا برای همه قابل دسترس باشه.</p>
-                        <div className="text-left">
+                        <p className="leading-10 text-justify text-[21px] max-h-[450px] flex-wrap overflow-hidden max-md:max-h-[250px]">شروع ما از یک علاقه ساده به سلامت و تناسب اندام بود. از جلسات کوچک با دوستان در باشگاه‌های محلی، تا مطالعه عمیق‌تر در مورد تکنیک‌های تمرین و تغذیه، ما قدم به قدم پیشرفت کردیم. هدف اصلی ما از همون اول، ایجاد بستری بود که بتونیم دانسته‌های خودمون رو با دیگران به اشتراک بذاریم و به علاقه‌مندان بدنسازی کمک کنیم تا به بهترین نسخه از خودشون تبدیل بشن. با تلاش‌های مستمر و با انگیزه قوی، این پلتفرم رو راه‌اندازی کردیم تا برای همه قابل دسترس باشه.</p>
+                        <div className="text-left max-md:text-center">
                             <a href="user_login" className="text-mintCream bg-superRed py-[10px] px-[10px] rounded-[10px] hover:bg-crimsonRed transition-all duration-300">با ما همراه شوید</a>
                         </div>
                     </div>
