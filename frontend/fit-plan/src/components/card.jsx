@@ -3,7 +3,7 @@ import React from "react";
 function Card({ name, image, onClick }) {
   return (
     <div
-      className="w-64 h-80 bg-white rounded-lg shadow-lg overflow-hidden cursor-pointer transform hover:scale-105 transition duration-300"
+      className="max-md:w-64 h-80 max-lg:w-[160px] bg-white rounded-lg shadow-lg overflow-hidden cursor-pointer transform hover:scale-105 transition duration-300"
       onClick={onClick}
     >
       <img src={image} alt={name} className="w-full h-2/3 object-cover" />
