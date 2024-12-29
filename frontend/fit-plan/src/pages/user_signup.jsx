@@ -1,6 +1,7 @@
 import fit_logo from "/Images/Fit-Logo-Resized.png";
 import peoson_svg from "/SVGs/person_24dp_E8EAED_FILL0_wght300_GRAD0_opsz24.svg";
 import React, {useEffect, useState} from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function User_signup() {
 
@@ -18,6 +19,13 @@ export default function User_signup() {
     const [phoneError, setPhoneError] = useState(false);
     const [weightError, setWeightError] = useState(false);
     const [heightError, setHeightError] = useState(false);
+    const [role, setRole] = useState("user");
+
+    useEffect(() => {
+        setRole("user");
+    }, [])
+
+    const navigate = useNavigate();
 
     const handleFileChange = (event) => {
         const file = event.target.files[0];
@@ -49,7 +57,8 @@ export default function User_signup() {
             setShowError(true);
         } else {
             setShowError(false);
-            console.log("Submit Successful!")
+            console.log("Submit Successful!");
+            navigate(`/otp_page/${role}`);
         }
     }; 
 

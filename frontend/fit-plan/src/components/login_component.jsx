@@ -7,6 +7,7 @@ export default function Login_component({role}) {
     const [password, setPassword] = useState("");
     const [showError, setShowError] = useState(false);
     const [mailError, setMailError] = useState(false);
+    // const { role } = useParams();
     const navigate = useNavigate();
     
     const handleSubmit = (e) =>{
@@ -19,7 +20,18 @@ export default function Login_component({role}) {
             setShowError(false);
     
             console.log("Submit successful!");
-            navigate(`/otp_page/${role}`);
+            // navigate(`/otp_page/${role}`);
+            handleNavigate();
+        }
+    };
+
+    const handleNavigate = (e) => {
+        if(role == "user"){
+            navigate("/user_panel");
+        } else if(role == "coach"){
+            navigate("/coach_panel");
+        } else if(role == "admin"){
+            navigate("/admin_panel");
         }
     };
 
@@ -33,7 +45,7 @@ export default function Login_component({role}) {
       };
 
     return(
-        <form onSubmit={handleSubmit} className="top-0 w-[35%] md:w-[28%] h-[400px] md:h-[px] border border-white rounded-[10px] bg-coal flex flex-col justify-center align-items-center text-center text-[20px]">
+        <form onSubmit={handleSubmit} className="top-0 max-sm:w-[75%] max-lg:w-[50%] w-[25%] h-[400px] md:h-[px] border border-white rounded-[10px] bg-coal flex flex-col justify-center align-items-center text-center text-[20px]">
             <p className={`text-superRed text-[15px] ${ showError ? "block" : "hidden"}`}>لطفا فیلدهای الزامی را پر کنید</p>
             <div className="my-3 w-[90%] mx-auto flex flex-col justify-start text-right">
                 <label className="text-[15px] mb-2" htmlFor="phoneOrMail">
@@ -69,8 +81,12 @@ export default function Login_component({role}) {
                 حساب کاربری ندارید؟
             </a>
 
-            <button type="submit" className="text-mintCream bg-superRed hover:bg-crimsonRed h-[40px] text-[20px] font-medium max-sm:w-[80%] w-[50%] rounded-[10px] mx-auto transition-all duration-300">
-                <a href={`/otp_page/${role}`}>ورود</a>
+            <button 
+            type="submit" 
+            className="text-mintCream bg-superRed hover:bg-crimsonRed h-[40px] text-[20px] font-medium max-sm:w-[80%] w-[50%] rounded-[10px] mx-auto transition-all duration-300"
+            >
+                {/* <a href={`/otp_page/${role}`}>ورود</a> */}
+                ورود
             </button>
 
         </form>
