@@ -8,9 +8,9 @@ from app.infrastructure.clients.http_client import HTTPClient
 
 class IAMClient:
     def __init__(
-        self,
-        http_client: Annotated[HTTPClient, Depends()],
-        config: Settings = Depends(get_settings),
+            self,
+            http_client: Annotated[HTTPClient, Depends()],
+            config: Settings = Depends(get_settings),
     ):
         self.config = config
         self.http_client = http_client
@@ -20,6 +20,16 @@ class IAMClient:
         async with self.http_client as client:
             response = await client.get(
                 f"{self.config.IAM_URL}/api/v1/users/panel", headers=headers
+            )
+            response.raise_for_status()
+            logger.info(f"Token {token} validated")
+            return TokenDataSchema(**response.json())
+
+    async def validate_coach_token(self, token: str) -> TokenDataSchema:
+        headers = {"Authorization": f"Bearer {token}"}
+        async with self.http_client as client:
+            response = await client.get(
+                f"{self.config.IAM_URL}/api/v1/coach/panel", headers=headers
             )
             response.raise_for_status()
             logger.info(f"Token {token} validated")
