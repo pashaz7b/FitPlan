@@ -16,3 +16,4 @@ sqlalchemy
 databases
 sqlalchemy-utils
 psycopg2-binary
+pillow

@@ -58,7 +58,7 @@ class AdminLoginSchema(BaseModel):
 
 class AdminSchema(BaseModel):
     id: int
-    name: str
     email: str
+    is_verified: bool
     created_at: Optional[datetime]
     updated_at: Optional[datetime]

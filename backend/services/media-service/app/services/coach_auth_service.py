@@ -8,10 +8,10 @@ from app.core.config.config import get_settings
 
 config = get_settings()
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"http://iam.localhost/api/v1/users/login", scheme_name="UserOAuth2")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"http://iam.localhost/api/v1/coach/login", scheme_name="CoachOAuth2")
 
 
-async def get_current_user(
+async def get_current_coach(
         token: Annotated[str, Depends(oauth2_scheme)],
         client: Annotated[IAMClient, Depends()],
 ) -> TokenDataSchema:
@@ -23,4 +23,4 @@ async def get_current_user(
         )
 
     logger.info(f"Validating token {token}")
-    return await client.validate_token(token)
+    return await client.validate_coach_token(token)
