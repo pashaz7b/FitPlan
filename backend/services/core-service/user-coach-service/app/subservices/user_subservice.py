@@ -1,0 +1,93 @@
+from typing import Annotated, Dict
+from loguru import logger
+from fastapi import Depends
+
+from app.domain.models.fitplan_model import User
+from app.domain.models.fitplan_model import UserMetrics
+from app.infrastructure.repositories.user_repository import UserRepository
+from app.subservices.auth.hash_subservice import HashService
+from app.subservices.baseconfig import BaseService
+
+
+class UserSubService(BaseService):
+    def __init__(self,
+                 user_repo: Annotated[UserRepository, Depends()],
+                 hash_subservice: Annotated[HashService, Depends()]
+                 ) -> None:
+        super().__init__()
+        self.user_repo = user_repo
+        self.hash_subservice = hash_subservice
+
+    # async def create_user(self, user_struct: UserRegisterSchema) -> User:
+    #     logger.info(f"[+] Creating User With Email ---> {user_struct.email}")
+    #
+    #     new_user = User(password=self.hash_subservice.hash_password(user_struct.password),
+    #                     user_name=user_struct.user_name,
+    #                     name=user_struct.name,
+    #                     email=user_struct.email,
+    #                     phone_number=user_struct.phone_number,
+    #                     gender=user_struct.gender,
+    #                     date_of_birth=user_struct.date_of_birth)
+    #
+    #     created_user = self.user_repo.create_user(new_user)
+    #
+    #     user_metrics = UserMetrics(
+    #         user_id=created_user.id,
+    #         height=user_struct.height,
+    #         weight=user_struct.weight,
+    #         # waist=user_struct.waist,
+    #         # injuries=user_struct.injuries,
+    #     )
+    #     self.user_repo.create_user_metrics(user_metrics)
+    #
+    #     return new_user
+
+    async def update_user(self, user_id: int, update_fields: Dict) -> User:
+        logger.info(f"Updating user with id {user_id}")
+        return self.user_repo.update_user(user_id, update_fields)
+
+    async def update_user_by_email(self, email: str, update_fields: Dict) -> User:
+        logger.info(f"Updating user with Email ---> {email}")
+        return self.user_repo.update_user_by_email(email, update_fields)
+
+    async def delete_user(self, user: User) -> None:
+        logger.info(f"Deleting user with id {user.id}")
+        return self.user_repo.delete_user(user)
+
+    async def get_user(self, user_id: int) -> User:
+        logger.info(f"Fetching user with id {user_id}")
+        return self.user_repo.get_user(user_id)
+
+    async def get_user_metrics(self, user_id: int):
+        logger.info(f"Fetching user metrics with user_id {user_id}")
+        return self.user_repo.get_user_metrics(user_id)
+
+    async def get_user_by_email(self, email: str) -> User:
+        logger.info(f"[+] Fetching user with Email ---> {email}")
+        return self.user_repo.get_user_by_email(email)
+
+    async def change_user_info(self, user_id: int, changes: Dict) -> None:
+        logger.info(f"Updating user with id {user_id} with changes: {changes}")
+
+        user_changes = {}
+        metrics_changes = {}
+
+        for key, value in changes.items():
+            if key in {"password", "user_name", "name", "email", "phone_number", "gender", "date_of_birth"}:
+                user_changes[key] = value
+            elif key in {"height", "weight"}:
+                metrics_changes[key] = value
+
+        if user_changes:
+            logger.info(f"Applying user updates: {user_changes}")
+            self.user_repo.update_user(user_id, user_changes)
+
+        if metrics_changes:
+            logger.info(f"Applying user metrics updates: {metrics_changes}")
+            self.user_repo.update_user_metrics(user_id, metrics_changes)
+
+        logger.info(f"User with id {user_id} updated successfully")
+
+    async def get_user_transaction_log(self, user_id: int):
+        logger.info(f"Fetching user transactions with user_id {user_id}")
+        return self.user_repo.get_user_transaction_log(user_id)
