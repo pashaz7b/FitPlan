@@ -35,7 +35,17 @@ export default function User_mealPlan() {
   });
 
   const mealPlans = [
-    {name: coachInfo.nameSurname, image: coachInfo.image, description: "شما یک برنامه غذایی جدید دریافت کردید!", breakfast: "تخم مرغ نیمرو + نان تست با کره بادام‌زمینی + اسموتی موز و شیر کامل + یک مشت آجیل + پرو ماست + کرومیوم", lunch: "برنج سفید + مرغ سرخ‌شده + سیب‌زمینی پخته + سالاد با سس ماست پرچرب + یک لیوان آب‌میوه طبیعی + ویتامین ث", dinner: "پاستا با سس گوشت و پنیر + نان سیر + سالاد با روغن زیتون + یک لیوان شیر کامل"}
+    {
+      name: coachInfo.nameSurname,
+      image: coachInfo.image,
+      description: "شما یک برنامه غذایی جدید دریافت کردید!",
+      breakfast:
+        "تخم مرغ نیمرو + نان تست با کره بادام‌زمینی + اسموتی موز و شیر کامل + یک مشت آجیل + پرو ماست + کرومیوم",
+      lunch:
+        "برنج سفید + مرغ سرخ‌شده + سیب‌زمینی پخته + سالاد با سس ماست پرچرب + یک لیوان آب‌میوه طبیعی + ویتامین ث",
+      dinner:
+        "پاستا با سس گوشت و پنیر + نان سیر + سالاد با روغن زیتون + یک لیوان شیر کامل",
+    },
   ];
 
   const [planExist, setPlanExist] = useState(false);
@@ -256,7 +266,7 @@ export default function User_mealPlan() {
                 <div className="flex flex-col gap-1 p-2">
                   <a
                     href="/user_panel"
-                    className="w-[90%] border-crimsonRed bg-crimsonRed text-black text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
+                    className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
                   >
                     <p>اطلاعات کاربر</p>
                     <svg
@@ -264,7 +274,7 @@ export default function User_mealPlan() {
                       height="35px"
                       viewBox="0 -960 960 960"
                       width="35px"
-                      fill="#000000"
+                      fill="#e8eaed"
                     >
                       <path d="M480-492.31q-57.75 0-98.87-41.12Q340-574.56 340-632.31q0-57.75 41.13-98.87 41.12-41.13 98.87-41.13 57.75 0 98.87 41.13Q620-690.06 620-632.31q0 57.75-41.13 98.88-41.12 41.12-98.87 41.12ZM180-248.46v-28.16q0-29.38 15.96-54.42 15.96-25.04 42.66-38.5 59.3-29.07 119.65-43.61 60.35-14.54 121.73-14.54t121.73 14.54q60.35 14.54 119.65 43.61 26.7 13.46 42.66 38.5Q780-306 780-276.62v28.16q0 25.3-17.73 43.04-17.73 17.73-43.04 17.73H240.77q-25.31 0-43.04-17.73Q180-223.16 180-248.46Zm60 .77h480v-28.93q0-12.15-7.04-22.5-7.04-10.34-19.11-16.88-51.7-25.46-105.42-38.58Q534.7-367.69 480-367.69q-54.7 0-108.43 13.11-53.72 13.12-105.42 38.58-12.07 6.54-19.11 16.88-7.04 10.35-7.04 22.5v28.93Zm240-304.62q33 0 56.5-23.5t23.5-56.5q0-33-23.5-56.5t-56.5-23.5q-33 0-56.5 23.5t-23.5 56.5q0 33 23.5 56.5t56.5 23.5Zm0-80Zm0 384.62Z" />
                     </svg>
@@ -299,7 +309,7 @@ export default function User_mealPlan() {
                   </a>
                   <a
                     href="/user_panel/user_mealPlan"
-                    className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
+                    className="w-[90%] border-[2px] border-crimsonRed bg-crimsonRed text-black text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
                   >
                     <p>برنامه غذایی</p>
                     <svg
@@ -311,7 +321,7 @@ export default function User_mealPlan() {
                     >
                       <path
                         d="M7.41475 10.154V2C7.41475 1.71667 7.51235 1.47922 7.70756 1.28767C7.90276 1.09589 8.14457 1 8.43296 1C8.72159 1 8.96328 1.09589 9.15803 1.28767C9.35301 1.47922 9.4505 1.71667 9.4505 2V10.154H11.3298V2C11.3298 1.71667 11.4273 1.47922 11.6223 1.28767C11.8175 1.09589 12.0594 1 12.3481 1C12.6364 1 12.8781 1.09589 13.0731 1.28767C13.2679 1.47922 13.3652 1.71667 13.3652 2V10.154C13.3652 11.3471 12.9882 12.374 12.234 13.2347C11.4797 14.0953 10.5518 14.6428 9.4505 14.877V26C9.4505 26.2833 9.3529 26.5208 9.15769 26.7123C8.96248 26.9041 8.72068 27 8.43228 27C8.14366 27 7.90197 26.9041 7.70722 26.7123C7.51224 26.5208 7.41475 26.2833 7.41475 26V14.877C6.31341 14.6428 5.38556 14.0953 4.6312 13.2347C3.87707 12.374 3.5 11.3471 3.5 10.154V2C3.5 1.71667 3.5976 1.47922 3.79281 1.28767C3.98779 1.09589 4.22959 1 4.51821 1C4.80661 1 5.0483 1.09589 5.24328 1.28767C5.43803 1.47922 5.53541 1.71667 5.53541 2V10.154H7.41475ZM20.4642 16.3333H17.9867C17.6359 16.3333 17.3434 16.2179 17.1093 15.987C16.8754 15.7559 16.7585 15.4697 16.7585 15.1283V7.33333C16.7585 5.658 17.2517 4.18367 18.2382 2.91033C19.2246 1.63678 20.2267 1 21.2446 1C21.6258 1 21.9303 1.13422 22.1583 1.40267C22.3861 1.67089 22.5 2.00767 22.5 2.413V26C22.5 26.2833 22.4024 26.5208 22.2072 26.7123C22.0122 26.9041 21.7704 27 21.4818 27C21.1934 27 20.9517 26.9041 20.7567 26.7123C20.5617 26.5208 20.4642 26.2833 20.4642 26V16.3333Z"
-                        fill="#FFF7ED"
+                        fill="black"
                       />
                     </svg>
                   </a>
@@ -408,7 +418,7 @@ export default function User_mealPlan() {
             planExist ? "flex" : "hidden"
           }`}
         >
-          <div className="flex flex-col justify-center text-center max-h-[600px] mx-auto w-full">
+          <div className="flex flex-col justify-start text-center max-h-[600px] mx-auto w-full">
             {mealPlans.map((mealPlan) => (
               <Plan_card
                 key={mealPlan.name}
@@ -421,17 +431,17 @@ export default function User_mealPlan() {
                 onClick={() => handleCardClick(mealPlan)}
               />
             ))}
+            <a href="./mealplan_request" className="flex">
+              <button
+                className={`text-center mx-auto text-irishGreen text-[20px] border-[2px] border-irishGreen rounded-[15px] mt-[30px] py-2 px-5 hover:bg-irishGreen hover:text-black transition-all duration-300 ${
+                  planExist ? "flex" : "hidden"
+                }`}
+              >
+                درخواست برنامه غذایی
+              </button>
+            </a>
           </div>
         </div>
-        <a href="./mealplan_request" className="flex">
-          <button
-            className={`text-center mx-auto text-irishGreen text-[20px] border-[2px] border-irishGreen rounded-[15px] mt-[30px] py-2 px-5 hover:bg-irishGreen hover:text-black transition-all duration-300 ${
-              planExist ? "flex" : "hidden"
-            }`}
-          >
-            درخواست برنامه غذایی
-          </button>
-        </a>
       </div>
     </div>
   );
