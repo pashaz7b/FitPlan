@@ -2,21 +2,25 @@ import { useState } from "react";
 import fit_logo from "/Images/Fit-Logo-Resized.png";
 import { useNavigate } from "react-router-dom";
 
-export default function User_panel() {
-  const [userInfo, setUserInfo] = useState({
-    nameSurname: "آونگ روزبه",
-    username: "AAAvng",
+export default function Coach_panel() {
+  const [coachInfo, setCoachInfo] = useState({
+    nameSurname: "دانا لاجوردی",
+    username: "Dana_Laj",
     password: "********",
     phoneNumber: "989123456789+",
-    email: "avng.rzbh@gmail.com",
+    email: "Dana.Laj@gmail.com",
     birthDate: "1365/7/18",
     gender: "آقا",
     height: "175",
     weight: "65",
-    image: "/Images/payton-tuttle-RFFR1JjkJx8-unsplash.jpg",
+    speciality: "زیبایی اندام",
+    status: "در دسترش",
+    about:
+      "دانا با بیش از ۱۵ سال تجربه در زمینه بدنسازی و تمرینات قدرتی، یکی از مربیان پیشرو در این حوزه به شمار می‌رود. او کار خود را به عنوان مربی شخصی در باشگاه‌های کوچک شروع کرد و به تدریج توانست با تدوین برنامه‌های تمرینی تخصصی برای ورزشکاران حرفه‌ای، شهرت زیادی کسب کند. دانا به بهینه‌سازی قدرت بدنی علاقه ویژه‌ای دارد و موفق شده چندین قهرمان مسابقات بدنسازی را آماده کند.",
+    image: "/Images/Coach-Dana-Lajevardi.png",
   });
 
-  const [tempInfo, setTempInfo] = useState(userInfo);
+  const [tempInfo, setTempInfo] = useState(coachInfo);
   const [profilePhoto, setProfilePhoto] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -39,15 +43,15 @@ export default function User_panel() {
         {/* Static Header Section */}
         <div className="flex flex-col items-center bg-coal">
           <img
-            src="/Images/payton-tuttle-RFFR1JjkJx8-unsplash.jpg"
+            src={coachInfo.image}
             alt="User Avatar"
             className="w-full max-h-[220px] object-cover"
           />
           <p className="mt-3 text-lg font-semibold text-superRed">
-            {userInfo.nameSurname}
+            {coachInfo.nameSurname}
           </p>
           <p className="mt-2 text-lg text-superRed font-light">
-            {userInfo.username}@
+            {coachInfo.username}@
           </p>
         </div>
 
@@ -55,7 +59,7 @@ export default function User_panel() {
         <div className="overflow-y-auto font-medium max-h-[330px] scrollbar-thin scrollbar-thumb-superRed scrollbar-track-coal">
           <div className="flex flex-col gap-1 p-2">
             <a
-              href="/user_panel"
+              href="/coach_panel"
               className="w-[90%] border-crimsonRed bg-crimsonRed text-black text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
             >
               <p>اطلاعات کاربر</p>
@@ -73,29 +77,18 @@ export default function User_panel() {
               href="/user_panel/user_coach"
               className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
             >
-              <p>مربی</p>
+              <p>شاگردان</p>
               <div className="h-[30px]">
-                <img
-                  src="/Images/bodybuilding-White.png"
-                  alt="coaches_icon"
-                  className="h-full"
-                />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="24px"
+                  viewBox="0 -960 960 960"
+                  width="24px"
+                  fill="#e8eaed"
+                >
+                  <path d="m216-160-56-56 384-384H440v80h-80v-160h233q16 0 31 6t26 17l120 119q27 27 66 42t84 16v80q-62 0-112.5-19T718-476l-40-42-88 88 90 90-262 151-40-69 172-99-68-68-266 265Zm-96-280v-80h200v80H120ZM40-560v-80h200v80H40Zm739-80q-33 0-57-23.5T698-720q0-33 24-56.5t57-23.5q33 0 57 23.5t24 56.5q0 33-24 56.5T779-640Zm-659-40v-80h200v80H120Z" />
+                </svg>
               </div>
-            </a>
-            <a
-              href="/user_panel/user_tutorial"
-              className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
-            >
-              <p>آموزش حرکات</p>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                height="24px"
-                viewBox="0 -960 960 960"
-                width="24px"
-                fill="#e8eaed"
-              >
-                <path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h480q33 0 56.5 23.5T720-720v180l126-126q10-10 22-5t12 19v344q0 14-12 19t-22-5L720-420v180q0 33-23.5 56.5T640-160H160Zm0-80h480v-480H160v480Zm0 0v-480 480Z" />
-              </svg>
             </a>
             <a
               href="/user_panel/user_mealPlan"
@@ -163,6 +156,24 @@ export default function User_panel() {
                 />
               </svg>
             </a>
+            <a
+              href="/"
+              className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
+            >
+              <p>خانه</p>
+              <svg
+                width="25"
+                height="24"
+                viewBox="0 0 25 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M4.1 21.9017H8.78475V14.8537C8.78475 14.4956 8.90597 14.1953 9.1484 13.9529C9.39107 13.7106 9.6916 13.5895 10.05 13.5895H14.95C15.3084 13.5895 15.6089 13.7106 15.8516 13.9529C16.094 14.1953 16.2153 14.4956 16.2153 14.8537V21.9017H20.9V9.5273C20.9 9.45573 20.8843 9.3908 20.8528 9.33251C20.8215 9.27423 20.7789 9.22259 20.725 9.17759L12.7558 3.19232C12.684 3.12961 12.5987 3.09825 12.5 3.09825C12.4013 3.09825 12.316 3.12961 12.2442 3.19232L4.275 9.17759C4.2211 9.22259 4.17852 9.27423 4.14725 9.33251C4.11575 9.3908 4.1 9.45573 4.1 9.5273V21.9017ZM2 21.9017V9.5273C2 9.127 2.0896 8.7478 2.2688 8.3897C2.44823 8.03136 2.69603 7.73632 3.0122 7.50458L10.9817 1.50568C11.4239 1.16856 11.9293 1 12.4979 1C13.0665 1 13.5733 1.16856 14.0183 1.50568L21.9878 7.50458C22.304 7.73632 22.5518 8.03136 22.7312 8.3897C22.9104 8.7478 23 9.127 23 9.5273V21.9017C23 22.4739 22.7931 22.9666 22.3794 23.38C21.9658 23.7933 21.4726 24 20.9 24H15.3808C15.0222 24 14.7217 23.8788 14.4792 23.6363C14.2366 23.3941 14.1153 23.0938 14.1153 22.7355V15.6878H10.8848V22.7355C10.8848 23.0938 10.7634 23.3941 10.5208 23.6363C10.2783 23.8788 9.97778 24 9.61915 24H4.1C3.5274 24 3.03425 23.7933 2.62055 23.38C2.20685 22.9666 2 22.4739 2 21.9017Z"
+                  fill="#E8EAED"
+                />
+              </svg>
+            </a>
           </div>
         </div>
         <a
@@ -212,15 +223,15 @@ export default function User_panel() {
 
               <div className="flex flex-col items-center bg-coal">
                 <img
-                  src="/Images/payton-tuttle-RFFR1JjkJx8-unsplash.jpg"
+                  src={coachInfo.image}
                   alt="User Avatar"
-                  className="w-full max-h-[250px] object-contain"
+                  className="w-full max-h-[250px] object-cover"
                 />
                 <p className="mt-3 text-lg font-semibold text-superRed">
-                  {userInfo.nameSurname}
+                  {coachInfo.nameSurname}
                 </p>
                 <p className="mt-2 text-lg text-superRed font-light">
-                  {userInfo.username}@
+                  {coachInfo.username}@
                 </p>
               </div>
               <div className="overflow-y-auto font-medium max-h-[330px] scrollbar-thin scrollbar-thumb-superRed scrollbar-track-coal">
@@ -244,30 +255,20 @@ export default function User_panel() {
                     href="/user_panel/user_coach"
                     className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
                   >
-                    <p>مربی</p>
+                    <p>شاگردان</p>
                     <div className="h-[30px]">
-                      <img
-                        src="/Images/bodybuilding-White.png"
-                        alt="coaches_icon"
-                        className="h-full"
-                      />
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        height="24px"
+                        viewBox="0 -960 960 960"
+                        width="24px"
+                        fill="#e8eaed"
+                      >
+                        <path d="m216-160-56-56 384-384H440v80h-80v-160h233q16 0 31 6t26 17l120 119q27 27 66 42t84 16v80q-62 0-112.5-19T718-476l-40-42-88 88 90 90-262 151-40-69 172-99-68-68-266 265Zm-96-280v-80h200v80H120ZM40-560v-80h200v80H40Zm739-80q-33 0-57-23.5T698-720q0-33 24-56.5t57-23.5q33 0 57 23.5t24 56.5q0 33-24 56.5T779-640Zm-659-40v-80h200v80H120Z" />
+                      </svg>
                     </div>
                   </a>
-                  <a
-                    href="/user_panel/user_tutorial"
-                    className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
-                  >
-                    <p>آموزش حرکات</p>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      height="24px"
-                      viewBox="0 -960 960 960"
-                      width="24px"
-                      fill="#e8eaed"
-                    >
-                      <path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h480q33 0 56.5 23.5T720-720v180l126-126q10-10 22-5t12 19v344q0 14-12 19t-22-5L720-420v180q0 33-23.5 56.5T640-160H160Zm0-80h480v-480H160v480Zm0 0v-480 480Z" />
-                    </svg>
-                  </a>
+
                   <a
                     href="/user_panel/user_mealPlan"
                     className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
@@ -334,6 +335,24 @@ export default function User_panel() {
                       />
                     </svg>
                   </a>
+                  <a
+                    href="/"
+                    className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
+                  >
+                    <p>خانه</p>
+                    <svg
+                      width="25"
+                      height="24"
+                      viewBox="0 0 25 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M4.1 21.9017H8.78475V14.8537C8.78475 14.4956 8.90597 14.1953 9.1484 13.9529C9.39107 13.7106 9.6916 13.5895 10.05 13.5895H14.95C15.3084 13.5895 15.6089 13.7106 15.8516 13.9529C16.094 14.1953 16.2153 14.4956 16.2153 14.8537V21.9017H20.9V9.5273C20.9 9.45573 20.8843 9.3908 20.8528 9.33251C20.8215 9.27423 20.7789 9.22259 20.725 9.17759L12.7558 3.19232C12.684 3.12961 12.5987 3.09825 12.5 3.09825C12.4013 3.09825 12.316 3.12961 12.2442 3.19232L4.275 9.17759C4.2211 9.22259 4.17852 9.27423 4.14725 9.33251C4.11575 9.3908 4.1 9.45573 4.1 9.5273V21.9017ZM2 21.9017V9.5273C2 9.127 2.0896 8.7478 2.2688 8.3897C2.44823 8.03136 2.69603 7.73632 3.0122 7.50458L10.9817 1.50568C11.4239 1.16856 11.9293 1 12.4979 1C13.0665 1 13.5733 1.16856 14.0183 1.50568L21.9878 7.50458C22.304 7.73632 22.5518 8.03136 22.7312 8.3897C22.9104 8.7478 23 9.127 23 9.5273V21.9017C23 22.4739 22.7931 22.9666 22.3794 23.38C21.9658 23.7933 21.4726 24 20.9 24H15.3808C15.0222 24 14.7217 23.8788 14.4792 23.6363C14.2366 23.3941 14.1153 23.0938 14.1153 22.7355V15.6878H10.8848V22.7355C10.8848 23.0938 10.7634 23.3941 10.5208 23.6363C10.2783 23.8788 9.97778 24 9.61915 24H4.1C3.5274 24 3.03425 23.7933 2.62055 23.38C2.20685 22.9666 2 22.4739 2 21.9017Z"
+                        fill="#E8EAED"
+                      />
+                    </svg>
+                  </a>
                 </div>
               </div>
               <a
@@ -346,19 +365,19 @@ export default function User_panel() {
           </div>
         </div>
         <div className="max-md:flex-col max-md:justify-start max-md:gap-3 max-md:text-center max-md:overflow-y-auto border mb-[22px] rounded-[10px] h-[618px] overflow-hidden flex justify-start gap-5 text-mintCream">
-          <div className="max-md:text-center max-md:justify-center max-md:h-[25%] max-md:w-full max-md:mx-auto h-full w-[25%] overflow-hidden">
+          <div className="max-md:text-center max-md:justify-center max-md:h-full max-md:w-full max-md:mx-auto h-full w-[25%] overflow-hidden">
             <img
-              src={userInfo.image}
+              src={coachInfo.image}
               alt="user_image"
-              className="max-md:text-center max-md:justify-center max-md:w-full  max-md:object-cover object-cover object-center h-full scale-[100%]"
+              className="max-md:text-center max-md:justify-center max-md:w-full max-md:object-cover object-cover object-center h-full scale-[100%]"
             />
           </div>
-          <div className="max-md:w-[95%] max-md:gap-4 max-md:overflow-y-auto max-md:scrollbar-thin max-md:scrollbar-thumb-superRed max-md:scrollbar-track-coal max-md:mx-auto w-[70%] py-5 px-2 flex flex-col gap-11">
-            <h1 className="text-[45px] font-medium">{userInfo.nameSurname}</h1>
+          <div className="max-md:w-[95%] max-md:gap-4 overflow-y-auto scrollbar-none max-md:mx-auto w-[70%] py-5 px-2 flex flex-col gap-11">
+            <h1 className="text-[45px] font-medium">{coachInfo.nameSurname}</h1>
             <div className="max-md:flex-col max-md:gap-4 w-full flex justify-between gap-11">
               <div className="w-full flex justify-between">
                 <p className="font-medium text-[20px]">نام کاربری:</p>
-                <p className="text-[20px] font-light">{userInfo.username}</p>
+                <p className="text-[20px] font-light">{coachInfo.username}</p>
               </div>
               <div className="w-full flex justify-between">
                 <p className="font-medium text-[20px]">گذرواژه:</p>
@@ -368,36 +387,54 @@ export default function User_panel() {
             <div className="max-md:flex-col max-md:gap-4 w-full flex justify-between gap-11">
               <div className="w-full flex justify-between">
                 <p className="font-medium text-[20px]">شماره تماس:</p>
-                <p className="text-[20px] font-light">{userInfo.phoneNumber}</p>
+                <p className="text-[20px] font-light">
+                  {coachInfo.phoneNumber}
+                </p>
               </div>
               <div className="w-full flex justify-between">
                 <p className="font-medium text-[20px]">آدرس ایمیل:</p>
-                <p className="text-[15px] font-light">{userInfo.email}</p>
+                <p className="text-[15px] font-light">{coachInfo.email}</p>
               </div>
             </div>
             <div className="max-md:flex-col max-md:gap-4 w-full flex justify-between gap-11">
               <div className="w-full flex justify-between">
                 <p className="font-medium text-[20px]">تاریخ تولد:</p>
-                <p className="text-[20px] font-light">{userInfo.birthDate}</p>
+                <p className="text-[20px] font-light">{coachInfo.birthDate}</p>
               </div>
               <div className="w-full flex justify-between">
                 <p className="font-medium text-[20px]">جنسیت:</p>
-                <p className="text-[20px] font-light">{userInfo.gender}</p>
+                <p className="text-[20px] font-light">{coachInfo.gender}</p>
               </div>
             </div>
             <div className="max-md:flex-col max-md:gap-4 w-full flex justify-between gap-11">
               <div className="w-full flex justify-between">
                 <p className="font-medium text-[20px]">قد(سانتی متر):</p>
-                <p className="text-[20px] font-light">{userInfo.height}</p>
+                <p className="text-[20px] font-light">{coachInfo.height}</p>
               </div>
               <div className="w-full flex justify-between">
                 <p className="font-medium text-[20px]">وزن(کیلوگرم):</p>
-                <p className="text-[20px] font-light">{userInfo.weight}</p>
+                <p className="text-[20px] font-light">{coachInfo.weight}</p>
               </div>
+            </div>
+            <div className="max-md:flex-col max-md:gap-4 w-full flex justify-between gap-11">
+              {/* <div className="w-full flex justify-between">
+                <p className="font-medium text-[20px]">تخصص:</p>
+                <p className="text-[20px] font-light">{coachInfo.speciality}</p>
+              </div> */}
+              <div className="w-full flex justify-center gap-11">
+                <p className="font-medium text-[20px]">وضعیت:</p>
+                <p className="text-[20px] font-light">{coachInfo.status}</p>
+              </div>
+            </div>
+            <div className="w-full flex max-md:flex-col max-md:justify-center max-md:text-center max-md:mx-auto justify-between gap-2">
+              <p className="font-medium text-[20px] w-[70%] max-md:w-full">
+                درباره مربی:
+              </p>
+              <p className="text-[20px] font-light">{coachInfo.about}</p>
             </div>
             <button className="text-left max-md:text-center max-md:flex max-md:justify-center max-md:mx-auto text-superRed text-[25px] font-semibold  max-h-[62px]">
               <a
-                href="/user_panel/info_edit"
+                href="/coach_panel/info_edit"
                 className="border-[2px] border-superRed rounded-[15px] py-2 px-8 hover:bg-superRed hover:text-black transition-all duration-300"
               >
                 ویرایش

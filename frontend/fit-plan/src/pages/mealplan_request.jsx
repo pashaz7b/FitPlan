@@ -112,7 +112,7 @@ export default function Mealplan_req() {
           <img
             src="/Images/payton-tuttle-RFFR1JjkJx8-unsplash.jpg"
             alt="User Avatar"
-            className="w-full max-h-[250px] object-contain"
+            className="w-full max-h-[220px] object-cover"
           />
           <p className="mt-3 text-lg font-semibold text-superRed">
             {userInfo.nameSurname}
@@ -419,7 +419,7 @@ export default function Mealplan_req() {
             <h1 className="text-[35px] font-medium">
               لطفا اطلاعات خواسته شده را وارد کنید
             </h1>
-            <div className="flex justify-between max-lg:justify-center max-lg:flex-col max-lg:mx-auto max-lg:gap-6 w-full">
+            <div className="flex justify-between max-md:justify-center max-md:flex-col max-md:mx-auto max-md:gap-6 w-full">
               <div className="flex flex-col gap-2 justify-center text-center">
                 <label htmlFor="weight" className="font-medium">
                   وزن(کیلوگرم):
@@ -478,8 +478,8 @@ export default function Mealplan_req() {
                   <span className="ml-2 text-mintCream">حجم</span>
                 </label>
               </div>
-              <div className="flex flex-col gap-2 justify-center mx-auto text-center">
-                <h1 className="font-medium">تصاویر شما</h1>
+              <div className="flex flex-col gap-2 justify-center max-md:mx-auto text-center">
+                {/* <h1 className="font-medium">تصاویر شما</h1> */}
                 <label
                   htmlFor="file-input"
                   className="flex items-center justify-center w-48 h-[40px] bg-mintCream text-black font-medium rounded-lg cursor-pointer hover:bg-irishGreen transition-all duration-300"
@@ -507,7 +507,7 @@ export default function Mealplan_req() {
               >
                 تصاویر شما:
               </p>
-              <div className="flex justify-center mx-auto gap-4 mt-6 ">
+              <div className="flex justify-center gap-4 mt-6 ">
                 {images.map((image, index) => (
                   <div key={index} className="relative w-32 h-32">
                     <img

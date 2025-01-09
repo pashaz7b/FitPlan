@@ -112,7 +112,7 @@ export default function Exerciseplan_req() {
           <img
             src="/Images/payton-tuttle-RFFR1JjkJx8-unsplash.jpg"
             alt="User Avatar"
-            className="w-full max-h-[250px] object-contain"
+            className="w-full max-h-[220px] object-cover"
           />
           <p className="mt-3 text-lg font-semibold text-superRed">
             {userInfo.nameSurname}

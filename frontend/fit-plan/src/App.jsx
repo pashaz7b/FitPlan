@@ -7,7 +7,7 @@ import Forgot_Password from "./pages/forgot_password";
 import User_signup from "./pages/user_signup";
 import Otp_page from "./pages/otp_page";
 import User_panel from "./pages/user_panel";
-import Coach_panel from "./pages/coach_panel";
+import Coach_panel from "./pages/Coach/coach_panel";
 import Admin_panel from "./pages/admin_panel";
 import About_us from "./pages/about_us";
 import Coaches from "./pages/coaches";
@@ -20,6 +20,7 @@ import User_transactions from "./pages/user_transactions";
 import Mealplan_req from "./pages/mealplan_request";
 import User_exercisePlan from "./pages/user_exercisePlan";
 import Exerciseplan_req from "./pages/exercisePlan_req";
+import Coach_info_edit from "./pages/Coach/coach_info_edit";
 
 function App() {
   // const [count, setCount] = useState(0);
@@ -45,8 +46,12 @@ function App() {
           <Route path="/user_panel/user_exercisePlan" element={<User_exercisePlan />} />
           <Route path="/user_panel/exercise_plan_req" element={<Exerciseplan_req />} />
           <Route path="/user_panel/user_transactions" element={<User_transactions />} />
+
           <Route path="/coach_panel" element={<Coach_panel />} />
+          <Route path="/coach_panel/info_edit" element={<Coach_info_edit />} />
+
           <Route path="/admin_panel" element={<Admin_panel />} />
+          
           <Route path="/about_us" element={<About_us />} />
           <Route path="/coaches" element={<Coaches />} />
           <Route path="/podcasts" element={<Podcasts />} />

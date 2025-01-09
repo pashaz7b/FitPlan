@@ -46,6 +46,17 @@ export default function User_mealPlan() {
       dinner:
         "پاستا با سس گوشت و پنیر + نان سیر + سالاد با روغن زیتون + یک لیوان شیر کامل",
     },
+    {
+      name: coachInfo.nameSurname,
+      image: coachInfo.image,
+      description: "شما یک برنامه غذایی جدید دریافت کردید!",
+      breakfast:
+        "تخم مرغ نیمرو + نان تست با کره بادام‌زمینی + اسموتی موز و شیر کامل + یک مشت آجیل + پرو ماست + کرومیوم",
+      lunch:
+        "برنج سفید + مرغ سرخ‌شده + سیب‌زمینی پخته + سالاد با سس ماست پرچرب + یک لیوان آب‌میوه طبیعی + ویتامین ث",
+      dinner:
+        "پاستا با سس گوشت و پنیر + نان سیر + سالاد با روغن زیتون + یک لیوان شیر کامل",
+    },
   ];
 
   const [planExist, setPlanExist] = useState(false);
@@ -84,7 +95,7 @@ export default function User_mealPlan() {
           <img
             src="/Images/payton-tuttle-RFFR1JjkJx8-unsplash.jpg"
             alt="User Avatar"
-            className="w-full max-h-[250px] object-contain"
+            className="w-full max-h-[220px] object-cover"
           />
           <p className="mt-3 text-lg font-semibold text-superRed">
             {userInfo.nameSurname}
@@ -418,7 +429,7 @@ export default function User_mealPlan() {
             planExist ? "flex" : "hidden"
           }`}
         >
-          <div className="flex flex-col justify-start text-center max-h-[600px] mx-auto w-full">
+          <div className="flex flex-col gap-3 justify-start text-center max-h-[600px] mx-auto w-full">
             {mealPlans.map((mealPlan) => (
               <Plan_card
                 key={mealPlan.name}

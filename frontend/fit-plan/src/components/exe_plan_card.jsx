@@ -48,7 +48,7 @@ export default function Exe_plan_card({ plan }) {
           <p className="text-mintCream text-[20px]">{plan.description}</p>
         </div>
       </div>
-      <div className="collapse-content bg-coal rounded-[10px] flex flex-col gap-10 text-mintCream text-center px-4 py-5">
+      <div className="collapse-content bg-coal rounded-[10px] flex flex-col gap-10 text-mintCream text-center px-4">
         <div className="rounded-lg shadow-md p-4 mb-4">
           {/* <h2 className="text-xl font-bold mb-4">{plan.title}</h2> */}
           <div className="space-y-4 bg-black">
