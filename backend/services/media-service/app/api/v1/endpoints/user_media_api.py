@@ -10,6 +10,7 @@ from app.services.media_service import MediaService
 from app.services.auth_service import get_current_user
 from app.services.user_mainservice import UserProfile
 from app.services.coach_main_service import CoachProfile
+from app.validators.file_validator import validate_image_file
 from bson import ObjectId
 
 user_media_router = APIRouter()
@@ -36,6 +37,9 @@ async def upload_media(
         current_user: Annotated[TokenDataSchema, Depends(get_current_user)],
         user_service: Annotated[UserProfile, Depends()],
 ):
+    logger.info("[...] Validating Image File")
+    validate_image_file(file)
+
     logger.info(f"[+] Uploading Media File ---> {file.filename}")
     output = await media_service.create_media(file, current_user.email)
     await user_service.change_profile(current_user.email, {"image": str(output.mongo_id)})
