@@ -1,6 +1,6 @@
 from datetime import datetime
 from typing import Optional
-from pydantic import BaseModel, EmailStr, constr
+from pydantic import BaseModel, constr
 
 
 class GetUserInfoSchema(BaseModel):
@@ -85,3 +85,57 @@ class SetUserTransactionsSchema(BaseModel):
     date: str
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
+
+
+# ********************************************************************************
+class UserRequestMealSchema(BaseModel):
+    weight: float
+    waist: float
+    type: str
+
+
+class UserRequestMealResponseSchema(BaseModel):
+    weight: float
+    waist: float
+    type: str
+    price: int
+    msg: str
+
+
+class GetUserMealSchema(BaseModel):
+    id: int
+    breakfast: str
+    lunch: str
+    dinner: str
+    supplement: str
+    expire_time: int
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+
+
+# ********************************************************************************
+class GetUserAllCoachSchema(BaseModel):
+    work_out_plan_id: int
+    work_out_plan_name: str
+    work_out_plan_description: str
+    work_out_plan_duration_month: int
+    coach_user_name: str
+    coach_name: str
+    coach_email: str
+    coach_phone_number: str
+    coach_gender: str
+    coach_date_of_birth: str
+    coach_height: float
+    coach_weight: float
+    coach_specialization: str
+    coach_biography: str
+    coach_status: bool
+
+
+class UserTakeWorkoutCoachSchema(BaseModel):
+    work_out_plan_id: int
+
+
+class UserTakeWorkoutCoachResponseSchema(BaseModel):
+    work_out_plan_id: int
+    msg: str

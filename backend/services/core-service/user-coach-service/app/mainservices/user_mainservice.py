@@ -7,7 +7,9 @@ from app.domain.schemas.user_schema import (GetUserInfoSchema,
                                             GetUserTransactionsSchema,
                                             GetUserCoachSchema,
                                             UserRequestExerciseSchema,
-                                            GetUserExerciseSchema)
+                                            GetUserExerciseSchema, UserRequestMealSchema, GetUserMealSchema,
+                                            GetUserAllCoachSchema, UserTakeWorkoutCoachSchema,
+                                            UserTakeWorkoutCoachResponseSchema)
 
 from app.subservices.user_subservice import UserSubService
 from app.subservices.user_duplicates_subservice import UserDuplicatesSubService
@@ -190,7 +192,7 @@ class UserMainService(BaseService):
             status=coach.status)
 
     async def create_user_exercise(self, user_id, user_struct: UserRequestExerciseSchema):
-        logger.info(f"[+] Creating Exercise For User With Id ---> {user_id}")
+        logger.info(f"[+] Creating Request Exercise For User With Id ---> {user_id}")
 
         if not await self.get_user_coach(user_id):
             logger.info(f"[-] No coach found for user with id ---> {user_id}")
@@ -221,3 +223,95 @@ class UserMainService(BaseService):
         ]
 
         return exercise_schemas
+
+    async def create_user_meal(self, user_id, user_struct: UserRequestMealSchema):
+        logger.info(f"[+] Creating Request Meal For User With Id ---> {user_id}")
+
+        if not await self.get_user_coach(user_id):
+            logger.info(f"[-] No coach found for user with id ---> {user_id}")
+            raise HTTPException(status_code=404, detail="No coach found for this user")
+
+        return await self.user_subservice.create_user_meal(user_id, user_struct)
+
+    async def get_user_meal(self, user_id):
+        logger.info(f"[+] Fetching Meal For User With Id ---> {user_id}")
+
+        meal = await self.user_subservice.get_user_meal(user_id)
+
+        if not meal:
+            logger.info(f"[-] No meal found for user with id ---> {user_id}")
+            raise HTTPException(status_code=404, detail="No meal found for this user")
+
+        meal_schema = GetUserMealSchema(
+            id=meal.id,
+            breakfast=meal.breakfast,
+            lunch=meal.lunch,
+            dinner=meal.dinner,
+            supplement=meal.supplement,
+            expire_time=meal.expire_time,
+            created_at=meal.created_at,
+            updated_at=meal.updated_at
+        )
+
+        return meal_schema
+
+    async def get_user_all_coach(self, user_id: int):
+        logger.info(f"[...] Fetching All Coaches For User With Id ---> {user_id}")
+        coaches = await self.user_subservice.get_user_all_coach(user_id)
+
+        if not coaches:
+            logger.info(f"[-] There is no Active Coach")
+            raise HTTPException(status_code=404, detail="There is no Active Coach")
+
+        result = []
+        for coach in coaches:
+            for present in coach.present:
+                workout_plan = present.workout_plan
+                result.append(GetUserAllCoachSchema(
+                    work_out_plan_id=workout_plan.id,
+                    work_out_plan_name=workout_plan.name,
+                    work_out_plan_description=workout_plan.description,
+                    work_out_plan_duration_month=workout_plan.duration_month,
+                    coach_user_name=coach.user_name,
+                    coach_name=coach.name,
+                    coach_email=coach.email,
+                    coach_phone_number=coach.phone_number,
+                    coach_gender=coach.gender,
+                    coach_date_of_birth=coach.date_of_birth,
+                    coach_height=coach.metrics.height,
+                    coach_weight=coach.metrics.weight,
+                    coach_specialization=coach.metrics.specialization,
+                    coach_biography=coach.metrics.biography,
+                    coach_status=coach.status
+                ))
+
+        return result
+
+        # coach_schemas = [
+        #     GetUserAllCoachSchema(
+        #         id=coach.id,
+        #         user_name=coach.user_name,
+        #         name=coach.name,
+        #         email=coach.email,
+        #         phone_number=coach.phone_number,
+        #         gender=coach.gender,
+        #         date_of_birth=coach.date_of_birth,
+        #         height=coach.metrics.height,
+        #         weight=coach.metrics.weight,
+        #         specialization=coach.metrics.specialization,
+        #         biography=coach.metrics.biography,
+        #         status=coach.status
+        #     )
+        #     for coach in coaches
+        # ]
+        #
+        # return coach_schemas
+
+    async def create_user_take_workout_coach(self, user_id: int, take_strucr: UserTakeWorkoutCoachSchema):
+        logger.info(f"[+] User With Id ---> {user_id} Take Workout With Id ---> {take_strucr.work_out_plan_id}")
+        result = await self.user_subservice.create_user_take_workout_coach(user_id, take_strucr)
+
+        return UserTakeWorkoutCoachResponseSchema(
+            work_out_plan_id=take_strucr.work_out_plan_id,
+            msg="Workout Plan Taken Successfully"
+        )

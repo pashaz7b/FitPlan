@@ -10,7 +10,9 @@ from app.domain.schemas.user_schema import (GetUserInfoSchema,
                                             GetUserCoachSchema,
                                             UserRequestExerciseSchema,
                                             UserRequestExerciseResponseSchema,
-                                            GetUserExerciseSchema)
+                                            GetUserExerciseSchema, UserRequestMealResponseSchema, UserRequestMealSchema,
+                                            GetUserMealSchema, GetUserAllCoachSchema,
+                                            UserTakeWorkoutCoachResponseSchema, UserTakeWorkoutCoachSchema)
 
 from app.mainservices.user_mainservice import UserMainService
 
@@ -80,6 +82,33 @@ async def change_user_info(
 
 
 @user_core_router.get(
+    "/get_user_all_coach",
+    status_code=status.HTTP_200_OK,
+    response_model=list[GetUserAllCoachSchema]
+)
+async def get_user_all_coach(
+        current_user: Annotated[TokenDataSchema, Depends(get_current_user)],
+        user_service: Annotated[UserMainService, Depends()]
+):
+    logger.info(f'[...] Getting all coach for user {current_user.id}')
+    return await user_service.get_user_all_coach(current_user.id)
+
+
+@user_core_router.post(
+    "/set_user_workout_coach",
+    status_code=status.HTTP_201_CREATED,
+    response_model=UserTakeWorkoutCoachResponseSchema
+)
+async def set_user_workout_coach(
+        current_user: Annotated[TokenDataSchema, Depends(get_current_user)],
+        user_schema: UserTakeWorkoutCoachSchema,
+        user_service: Annotated[UserMainService, Depends()]
+):
+    logger.info(f'[...] Setting workout coach for user {current_user.id}')
+    return await user_service.create_user_take_workout_coach(current_user.id, user_schema)
+
+
+@user_core_router.get(
     "/get_user_transactions",
     status_code=status.HTTP_200_OK,
     response_model=list[GetUserTransactionsSchema]
@@ -90,7 +119,6 @@ async def get_user_transactions(
 ):
     logger.info(f'[...] Getting user transactions for user {current_user.id}')
     return await user_service.get_user_transaction_log(current_user.id)
-
 
 
 @user_core_router.get(
@@ -131,3 +159,30 @@ async def user_get_exercise(
 ):
     logger.info(f'[...] Getting exercise for user {current_user.id}')
     return await user_service.get_user_exercise(current_user.id)
+
+
+@user_core_router.post(
+    "/request_meal",
+    status_code=status.HTTP_201_CREATED,
+    response_model=UserRequestMealResponseSchema
+)
+async def request_meal(
+        current_user: Annotated[TokenDataSchema, Depends(get_current_user)],
+        user_schema: UserRequestMealSchema,
+        user_service: Annotated[UserMainService, Depends()]
+):
+    logger.info(f'[...] Requesting meal for user {current_user.id}')
+    return await user_service.create_user_meal(current_user.id, user_schema)
+
+
+@user_core_router.get(
+    "/user_get_meal",
+    status_code=status.HTTP_200_OK,
+    response_model=GetUserMealSchema
+)
+async def user_get_meal(
+        current_user: Annotated[TokenDataSchema, Depends(get_current_user)],
+        user_service: Annotated[UserMainService, Depends()]
+):
+    logger.info(f'[...] Getting meal for user {current_user.id}')
+    return await user_service.get_user_meal(current_user.id)

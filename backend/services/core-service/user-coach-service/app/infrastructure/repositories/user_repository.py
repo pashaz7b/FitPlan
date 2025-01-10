@@ -1,7 +1,7 @@
 from typing import Annotated, Dict
 from loguru import logger
 from fastapi import Depends
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from app.core.postgres_db.postgres_database import get_db
 from app.domain.models.fitplan_model import (User,
@@ -13,7 +13,8 @@ from app.domain.models.fitplan_model import (User,
                                              Present,
                                              WorkoutPlan,
                                              UserExercise,
-                                             UserRequestExercise, UserExerciseExercise, Exercise)
+                                             UserRequestExercise, UserExerciseExercise, Exercise, UserMeal,
+                                             UserRequestMeal, MealSupplement, UserMealMealSupplement)
 
 
 class UserRepository:
@@ -148,3 +149,56 @@ class UserRepository:
             .all()
         )
         return fetched_exercise
+
+    def create_user_meal(self, user_meal: UserMeal):
+        self.db.add(user_meal)
+        self.db.commit()
+        self.db.refresh(user_meal)
+        logger.info(f"[+] User Meal Created With Id ---> {user_meal.id}")
+        return user_meal
+
+    def create_user_request_meal(self, user_meal_request: UserRequestMeal):
+        self.db.add(user_meal_request)
+        self.db.commit()
+        self.db.refresh(user_meal_request)
+        logger.info(f"[+] User Meal Request Created With Id ---> {user_meal_request.user_id}")
+        return user_meal_request
+
+    def get_user_meal(self, user_id: int):
+        logger.info(f"[+] Fetching User Meal For User With Id ---> {user_id}")
+        fetched_meal = (
+            self.db.query(MealSupplement)
+            .join(UserMealMealSupplement, MealSupplement.id == UserMealMealSupplement.meal_supplement_id)
+            .join(UserMeal, UserMealMealSupplement.user_meal_id == UserMeal.id)
+            .join(UserRequestMeal, UserMeal.id == UserRequestMeal.user_meal_id)
+            .join(User, UserRequestMeal.user_id == User.id)
+            .filter(User.id == user_id)
+            .order_by(MealSupplement.id.desc())  # Order by descending ID to get the latest meal
+            .first()
+        )
+        return fetched_meal
+
+    def get_user_all_coach(self, user_id: int):
+        logger.info(f"[+] Fetching All Coach for User With Id ---> {user_id}")
+        # ready_coaches = (
+        #     self.db.query(Coach)
+        #     .join(Present, Coach.id == Present.coach_id)
+        #     .join(WorkoutPlan, Present.workout_plan_id == WorkoutPlan.id)
+        #     .filter(Coach.status == True)
+        #     .all()
+        # )
+        ready_coaches = (
+            self.db.query(Coach)
+            .options(joinedload(Coach.present).joinedload(Present.workout_plan))
+            .filter(Coach.status == True)
+            .all()
+        )
+
+        return ready_coaches
+
+    def create_user_take_workout_coach(self, take: Take) -> Take:
+        self.db.add(take)
+        self.db.commit()
+        self.db.refresh(take)
+        logger.info(f"[+] User Take Workout Coach Created With Id ---> {take.user_id}")
+        return take

@@ -6,10 +6,14 @@ from fastapi import Depends
 
 from app.domain.models.fitplan_model import (User,
                                              UserExercise,
-                                             UserRequestExercise, TransactionLog, UserTransactionLog)
+                                             UserRequestExercise, TransactionLog, UserTransactionLog,
+                                             UserMeal, UserRequestMeal,
+                                             Take)
 from app.domain.models.fitplan_model import UserMetrics
 from app.domain.schemas.user_schema import (UserRequestExerciseSchema,
-                                            UserRequestExerciseResponseSchema, SetUserTransactionsSchema)
+                                            UserRequestExerciseResponseSchema, SetUserTransactionsSchema,
+                                            UserRequestMealSchema, UserRequestMealResponseSchema,
+                                            UserTakeWorkoutCoachSchema)
 from app.infrastructure.repositories.user_repository import UserRepository
 from app.subservices.auth.hash_subservice import HashService
 from app.subservices.baseconfig import BaseService
@@ -160,3 +164,55 @@ class UserSubService(BaseService):
     async def get_user_exercise(self, user_id: int):
         logger.info(f"Fetching user exercise with user_id {user_id}")
         return self.user_repo.get_user_exercise(user_id)
+
+    async def create_user_meal(self, user_id, user_struct: UserRequestMealSchema):
+        logger.info(f"Creating user request meal with user_id {user_id}")
+
+        meal = UserMeal(
+            weight=user_struct.weight,
+            waist=user_struct.waist,
+            type=user_struct.type,
+            price=self.config.FitPlAN_PRICE
+        )
+
+        created_meal = self.user_repo.create_user_meal(meal)
+
+        user_request_meal = UserRequestMeal(
+            user_id=user_id,
+            user_meal_id=created_meal.id
+        )
+
+        self.user_repo.create_user_request_meal(user_request_meal)
+
+        transaction = SetUserTransactionsSchema(amount=self.config.FitPlAN_PRICE,
+                                                reason="Meal",
+                                                status="Success",
+                                                date=jdatetime.date.today().strftime("%Y/%m/%d"))
+
+        await self.create_transaction_log(user_id, transaction)
+
+        return UserRequestMealResponseSchema(
+            weight=created_meal.weight,
+            waist=created_meal.waist,
+            type=created_meal.type,
+            price=created_meal.price,
+            msg="Request Meal created successfully"
+        )
+
+    async def get_user_meal(self, user_id: int):
+        logger.info(f"Fetching user meal with user_id {user_id}")
+        return self.user_repo.get_user_meal(user_id)
+
+    async def get_user_all_coach(self, user_id: int):
+        logger.info(f"[...] Getting all coaches for user {user_id}")
+        return self.user_repo.get_user_all_coach(user_id)
+
+    async def create_user_take_workout_coach(self, user_id: int, take_struct: UserTakeWorkoutCoachSchema):
+        logger.info(f"[...] Creating user take workout coach for user {user_id}")
+
+        take = Take(
+            user_id=user_id,
+            workout_plan_id=take_struct.work_out_plan_id
+        )
+
+        return self.user_repo.create_user_take_workout_coach(take)

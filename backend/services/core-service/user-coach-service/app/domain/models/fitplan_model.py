@@ -28,6 +28,7 @@ class User(Base):
     # workout_plans = relationship('WorkoutPlan', secondary='take', back_populates='user')
     takes = relationship('Take', back_populates='user')
     user_requests = relationship("UserRequestExercise", back_populates="user")
+    user_request_meals = relationship("UserRequestMeal", back_populates="user")
 
 
 class UserMetrics(Base):
@@ -130,6 +131,7 @@ class WorkoutPlan(Base):
     takes = relationship('Take', back_populates='workout_plan')
     present = relationship('Present', back_populates='workout_plan')
     exercises = relationship("WorkoutPlanExercise", back_populates="workout_plan")
+    workout_plan_meal_supplements = relationship("WorkoutPlanMealSupplement", back_populates="workout_plan")
 
 
 class Take(Base):
@@ -219,3 +221,67 @@ class UserExerciseExercise(Base):
     # Relationships
     exercise = relationship("Exercise", back_populates="user_exercise_links")
     user_exercise = relationship("UserExercise", back_populates="exercise_links")
+
+
+class UserMeal(Base):
+    __tablename__ = "user_meal"
+
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    weight = Column(DECIMAL(5, 2), nullable=False)
+    waist = Column(DECIMAL(5, 2), nullable=False)
+    type = Column(String(10), nullable=False)
+    price = Column(DECIMAL(10, 2), nullable=False)
+    image = Column(Text, nullable=True)
+    created_at = Column(TIMESTAMP, server_default=func.now())
+    updated_at = Column(TIMESTAMP, server_default=func.now(), onupdate=func.now())
+
+    user_requests = relationship("UserRequestMeal", back_populates="user_meal")
+    user_meal_meal_supplement = relationship("UserMealMealSupplement", back_populates="user_meal")
+
+
+class UserRequestMeal(Base):
+    __tablename__ = "user_request_meal"
+
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    user_meal_id = Column(Integer, ForeignKey("user_meal.id", ondelete="CASCADE"), primary_key=True)
+
+    user = relationship("User", back_populates="user_request_meals")
+    user_meal = relationship("UserMeal", back_populates="user_requests")
+
+
+class MealSupplement(Base):
+    __tablename__ = "meal_supplement"
+
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    breakfast = Column(Text, nullable=True)
+    lunch = Column(Text, nullable=True)
+    dinner = Column(Text, nullable=True)
+    supplement = Column(Text, nullable=True)
+    expire_time = Column(Integer, nullable=False)
+    created_at = Column(TIMESTAMP, server_default=func.now())
+    updated_at = Column(TIMESTAMP, server_default=func.now(), onupdate=func.now())
+
+    workout_plan_meal_supplements = relationship("WorkoutPlanMealSupplement", back_populates="meal_supplement")
+    user_meal_meal_supplements = relationship("UserMealMealSupplement", back_populates="meal_supplement")
+
+
+class WorkoutPlanMealSupplement(Base):
+    __tablename__ = "workout_plan_meal_supplement"
+
+    meal_supplement_id = Column(Integer, ForeignKey("meal_supplement.id", ondelete="CASCADE"), primary_key=True)
+    workout_plan_id = Column(Integer, ForeignKey("workout_plan.id", ondelete="CASCADE"), primary_key=True)
+
+    # Relationships
+    meal_supplement = relationship("MealSupplement", back_populates="workout_plan_meal_supplements")
+    workout_plan = relationship("WorkoutPlan", back_populates="workout_plan_meal_supplements")
+
+
+class UserMealMealSupplement(Base):
+    __tablename__ = "user_meal_meal_supplement"
+
+    meal_supplement_id = Column(Integer, ForeignKey("meal_supplement.id", ondelete="CASCADE"), primary_key=True)
+    user_meal_id = Column(Integer, ForeignKey("user_meal.id", ondelete="CASCADE"), unique=True, nullable=False)
+
+    # Relationships
+    meal_supplement = relationship("MealSupplement", back_populates="user_meal_meal_supplements")
+    user_meal = relationship("UserMeal", back_populates="user_meal_meal_supplement")
