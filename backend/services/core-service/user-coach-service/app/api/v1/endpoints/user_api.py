@@ -1,12 +1,16 @@
 from typing import Annotated
-from fastapi import APIRouter, Depends, status, Form
+from fastapi import APIRouter, Depends, status
 from loguru import logger
 
 from app.domain.schemas.token_schema import TokenDataSchema
 from app.mainservices.auth_service import get_current_user
 from app.domain.schemas.user_schema import (GetUserInfoSchema,
                                             SetUserInfoSchema,
-                                            GetUserTransactionsSchema)
+                                            GetUserTransactionsSchema,
+                                            GetUserCoachSchema,
+                                            UserRequestExerciseSchema,
+                                            UserRequestExerciseResponseSchema,
+                                            GetUserExerciseSchema)
 
 from app.mainservices.user_mainservice import UserMainService
 
@@ -86,3 +90,44 @@ async def get_user_transactions(
 ):
     logger.info(f'[...] Getting user transactions for user {current_user.id}')
     return await user_service.get_user_transaction_log(current_user.id)
+
+
+
+@user_core_router.get(
+    "/get_user_coach",
+    status_code=status.HTTP_200_OK,
+    response_model=GetUserCoachSchema
+)
+async def get_user_coach(
+        current_user: Annotated[TokenDataSchema, Depends(get_current_user)],
+        user_service: Annotated[UserMainService, Depends()]
+):
+    logger.info(f'[...] Getting user coach for user {current_user.id}')
+    return await user_service.get_user_coach(current_user.id)
+
+
+@user_core_router.post(
+    "/request_exercise",
+    status_code=status.HTTP_201_CREATED,
+    response_model=UserRequestExerciseResponseSchema
+)
+async def request_exercise(
+        current_user: Annotated[TokenDataSchema, Depends(get_current_user)],
+        user_schema: UserRequestExerciseSchema,
+        user_service: Annotated[UserMainService, Depends()]
+):
+    logger.info(f'[...] Requesting exercise for user {current_user.id}')
+    return await user_service.create_user_exercise(current_user.id, user_schema)
+
+
+@user_core_router.get(
+    "/user_get_exercise",
+    status_code=status.HTTP_200_OK,
+    response_model=list[GetUserExerciseSchema]
+)
+async def user_get_exercise(
+        current_user: Annotated[TokenDataSchema, Depends(get_current_user)],
+        user_service: Annotated[UserMainService, Depends()]
+):
+    logger.info(f'[...] Getting exercise for user {current_user.id}')
+    return await user_service.get_user_exercise(current_user.id)

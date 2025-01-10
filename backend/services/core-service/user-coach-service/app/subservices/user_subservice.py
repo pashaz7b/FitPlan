@@ -1,9 +1,15 @@
+import jdatetime
+
 from typing import Annotated, Dict
 from loguru import logger
 from fastapi import Depends
 
-from app.domain.models.fitplan_model import User
+from app.domain.models.fitplan_model import (User,
+                                             UserExercise,
+                                             UserRequestExercise, TransactionLog, UserTransactionLog)
 from app.domain.models.fitplan_model import UserMetrics
+from app.domain.schemas.user_schema import (UserRequestExerciseSchema,
+                                            UserRequestExerciseResponseSchema, SetUserTransactionsSchema)
 from app.infrastructure.repositories.user_repository import UserRepository
 from app.subservices.auth.hash_subservice import HashService
 from app.subservices.baseconfig import BaseService
@@ -91,3 +97,66 @@ class UserSubService(BaseService):
     async def get_user_transaction_log(self, user_id: int):
         logger.info(f"Fetching user transactions with user_id {user_id}")
         return self.user_repo.get_user_transaction_log(user_id)
+
+    async def create_transaction_log(self, user_id: int, transaction_schema: SetUserTransactionsSchema):
+        logger.info(f"Creating transaction log for user with user_id {user_id}")
+
+        transaction = TransactionLog(
+            amount=transaction_schema.amount,
+            reason=transaction_schema.reason,
+            status=transaction_schema.status,
+            date=transaction_schema.date
+        )
+
+        self.user_repo.create_transaction_log(transaction)
+
+        user_transaction_log = UserTransactionLog(
+            user_id=user_id,
+            transaction_id=transaction.id
+        )
+
+        self.user_repo.create_user_transaction_log(user_transaction_log)
+
+        return transaction
+
+    async def get_user_coach(self, user_id: int):
+        logger.info(f"Fetching user coach with user_id {user_id}")
+        return self.user_repo.get_user_coach(user_id)
+
+    async def create_user_exercise(self, user_id, user_struct: UserRequestExerciseSchema):
+        logger.info(f"Creating user request exercise with user_id {user_id}")
+
+        exercise = UserExercise(
+            weight=user_struct.weight,
+            waist=user_struct.waist,
+            type=user_struct.type,
+            price=self.config.FitPlAN_PRICE
+        )
+
+        created_exercise = self.user_repo.create_user_exercise(exercise)
+
+        user_request_exercise = UserRequestExercise(
+            user_id=user_id,
+            user_exercise_id=created_exercise.id
+        )
+
+        self.user_repo.create_user_request_exercise(user_request_exercise)
+
+        transaction = SetUserTransactionsSchema(amount=self.config.FitPlAN_PRICE,
+                                                reason="Exercise",
+                                                status="Success",
+                                                date=jdatetime.date.today().strftime("%Y/%m/%d"))
+
+        await self.create_transaction_log(user_id, transaction)
+
+        return UserRequestExerciseResponseSchema(
+            weight=created_exercise.weight,
+            waist=created_exercise.waist,
+            type=created_exercise.type,
+            price=created_exercise.price,
+            msg="Request Exercise created successfully"
+        )
+
+    async def get_user_exercise(self, user_id: int):
+        logger.info(f"Fetching user exercise with user_id {user_id}")
+        return self.user_repo.get_user_exercise(user_id)

@@ -24,6 +24,8 @@ class Settings(BaseSettings):
     SMTP_PASSWORD: str = "xrtwqctuprcgeiyj"
     EMAIL_FROM: str = "asldy3097@gmail.com"
 
+    FitPlAN_PRICE: int = 1000000
+
     # model_config = SettingsConfigDict(env_file=str(Path(__file__).resolve().parent / ".env"))
 
 
