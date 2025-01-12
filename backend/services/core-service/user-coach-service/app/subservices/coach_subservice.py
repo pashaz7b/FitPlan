@@ -3,7 +3,9 @@ from loguru import logger
 from fastapi import Depends
 
 from app.domain.models.fitplan_model import (Coach,
-                                             CoachMetrics)
+                                             CoachMetrics, MealSupplement, UserMealMealSupplement,
+                                             WorkoutPlanMealSupplement)
+from app.domain.schemas.coach_schema import SetCoachUserMealSchema, SetCoachUserMealResponseSchema
 from app.infrastructure.repositories.coach_repository import CoachRepository
 from app.subservices.auth.hash_subservice import HashService
 from app.subservices.baseconfig import BaseService
@@ -70,3 +72,51 @@ class CoachSubService(BaseService):
     async def get_coach_user_meal_request(self, coach_id: int):
         logger.info(f"Fetching coach user meal request with coach_id {coach_id}")
         return self.coach_repo.get_coach_user_meal_request(coach_id)
+        # all_user_meal = self.coach_repo.get_coach_user_meal_request(coach_id)
+        # all_user_meal_supplements = self.coach_repo.get_user_meal_meal_supplement()
+        # supplement_user_meal_ids = {supplement.user_meal_id for supplement in all_user_meal_supplements}
+        #
+        # filtered_user_meals = []
+        # for user in all_user_meal:
+        #     for request_meal in user.user_request_meals:
+        #         if request_meal.user_meal.id not in supplement_user_meal_ids:
+        #             filtered_user_meals.append(user)
+        #             break
+        #
+        # logger.info(f"Filtered user meals: {filtered_user_meals}")
+        # return all_user_meal
+
+    async def create_coach_user_meal(self, coach_id: int, meal: SetCoachUserMealSchema):
+        logger.info(f"Creating coach user meal with coach_id {coach_id}")
+
+        meal_supplement = MealSupplement(
+            breakfast=meal.breakfast,
+            lunch=meal.lunch,
+            dinner=meal.dinner,
+            supplement=meal.supplement,
+            expire_time=meal.expire_time
+        )
+
+        created_meal_supplement = self.coach_repo.create_meal_supplement(meal_supplement)
+
+        user_meal_meal_supplement = UserMealMealSupplement(
+            user_meal_id=meal.user_meal_id,
+            meal_supplement_id=created_meal_supplement.id
+        )
+
+        self.coach_repo.create_user_meal_meal_supplement(user_meal_meal_supplement)
+
+        workout_plan_meal_supplement = WorkoutPlanMealSupplement(
+            workout_plan_id=meal.work_out_plan_id,
+            meal_supplement_id=created_meal_supplement.id
+        )
+
+        self.coach_repo.create_work_out_plan_meal_supplement(workout_plan_meal_supplement)
+
+        return SetCoachUserMealResponseSchema(
+            meal_id=created_meal_supplement.id,
+            message="Meal Created Successfully"
+        )
+
+    async def get_is_answered_requested_meal(self, user_meal_id: int):
+        return self.coach_repo.get_is_answered_requested_meal(user_meal_id)

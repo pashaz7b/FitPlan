@@ -216,3 +216,4 @@ class UserSubService(BaseService):
         )
 
         return self.user_repo.create_user_take_workout_coach(take)
+

@@ -10,7 +10,8 @@ from app.domain.models.fitplan_model import (Coach,
                                              WorkoutPlan,
                                              Take,
                                              User, UserRequestMeal, UserMeal,
-                                             UserMealMealSupplement)
+                                             UserMealMealSupplement, MealSupplement, WorkoutPlanMealSupplement,
+                                             UserRequestExercise, UserExercise, UserExerciseExercise)
 
 
 class CoachRepository:
@@ -109,6 +110,7 @@ class CoachRepository:
         #     .filter(Present.coach_id == coach_id)
         #     .all()
         # )
+
         my_users = (
             self.db.query(User)
             .join(UserRequestMeal, User.id == UserRequestMeal.user_id)
@@ -121,7 +123,73 @@ class CoachRepository:
             .filter(UserMealMealSupplement.user_meal_id.is_(None))
             .all()
         )
+
+        # my_users = (
+        #     self.db.query(User)
+        #     .join(UserRequestMeal, User.id == UserRequestMeal.user_id)
+        #     .join(UserMeal, UserMeal.id == UserRequestMeal.user_meal_id)
+        #     .join(Take, User.id == Take.user_id)
+        #     .join(WorkoutPlan, WorkoutPlan.id == Take.workout_plan_id)
+        #     .join(Present, Present.workout_plan_id == WorkoutPlan.id)
+        #     .filter(Present.coach_id == coach_id)
+        #     .filter(
+        #         ~self.db.query(UserMealMealSupplement)
+        #         .filter(UserMealMealSupplement.user_meal_id == UserMeal.id)
+        #         .exists()
+        #     )
+        #     .all()
+        # )
+
         return my_users
 
-    # def get_coach_user_meal_meal_supplement(self, coach_id: int):
-    #     pass
+    def get_user_meal_meal_supplement(self):
+        logger.info("[+] Fetching All User Meal Meal Supplement")
+        return self.db.query(UserMealMealSupplement).all()
+
+    def create_meal_supplement(self, meal_supplement: MealSupplement):
+        self.db.add(meal_supplement)
+        self.db.commit()
+        self.db.refresh(meal_supplement)
+        logger.info(f"[+] Meal Supplement Created With Meal Id ---> {meal_supplement.id}")
+        return meal_supplement
+
+    def create_user_meal_meal_supplement(self, user_meal_meal_supplement: UserMealMealSupplement):
+        self.db.add(user_meal_meal_supplement)
+        self.db.commit()
+        self.db.refresh(user_meal_meal_supplement)
+        logger.info(
+            f"[+] User Meal Meal Supplement Created For User With Id ---> {user_meal_meal_supplement.user_meal_id}")
+        return user_meal_meal_supplement
+
+    def create_work_out_plan_meal_supplement(self, workout_plan_meal_supplement: WorkoutPlanMealSupplement):
+        self.db.add(workout_plan_meal_supplement)
+        self.db.commit()
+        self.db.refresh(workout_plan_meal_supplement)
+        logger.info(
+            f"[+] Workout Plan Meal Supplement Created With Workout Plan Id ---> {workout_plan_meal_supplement.workout_plan_id}")
+        return workout_plan_meal_supplement
+
+    def get_is_answered_requested_meal(self, user_meal_id: int):
+        is_answered = (
+            self.db.query(UserMealMealSupplement)
+            .filter(UserMealMealSupplement.user_meal_id == user_meal_id)
+            .first()
+        )
+        return is_answered
+
+    def get_coach_user_exercise_request(self, coach_id: int):
+        logger.info(f"[+] Fetching Coach With Id ---> {coach_id}")
+
+        my_users = (
+            self.db.query(User)
+            .join(UserRequestExercise, User.id == UserRequestExercise.user_id)
+            .join(UserExercise, UserExercise.id == UserRequestExercise.user_exercise_id)
+            .join(Take, User.id == Take.user_id)
+            .join(WorkoutPlan, WorkoutPlan.id == Take.workout_plan_id)
+            .join(Present, Present.workout_plan_id == WorkoutPlan.id)
+            .outerjoin(UserExerciseExercise, UserExercise.id == UserExerciseExercise.user_exercise_id)
+            .filter(Present.coach_id == coach_id)
+            .filter(UserExerciseExercise.user_exercise_id.is_(None))
+            .all()
+        )
+        return my_users

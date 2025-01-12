@@ -14,6 +14,7 @@ class GetCoachUserSchema(BaseModel):
     height: float
     weight: float
 
+
 class GetCoachUserMealRequestSchema(BaseModel):
     work_out_plan_id: int
     work_out_plan_name: str
@@ -28,3 +29,18 @@ class GetCoachUserMealRequestSchema(BaseModel):
     phone_number: str
     gender: str
     date_of_birth: str
+
+
+class SetCoachUserMealSchema(BaseModel):
+    work_out_plan_id: int
+    user_meal_id: int
+    breakfast: str
+    lunch: str
+    dinner: str
+    supplement: Optional[str] = None
+    expire_time: Optional[int] = None
+
+
+class SetCoachUserMealResponseSchema(BaseModel):
+    meal_id: int
+    message: str

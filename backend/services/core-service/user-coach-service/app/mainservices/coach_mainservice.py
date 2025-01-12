@@ -2,7 +2,7 @@ from typing import Annotated
 from loguru import logger
 from fastapi import Depends, HTTPException, status
 
-from app.domain.schemas.coach_schema import (GetCoachUserSchema,
+from app.domain.schemas.coach_schema import (GetCoachUserSchema, SetCoachUserMealSchema,
                                              )
 
 from app.subservices.coach_subservice import CoachSubService
@@ -88,21 +88,28 @@ class CoachMainService(BaseService):
         result = []
         for user in coach_user_meal_request:
             for request_meal in user.user_request_meals:
-                for take in user.takes:
-                    result.append({
-                        "work_out_plan_id": take.workout_plan.id,
-                        "work_out_plan_name": take.workout_plan.name,
-                        "user_meal_id": request_meal.user_meal.id,
-                        "user_meal_weight": request_meal.user_meal.weight,
-                        "user_meal_waist": request_meal.user_meal.waist,
-                        "user_meal_type": request_meal.user_meal.type,
-                        "user_id": user.id,
-                        "user_name": user.name,
-                        "name": user.name,
-                        "email": user.email,
-                        "phone_number": user.phone_number,
-                        "gender": user.gender,
-                        "date_of_birth": user.date_of_birth,
-                    })
+                flag = await self.coach_subservice.get_is_answered_requested_meal(request_meal.user_meal.id)
+                if not flag:
+                    for take in user.takes:
+                        result.append({
+                            "work_out_plan_id": take.workout_plan.id,
+                            "work_out_plan_name": take.workout_plan.name,
+                            "user_meal_id": request_meal.user_meal.id,
+                            "user_meal_weight": request_meal.user_meal.weight,
+                            "user_meal_waist": request_meal.user_meal.waist,
+                            "user_meal_type": request_meal.user_meal.type,
+                            "user_id": user.id,
+                            "user_name": user.name,
+                            "name": user.name,
+                            "email": user.email,
+                            "phone_number": user.phone_number,
+                            "gender": user.gender,
+                            "date_of_birth": user.date_of_birth,
+                        })
 
         return result
+
+    async def create_coach_user_meal(self, coach_id: int, meal: SetCoachUserMealSchema):
+        logger.info(f"[+] Creating Coach User Meal With Coach ID ---> {coach_id}")
+
+        return await self.coach_subservice.create_coach_user_meal(coach_id, meal)
