@@ -99,9 +99,10 @@ class UserMainService(BaseService):
     async def get_user_info(self, user_id: int) -> GetUserInfoSchema:
         user = await self.user_subservice.get_user(user_id)
         user_metrics = await self.user_subservice.get_user_metrics(user_id)
+        empty_password = ""
         return GetUserInfoSchema(
             id=user.id,
-            password=user.password,
+            password=empty_password,
             user_name=user.user_name,
             name=user.name,
             email=user.email,
@@ -128,9 +129,13 @@ class UserMainService(BaseService):
             "weight": current_user_metrics.weight,
         }
 
-        user.password = self.hash_subservice.hash_password(user.password) if user.password else None
+        if user.password.strip():
+            user.password = self.hash_subservice.hash_password(user.password) if user.password else None
 
         changes = {key: value for key, value in user if current_data.get(key) != value}
+
+        if not user.password.strip():
+            changes.pop("password")
 
         logger.info(f"change {changes}")
         if "email" in changes:
