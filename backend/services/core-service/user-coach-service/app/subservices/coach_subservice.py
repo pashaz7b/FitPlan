@@ -4,8 +4,10 @@ from fastapi import Depends
 
 from app.domain.models.fitplan_model import (Coach,
                                              CoachMetrics, MealSupplement, UserMealMealSupplement,
-                                             WorkoutPlanMealSupplement)
-from app.domain.schemas.coach_schema import SetCoachUserMealSchema, SetCoachUserMealResponseSchema
+                                             WorkoutPlanMealSupplement, Exercise, UserExerciseExercise,
+                                             WorkoutPlanExercise)
+from app.domain.schemas.coach_schema import SetCoachUserMealSchema, SetCoachUserMealResponseSchema, \
+    SetCoachUserExerciseSchema, SetCoachUserExerciseResponseSchema
 from app.infrastructure.repositories.coach_repository import CoachRepository
 from app.subservices.auth.hash_subservice import HashService
 from app.subservices.baseconfig import BaseService
@@ -61,9 +63,35 @@ class CoachSubService(BaseService):
         logger.info(f"Fetching coach with id {coach_id}")
         return self.coach_repo.get_coach(coach_id)
 
+    async def get_coach_metrics(self, coach_id: int):
+        logger.info(f"Fetching coach metrics with coach_id {coach_id}")
+        return self.coach_repo.get_coach_metrics(coach_id)
+
     async def get_coach_by_email(self, email: str) -> Coach:
         logger.info(f"[+] Fetching coach with Email ---> {email}")
         return self.coach_repo.get_coach_by_email(email)
+
+    async def change_coach_info(self, coach_id: int, changes: Dict) -> None:
+        logger.info(f"Updating coach with id {coach_id} with changes: {changes}")
+
+        coach_changes = {}
+        metrics_changes = {}
+
+        for key, value in changes.items():
+            if key in ["password", "user_name", "name", "email", "phone_number", "gender", "status", "date_of_birth"]:
+                coach_changes[key] = value
+            elif key in ["height", "weight", "specialization", "biography"]:
+                metrics_changes[key] = value
+
+        if coach_changes:
+            logger.info(f"Applying coach updates: {coach_changes}")
+            self.coach_repo.update_coach(coach_id, coach_changes)
+
+        if metrics_changes:
+            logger.info(f"Applying coach metrics updates: {metrics_changes}")
+            self.coach_repo.update_coach_metrics(coach_id, metrics_changes)
+
+        logger.info(f"Coach updated successfully")
 
     async def get_coach_user(self, coach_id: int):
         logger.info(f"Fetching coach user with coach_id {coach_id}")
@@ -120,3 +148,45 @@ class CoachSubService(BaseService):
 
     async def get_is_answered_requested_meal(self, user_meal_id: int):
         return self.coach_repo.get_is_answered_requested_meal(user_meal_id)
+
+    async def get_coach_user_exercise_request(self, coach_id: int):
+        logger.info(f"Fetching coach user exercise request with coach_id {coach_id}")
+        return self.coach_repo.get_coach_user_exercise_request(coach_id)
+
+    async def get_is_answered_requested_exercise(self, user_exercise_id: int):
+        return self.coach_repo.get_is_answered_requested_exercise(user_exercise_id)
+
+    async def create_coach_user_exercise(self, coach_id: int, user_exercise_id: int, work_out_plan_id: int,
+                                         exercises: list[SetCoachUserExerciseSchema]):
+        logger.info(f"creating coach user exercise with coach_id {coach_id}")
+
+        exercise_ids = []
+
+        for exercise in exercises:
+            exercise_sql = Exercise(
+                day=exercise.day,
+                name=exercise.name,
+                set=exercise.set,
+                expire_time=exercise.expire_time
+            )
+
+            created_exercise_sql = self.coach_repo.create_exercise(exercise_sql)
+            exercise_ids.append(created_exercise_sql.id)
+
+        for exercise_id in exercise_ids:
+            user_exercise_exercise = UserExerciseExercise(
+                user_exercise_id=user_exercise_id,
+                exercise_id=exercise_id
+            )
+            self.coach_repo.create_user_exercise_exercise(user_exercise_exercise)
+
+        for exercise_id in exercise_ids:
+            workout_plan_exercise = WorkoutPlanExercise(
+                workout_plan_id=work_out_plan_id,
+                exercise_id=exercise_id
+            )
+            self.coach_repo.create_workout_plan_exercise(workout_plan_exercise)
+
+        return SetCoachUserExerciseResponseSchema(
+            message="Exercise Created Successfully"
+        )

@@ -11,7 +11,8 @@ from app.domain.models.fitplan_model import (Coach,
                                              Take,
                                              User, UserRequestMeal, UserMeal,
                                              UserMealMealSupplement, MealSupplement, WorkoutPlanMealSupplement,
-                                             UserRequestExercise, UserExercise, UserExerciseExercise)
+                                             UserRequestExercise, UserExercise, UserExerciseExercise, Exercise,
+                                             WorkoutPlanExercise)
 
 
 class CoachRepository:
@@ -193,3 +194,32 @@ class CoachRepository:
             .all()
         )
         return my_users
+
+    def get_is_answered_requested_exercise(self, user_exercise_id: int):
+        is_answered = (
+            self.db.query(UserExerciseExercise)
+            .filter(UserExerciseExercise.user_exercise_id == user_exercise_id)
+            .first()
+        )
+        return is_answered
+
+    def create_exercise(self, exercise: Exercise):
+        self.db.add(exercise)
+        self.db.commit()
+        self.db.refresh(exercise)
+        logger.info(f"[+] Exercise Created With Id ---> {exercise.id}")
+        return exercise
+
+    def create_user_exercise_exercise(self, user_exercise_exercise: UserExerciseExercise):
+        self.db.add(user_exercise_exercise)
+        self.db.commit()
+        self.db.refresh(user_exercise_exercise)
+        logger.info(f"[+] User Exercise Exercise Created")
+        return user_exercise_exercise
+
+    def create_workout_plan_exercise(self, workout_plan_exercise: WorkoutPlanExercise):
+        self.db.add(workout_plan_exercise)
+        self.db.commit()
+        self.db.refresh(workout_plan_exercise)
+        logger.info(f"[+] Workout Plan Exercise Created")
+        return workout_plan_exercise
