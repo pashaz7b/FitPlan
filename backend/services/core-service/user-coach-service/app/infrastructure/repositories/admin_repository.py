@@ -4,7 +4,14 @@ from fastapi import Depends
 from sqlalchemy.orm import Session
 
 from app.core.postgres_db.postgres_database import get_db
-from app.domain.models.fitplan_model import Admin
+from app.domain.models.fitplan_model import (Admin, User,
+                                             Coach,
+                                             CoachMetrics,
+                                             Present,
+                                             WorkoutPlan,
+                                             Take,
+                                             User
+                                             )
 
 
 class AdminRepository:
@@ -53,3 +60,17 @@ class AdminRepository:
     def get_admin_by_email(self, email: str):
         logger.info(f"[+] Fetching Admin With Email --> {email}")
         return self.db.query(Admin).filter(Admin.email == email).first()
+
+    def get_admin_all_users(self, admin_id: int):
+        logger.info(f"[+] Fetching All Users Of fitplan for admin With Id ---> {admin_id}")
+
+        all_users = (
+            self.db.query(User)
+            .join(Take, User.id == Take.user_id)
+            .join(WorkoutPlan, WorkoutPlan.id == Take.workout_plan_id)
+            .join(Present, Present.workout_plan_id == WorkoutPlan.id)
+            .join(Coach, Coach.id == Present.coach_id)
+            .all()
+        )
+
+        return all_users

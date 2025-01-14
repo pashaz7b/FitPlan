@@ -53,3 +53,22 @@ class AdminSubService(BaseService):
     async def get_admin_by_email(self, email: str) -> Admin:
         logger.info(f"[+] Fetching admin with Email ---> {email}")
         return self.admin_repo.get_admin_by_email(email)
+
+    async def change_admin_info(self, admin_id: int, changes: Dict):
+        logger.info(f"Updating admin with id {admin_id} with changes: {changes}")
+
+        admin_changes = {}
+
+        for key, value in changes.items():
+            if key in {"password", "user_name", "name", "email", "phone_number", "gender", "date_of_birth"}:
+                admin_changes[key] = value
+
+        if admin_changes:
+            logger.info(f"Applying user updates: {admin_changes}")
+            self.admin_repo.update_admin(admin_id, admin_changes)
+
+        logger.info(f"Admin with id {admin_id} updated successfully")
+
+    async def get_admin_all_users(self, admin_id: int):
+        logger.info(f"[+] Fetching All Users Of fitplan for admin With Id ---> {admin_id}")
+        return self.admin_repo.get_admin_all_users(admin_id)
