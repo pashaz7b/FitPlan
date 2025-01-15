@@ -3,7 +3,8 @@ from loguru import logger
 from fastapi import Depends, HTTPException, status
 
 from app.domain.schemas.admin_schema import (GetAdminInfoSchema,
-                                             SetAdminInfoSchema, GetAdminAllUsersSchema)
+                                             SetAdminInfoSchema, GetAdminAllUsersSchema, GetAdminAllCoachSchema,
+                                             UserSchema, TransactionSchema, GetAdminAllTransactionSchema)
 
 from app.subservices.admin_subservice import AdminSubService
 from app.subservices.user_duplicates_subservice import UserDuplicatesSubService
@@ -107,7 +108,6 @@ class AdminMainService(BaseService):
             )
 
         result = []
-
         empty_password = ""
 
         # for user in users:
@@ -179,4 +179,104 @@ class AdminMainService(BaseService):
                 coach_biography=coach.metrics.biography if coach else None
             ))
 
+        return result
+
+    async def get_admin_all_coach(self, admin_id: int):
+        logger.info(f"[+] Fetching All Coach Of fitplan for admin With Id ---> {admin_id}")
+
+        coaches = await self.admin_subservice.get_admin_all_coach(admin_id)
+
+        if not coaches:
+            logger.error(f"[-] No Coach Found In Fitplan")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="No Coach Found In Fitplan"
+            )
+
+        result = []
+        empty_password = ""
+
+        for coach in coaches:
+            users = await self.admin_subservice.get_users_for_coach(coach.id)
+
+            coach_data = GetAdminAllCoachSchema(
+                coach_id=coach.id,
+                coach_password=empty_password,
+                coach_user_name=coach.user_name,
+                coach_name=coach.name,
+                coach_email=coach.email,
+                coach_phone_number=coach.phone_number,
+                coach_gender=coach.gender,
+                coach_status=coach.status,
+                coach_date_of_birth=coach.date_of_birth,
+                coach_height=coach.metrics.height if coach.metrics else None,
+                coach_weight=coach.metrics.weight if coach.metrics else None,
+                coach_specialization=coach.metrics.specialization if coach.metrics else None,
+                coach_biography=coach.metrics.biography if coach.metrics else None,
+                users=[
+                    UserSchema(
+                        user_id=user.id,
+                        user_password=empty_password,
+                        user_user_name=user.user_name,
+                        user_name=user.name,
+                        user_email=user.email,
+                        user_phone_number=user.phone_number,
+                        user_gender=user.gender,
+                        user_date_of_birth=user.date_of_birth,
+                        user_height=user.metrics.height if user.metrics else None,
+                        user_weight=user.metrics.weight if user.metrics else None,
+                    )
+                    for user in users
+                ],
+            )
+
+            result.append(coach_data)
+
+        logger.info(f"[+] Successfully fetched {len(result)} coaches and their users")
+        return result
+
+    async def get_all_transaction(self, admin_id: int):
+        logger.info(f"[+] Fetching All Transactions Of fitplan for admin With Id ---> {admin_id}")
+
+        users_transactions = await self.admin_subservice.get_all_transaction(admin_id)
+
+        if not users_transactions:
+            logger.error(f"[-] No Transaction Found In Fitplan")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="No Transaction Found In Fitplan"
+            )
+
+        result = []
+        empty_password = ""
+
+        for user in users_transactions:
+            transactions = [
+                TransactionSchema(
+                    transaction_id=transaction_log.transaction.id,
+                    transaction_amount=transaction_log.transaction.amount,
+                    transaction_reason=transaction_log.transaction.reason,
+                    transaction_status=transaction_log.transaction.status,
+                    transaction_date=transaction_log.transaction.date,
+                    created_at=transaction_log.transaction.created_at,
+                    updated_at=transaction_log.transaction.updated_at,
+                )
+                for transaction_log in user.user_transactions
+            ]
+
+            user_data = GetAdminAllTransactionSchema(
+                user_id=user.id,
+                user_password=empty_password,
+                user_user_name=user.user_name,
+                user_name=user.name,
+                user_email=user.email,
+                user_phone_number=user.phone_number,
+                user_gender=user.gender,
+                user_date_of_birth=user.date_of_birth,
+                user_height=user.metrics.height if user.metrics else None,
+                user_weight=user.metrics.weight if user.metrics else None,
+                transactions=transactions,
+            )
+
+            result.append(user_data)
+
+        logger.info(f"[+] Successfully fetched {len(result)} users and their transactions")
         return result

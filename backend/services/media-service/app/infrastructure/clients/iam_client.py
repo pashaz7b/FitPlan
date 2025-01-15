@@ -34,3 +34,13 @@ class IAMClient:
             response.raise_for_status()
             logger.info(f"Token {token} validated")
             return TokenDataSchema(**response.json())
+
+    async def validate_admin_token(self, token: str) -> TokenDataSchema:
+        headers = {"Authorization": f"Bearer {token}"}
+        async with self.http_client as client:
+            response = await client.get(
+                f"{self.config.IAM_URL}/api/v1/admin/panel", headers=headers
+            )
+            response.raise_for_status()
+            logger.info(f"Token {token} validated")
+            return TokenDataSchema(**response.json())

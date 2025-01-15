@@ -30,6 +30,10 @@ class SetUserInfoSchema(BaseModel):
     weight: Optional[float]
 
 
+class SetUserInfoResponseSchema(BaseModel):
+    message: str
+
+
 class GetUserTransactionsSchema(BaseModel):
     id: int
     amount: float

@@ -72,3 +72,15 @@ class AdminSubService(BaseService):
     async def get_admin_all_users(self, admin_id: int):
         logger.info(f"[+] Fetching All Users Of fitplan for admin With Id ---> {admin_id}")
         return self.admin_repo.get_admin_all_users(admin_id)
+
+    async def get_admin_all_coach(self, admin_id: int):
+        logger.info(f"[+] Fetching All Coaches Of fitplan for admin With Id ---> {admin_id}")
+        return self.admin_repo.get_admin_all_coach(admin_id)
+
+    async def get_users_for_coach(self, coach_id: int):
+        logger.info(f"[+] Fetching All Users Of fitplan for coach With Id ---> {coach_id}")
+        return self.admin_repo.get_users_for_coach(coach_id)
+
+    async def get_all_transaction(self, admin_id: int):
+        logger.info(f"[+] Fetching All Transactions Of fitplan for admin With Id ---> {admin_id}")
+        return self.admin_repo.get_all_transaction(admin_id)

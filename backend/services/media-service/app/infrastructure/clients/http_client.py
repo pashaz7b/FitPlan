@@ -8,6 +8,7 @@ from app.core.config.config import get_settings, Settings
 from tenacity import retry, stop_after_attempt, wait_fixed
 from aiobreaker import CircuitBreaker
 
+
 breaker = CircuitBreaker(fail_max=3, timeout_duration=timedelta(seconds=60))
 
 

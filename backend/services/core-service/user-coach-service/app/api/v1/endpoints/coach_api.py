@@ -29,7 +29,7 @@ async def get_coach_info(
 
 @coach_core_router.put(
     "/change_coach_info",
-    response_model= dict,
+    response_model=dict,
     status_code=status.HTTP_200_OK
 )
 async def change_coach_info(
@@ -39,8 +39,6 @@ async def change_coach_info(
 ):
     logger.info(f'Change coach info for coach {current_coach.id}')
     return await coach_service.change_coach_info(current_coach.id, set_coach_info)
-
-
 
 
 @coach_core_router.get(

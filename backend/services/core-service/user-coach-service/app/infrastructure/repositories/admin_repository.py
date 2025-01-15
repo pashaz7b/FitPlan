@@ -10,7 +10,7 @@ from app.domain.models.fitplan_model import (Admin, User,
                                              Present,
                                              WorkoutPlan,
                                              Take,
-                                             User
+                                             User, UserTransactionLog, TransactionLog
                                              )
 
 
@@ -74,3 +74,44 @@ class AdminRepository:
         )
 
         return all_users
+
+    def get_admin_all_coach(self, admin_id: int):
+        logger.info(f"[+] Fetching All Coach Of fitplan for admin With Id ---> {admin_id}")
+
+        all_coach = (
+            self.db.query(Coach)
+            .join(Present, Present.coach_id == Coach.id)
+            .join(WorkoutPlan, WorkoutPlan.id == Present.workout_plan_id)
+            .join(Take, Take.workout_plan_id == WorkoutPlan.id)
+            .join(User, User.id == Take.user_id)
+            .all()
+        )
+
+        return all_coach
+
+    def get_users_for_coach(self, coach_id: int):
+        logger.info(f"[+] Fetching All Users Of fitplan for coach With Id ---> {coach_id}")
+
+        all_users = (
+            self.db.query(User)
+            .join(Take, User.id == Take.user_id)
+            .join(WorkoutPlan, WorkoutPlan.id == Take.workout_plan_id)
+            .join(Present, Present.workout_plan_id == WorkoutPlan.id)
+            .join(Coach, Coach.id == Present.coach_id)
+            .filter(Coach.id == coach_id)
+            .all()
+        )
+
+        return all_users
+
+    def get_all_transaction(self, admin_id: int):
+        logger.info(f"[+] Fetching All Transaction Of fitplan for admin With Id ---> {admin_id}")
+
+        all_transaction = (
+            self.db.query(User)
+            .join(UserTransactionLog, User.id == UserTransactionLog.user_id)
+            .join(TransactionLog, TransactionLog.id == UserTransactionLog.transaction_id)
+            .all()
+        )
+
+        return all_transaction

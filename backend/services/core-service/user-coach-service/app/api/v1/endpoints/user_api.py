@@ -73,12 +73,7 @@ async def change_user_info(
         user_service: Annotated[UserMainService, Depends()]
 ):
     logger.info(f'[...] Changing user info for user {current_user.id}')
-    changes = user_data
-    if not changes:
-        return {"message": "No changes detected"}
-
-    await user_service.change_user_info(current_user.id, changes)
-    return {"message": "User information updated successfully"}
+    return await user_service.change_user_info(current_user.id, user_data)
 
 
 @user_core_router.get(
