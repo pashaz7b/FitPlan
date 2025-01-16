@@ -223,3 +223,17 @@ class CoachRepository:
         self.db.refresh(workout_plan_exercise)
         logger.info(f"[+] Workout Plan Exercise Created")
         return workout_plan_exercise
+
+    def create_workout_plan(self, workout_plan: WorkoutPlan):
+        self.db.add(workout_plan)
+        self.db.commit()
+        self.db.refresh(workout_plan)
+        logger.info(f"[+] Workout Plan Created")
+        return workout_plan
+
+    def create_present(self, present: Present):
+        self.db.add(present)
+        self.db.commit()
+        self.db.refresh(present)
+        logger.info(f"[+] Present Created")
+        return present

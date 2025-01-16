@@ -101,3 +101,14 @@ class SetCoachUserExerciseSchema(BaseModel):
 
 class SetCoachUserExerciseResponseSchema(BaseModel):
     message: str
+
+
+class SetCoachWorkOutPlanSchema(BaseModel):
+    workout_plan_name: str
+    workout_plan_description: str
+    workout_plan_duration_month: Optional[int] = None
+
+
+class SetCoachWorkOutPlanResponseSchema(BaseModel):
+    workout_plan_id: int
+    message: str

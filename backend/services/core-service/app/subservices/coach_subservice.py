@@ -5,9 +5,10 @@ from fastapi import Depends
 from app.domain.models.fitplan_model import (Coach,
                                              CoachMetrics, MealSupplement, UserMealMealSupplement,
                                              WorkoutPlanMealSupplement, Exercise, UserExerciseExercise,
-                                             WorkoutPlanExercise)
+                                             WorkoutPlanExercise, WorkoutPlan, Present)
 from app.domain.schemas.coach_schema import SetCoachUserMealSchema, SetCoachUserMealResponseSchema, \
-    SetCoachUserExerciseSchema, SetCoachUserExerciseResponseSchema
+    SetCoachUserExerciseSchema, SetCoachUserExerciseResponseSchema, SetCoachWorkOutPlanSchema, \
+    SetCoachWorkOutPlanResponseSchema
 from app.infrastructure.repositories.coach_repository import CoachRepository
 from app.subservices.auth.hash_subservice import HashService
 from app.subservices.baseconfig import BaseService
@@ -188,5 +189,28 @@ class CoachSubService(BaseService):
             self.coach_repo.create_workout_plan_exercise(workout_plan_exercise)
 
         return SetCoachUserExerciseResponseSchema(
+            message="Exercise Created Successfully"
+        )
+
+    async def create_workout_plan(self, coach_id: int, workout_plan: SetCoachWorkOutPlanSchema):
+        logger.info(f"[+] Creating workout plan For Coach With id {coach_id}")
+
+        the_workout_plan = WorkoutPlan(
+            name=workout_plan.workout_plan_name,
+            description=workout_plan.workout_plan_description,
+            duration_month=workout_plan.workout_plan_duration_month
+        )
+
+        created_workout_plan = self.coach_repo.create_workout_plan(the_workout_plan)
+
+        present = Present(
+            coach_id=coach_id,
+            workout_plan_id=created_workout_plan.id
+        )
+
+        self.coach_repo.create_present(present)
+
+        return SetCoachWorkOutPlanResponseSchema(
+            workout_plan_id=created_workout_plan.id,
             message="Exercise Created Successfully"
         )

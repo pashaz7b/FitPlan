@@ -4,7 +4,7 @@ from fastapi import Depends, HTTPException, status
 
 from app.domain.schemas.coach_schema import (GetCoachUserSchema, SetCoachUserMealSchema, GetCoachUserMealRequestSchema,
                                              GetCoachUserExerciseRequestSchema, SetCoachUserExerciseSchema,
-                                             GetCoachInfoSchema,
+                                             GetCoachInfoSchema, SetCoachWorkOutPlanSchema
                                              )
 
 from app.subservices.coach_subservice import CoachSubService
@@ -218,3 +218,8 @@ class CoachMainService(BaseService):
 
         return await self.coach_subservice.create_coach_user_exercise(coach_id, user_exercise_id, work_out_plan_id,
                                                                       exercises)
+
+    async def create_workout_plan(self, coach_id: int, workout_plan: SetCoachWorkOutPlanSchema):
+        logger.info(f"[+] Creating Workout Plan With Coach ID ---> {coach_id}")
+
+        return await self.coach_subservice.create_workout_plan(coach_id, workout_plan)

@@ -7,7 +7,8 @@ from app.mainservices.coach_auth_service import get_current_coach
 from app.domain.schemas.coach_schema import (GetCoachUserSchema, GetCoachUserMealRequestSchema, SetCoachUserMealSchema,
                                              SetCoachUserMealResponseSchema, GetCoachUserExerciseRequestSchema,
                                              SetCoachUserExerciseSchema, SetCoachUserExerciseResponseSchema,
-                                             GetCoachInfoSchema, SetCoachInfoSchema)
+                                             GetCoachInfoSchema, SetCoachInfoSchema, SetCoachWorkOutPlanSchema,
+                                             SetCoachWorkOutPlanResponseSchema)
 
 from app.mainservices.coach_mainservice import CoachMainService
 
@@ -109,3 +110,17 @@ async def accept_meal_request(
 ):
     logger.info(f'Accept and send meal Plan With Coach id --->{current_coach.id}')
     return await coach_service.create_coach_user_meal(current_coach.id, set_coach_user_meal)
+
+
+@coach_core_router.post(
+    "/create_workout_plan",
+    response_model=SetCoachWorkOutPlanResponseSchema,
+    status_code=status.HTTP_201_CREATED
+)
+async def create_workout_plan(
+        current_coach: Annotated[TokenDataSchema, Depends(get_current_coach)],
+        workout_plan: SetCoachWorkOutPlanSchema,
+        coach_service: Annotated[CoachMainService, Depends()]
+):
+    logger.info(f'Create workout Plan With Coach id {current_coach.id}')
+    return await coach_service.create_workout_plan(current_coach.id, workout_plan)
