@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     DATABASE_NAME: str = "FitPlanMediaDB"
     TESSERACT_CMD: str = ""
     MEDIA_SERVICE_GRPC: str = ""
-    IAM_URL: str = "http://iam.localhost"
+    IAM_URL: str = "http://iam" #"http://iam.localhost"
     # *************************
     # REDIS_URL: str = "localhost"
     REDIS_URL: str = "redis"
