@@ -24,6 +24,7 @@ import Coach_info_edit from "./pages/Coach/coach_info_edit";
 import Coach_trainees from "./pages/Coach/coach_trainees";
 import Coach_mealplan from "./pages/Coach/coach_mealPlan";
 import Coach_exeplan from "./pages/Coach/coach_exePlan";
+import Coach_transactions from "./pages/Coach/coach_transactions";
 
 function App() {
   // const [count, setCount] = useState(0);
@@ -55,6 +56,7 @@ function App() {
           <Route path="/coach_panel/coach_trainees" element={<Coach_trainees />} />
           <Route path="/coach_panel/coach_mealPlan" element={<Coach_mealplan />} />
           <Route path="/coach_panel/coach_exePlan" element={<Coach_exeplan />} />
+          <Route path="/coach_panel/coach_transactions" element={<Coach_transactions />} />
 
           <Route path="/admin_panel" element={<Admin_panel />} />
           

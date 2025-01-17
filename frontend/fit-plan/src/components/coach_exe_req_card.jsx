@@ -1,6 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
+import movements from "./movements"; // Import the movements list
 
 export default function CoachExeReqCard({ requestList, onClick }) {
+  const [planMovements, setPlanMovements] = useState([]);
+  const days = ["روز اول", "روز دوم", "روز سوم", "روز چهارم"];
+
+  const handleCheckboxChange = (movementName) => {
+    setPlanMovements((prev) => {
+      if (prev.includes(movementName)) {
+        // Remove if already selected
+        return prev.filter((name) => name !== movementName);
+      } else {
+        // Add if not selected
+        return [...prev, movementName];
+      }
+    });
+  };
+
   return (
     <div className="collapse max-h-[500px] overflow-y-auto scrollbar-none">
       <input type="radio" name="my-accordion-1" />
@@ -29,52 +45,41 @@ export default function CoachExeReqCard({ requestList, onClick }) {
         </div>
       </div>
       <div className="collapse-content max-h-[1200px] bg-coal rounded-[10px] flex flex-col gap-10 text-mintCream text-center px-4 pt-6">
-        <p className="text-center text-[25px] font-medium">
-          {requestList.nameSurname}
-        </p>
-        <div className="flex flex-wrap gap-4 justify-center">
-          {requestList.figureImgs && requestList.figureImgs.length > 0 ? (
-            requestList.figureImgs.map((figureImg, index) => (
-              <img
-                key={index}
-                src={figureImg}
-                alt={`Figure ${index + 1}`}
-                className="w-32 h-32 object-cover rounded-lg shadow-md"
-              />
-            ))
-          ) : (
-            <p className="text-mintCream">تصویری موجود نیست</p>
-          )}
-        </div>
-        <div className="text-[18px] grid max-sm:grid-cols-1 max-md:grid-cols-2 max-lg:grid-cols-3 grid-cols-4 gap-2">
-          <div className="flex gap-3 my-2">
-            <p className="font-medium">جنسیت:</p>
-            <p>{requestList.gender}</p>
+        {days.map((day, index) => (
+          <div
+            key={index}
+            tabIndex={0}
+            className="collapse collapse-plus border border-superRed rounded-box mb-4"
+          >
+            <input type="checkbox" />
+            <div className="collapse-title text-[25px] font-medium">{day}</div>
+            <div className="collapse-content">
+              <div className="grid max-sm:grid-cols-1 grid-cols-2 w-[80%] text-center mx-auto gap-10 mt-5">
+                {movements.map((movement) => (
+                  <label
+                    key={`${day}-${movement.name}`}
+                    className="flex items-center gap-2 border rounded-[15px] px-4 py-2 bg-coal"
+                  >
+                    <input
+                      type="checkbox"
+                      value={movement.name}
+                      checked={planMovements.includes(movement.name)}
+                      onChange={() => handleCheckboxChange(movement.name)}
+                      className="form-checkbox"
+                    />
+                    <div className="flex justify-between w-full">
+                      <p className="text-lg">{movement.name}</p>
+                      <p className="text-sm text-mintCream">{movement.set}</p>
+                    </div>
+                  </label>
+                ))}
+              </div>
+            </div>
           </div>
-          <div className="flex gap-3 my-2">
-            <p className="font-medium">تاریخ تولد:</p>
-            <p>{requestList.birthDate}</p>
-          </div>
-          <div className="flex gap-3 my-2">
-            <p className="font-medium">قد:</p>
-            <p>{requestList.height}</p>
-          </div>
-          <div className="flex gap-3 my-2">
-            <p className="font-medium">وزن:</p>
-            <p>{requestList.weight}</p>
-          </div>
-          <div className="flex gap-3 my-2">
-            <p className="font-medium">دور کمر:</p>
-            <p>{requestList.waistSize}</p>
-          </div>
-        </div>
-
-        <div id="breakfast">
-          <p className="font-semibold text-[35px]">روز اول</p>
-          
-        </div>
-
-        <button className="bg-irishGreen w-[20%] max-sm:w-[80%] text-center text-[20px] font-medium py-1 rounded-[10px] mx-auto hover:bg-[#01651b] transition-all duration-200">ارسال برنامه</button>
+        ))}
+        <button className="bg-irishGreen w-[20%] max-sm:w-[80%] text-center text-[20px] font-medium py-1 rounded-[10px] mx-auto hover:bg-[#01651b] transition-all duration-200">
+          ارسال برنامه
+        </button>
       </div>
     </div>
   );
