@@ -14,7 +14,6 @@ export default function Coach_info_edit() {
     gender: "آقا",
     height: "175",
     weight: "65",
-    speciality: "زیبایی اندام",
     status: "در دسترس",
     about:
       "دانا با بیش از ۱۵ سال تجربه در زمینه بدنسازی و تمرینات قدرتی، یکی از مربیان پیشرو در این حوزه به شمار می‌رود. او کار خود را به عنوان مربی شخصی در باشگاه‌های کوچک شروع کرد و به تدریج توانست با تدوین برنامه‌های تمرینی تخصصی برای ورزشکاران حرفه‌ای، شهرت زیادی کسب کند. دانا به بهینه‌سازی قدرت بدنی علاقه ویژه‌ای دارد و موفق شده چندین قهرمان مسابقات بدنسازی را آماده کند.",
@@ -42,7 +41,6 @@ export default function Coach_info_edit() {
     gender: userInfo.gender,
     height: userInfo.height,
     weight: userInfo.weight,
-    speciality: userInfo.speciality,
     status: userInfo.status,
     about: userInfo.about,
     image: userInfo.image,
@@ -215,18 +213,7 @@ export default function Coach_info_edit() {
               </div>
             </div>
             <div className="w-full flex max-lg:flex-col justify-between gap-11">
-              <div className="w-full flex justify-between max-sm:flex-col max-sm:w-auto max-sm:text-center max-sm:mx-auto">
-                <p className="font-medium text-[20px]">تخصص:</p>
-                <input
-                  type="text"
-                  id="speciality"
-                  name="speciality"
-                  step="0.01"
-                  value={tempInfo.speciality}
-                  onChange={handleInputChange}
-                  className="text-[20px] text-left font-light max-w-[180px] bg-coal border rounded-[8px] px-2"
-                />
-              </div>
+              
               <div className="w-full flex justify-end max-lg:justify-center max-lg:mx-auto">
                 <button
                   type="button"

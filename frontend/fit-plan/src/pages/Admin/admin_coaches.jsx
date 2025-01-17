@@ -1,7 +1,7 @@
 import { useState } from "react";
 import fit_logo from "/Images/Fit-Logo-Resized.png";
 import { useNavigate } from "react-router-dom";
-import Trainee_card from "../../components/trainee_card";
+import Coaches_card from "../../components/coaches_card";
 
 export default function Admin_coaches() {
     const [adminInfo, setAdminInfo] = useState({
@@ -16,15 +16,18 @@ export default function Admin_coaches() {
 
   const coaches = [
     {
-      nameSurname: "آونگ روزبه",
-      username: "AAAvng",
+      nameSurname: "افشین خمسه",
+      username: "AfshinKh",
       phoneNumber: "989123456789+",
-      email: "avng.rzbh@gmail.com",
-      birthDate: "1365/7/18",
+      email: "Afshin.KH@gmail.com",
+      birthDate: "1345/7/18",
       gender: "آقا",
       height: "175",
       weight: "65",
-      image: "/Images/payton-tuttle-RFFR1JjkJx8-unsplash.jpg",
+      status: "در دسترس",
+      image: "/Images/Coach-Afshin-Khamse.png",
+      about: "افشین از جوانی به ورزش علاقه‌مند بود و بعد از ورود به دانشگاه رشته تربیت بدنی، به طور جدی وارد دنیای بدنسازی شد. او بیش از ۱۰ سال است که به عنوان مربی حرفه‌ای فعالیت می‌کند و با تمرکز بر روی تمرینات قدرتی و استقامتی، به ویژه برای ورزشکاران رشته‌های دو و میدانی و فوتبال شناخته شده است. آرش به توانمندسازی شاگردان خود در بهبود عملکرد ورزشی‌شان افتخار می‌کند.",
+
     },
     {
       nameSurname: "آناهیتا آسایش",
@@ -35,7 +38,10 @@ export default function Admin_coaches() {
       gender: "خانم",
       height: "155",
       weight: "65",
+      status: "در دسترس",
       image: "/Images/Anahita-Asayesh.jpg",
+      about: "آرش از جوانی به ورزش علاقه‌مند بود و بعد از ورود به دانشگاه رشته تربیت بدنی، به طور جدی وارد دنیای بدنسازی شد. او بیش از ۱۰ سال است که به عنوان مربی حرفه‌ای فعالیت می‌کند و با تمرکز بر روی تمرینات قدرتی و استقامتی، به ویژه برای ورزشکاران رشته‌های دو و میدانی و فوتبال شناخته شده است. آرش به توانمندسازی شاگردان خود در بهبود عملکرد ورزشی‌شان افتخار می‌کند.",
+
     },
     {
       nameSurname: "هربد دانا",
@@ -46,7 +52,10 @@ export default function Admin_coaches() {
       gender: "آقا",
       height: "178",
       weight: "80",
+      status: "در دسترس",
       image: "/Images/mohamad-khosravi-5KyzZbonwqQ-unsplash.jpg",
+      about: "آرش از جوانی به ورزش علاقه‌مند بود و بعد از ورود به دانشگاه رشته تربیت بدنی، به طور جدی وارد دنیای بدنسازی شد. او بیش از ۱۰ سال است که به عنوان مربی حرفه‌ای فعالیت می‌کند و با تمرکز بر روی تمرینات قدرتی و استقامتی، به ویژه برای ورزشکاران رشته‌های دو و میدانی و فوتبال شناخته شده است. آرش به توانمندسازی شاگردان خود در بهبود عملکرد ورزشی‌شان افتخار می‌کند.",
+
     },
     {
       nameSurname: "دارمان ثلاثی",
@@ -57,7 +66,10 @@ export default function Admin_coaches() {
       gender: "آقا",
       height: "173",
       weight: "70",
+      status: "در دسترس",
       image: "",
+      about: "آرش از جوانی به ورزش علاقه‌مند بود و بعد از ورود به دانشگاه رشته تربیت بدنی، به طور جدی وارد دنیای بدنسازی شد. او بیش از ۱۰ سال است که به عنوان مربی حرفه‌ای فعالیت می‌کند و با تمرکز بر روی تمرینات قدرتی و استقامتی، به ویژه برای ورزشکاران رشته‌های دو و میدانی و فوتبال شناخته شده است. آرش به توانمندسازی شاگردان خود در بهبود عملکرد ورزشی‌شان افتخار می‌کند.",
+
     },
   ];
 
@@ -128,7 +140,7 @@ export default function Admin_coaches() {
             </a>
             <a
               href="/coach_panel/coach_trainees"
-              className="w-[90%] border-[2px] border-crimsonRed bg-crimsonRed text-black text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
+              className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
             >
               <p>شاگردان</p>
               <div className="h-[30px]">
@@ -137,7 +149,7 @@ export default function Admin_coaches() {
                   height="24px"
                   viewBox="0 -960 960 960"
                   width="24px"
-                  fill="#000"
+                  fill="mintCream"
                 >
                   <path d="m216-160-56-56 384-384H440v80h-80v-160h233q16 0 31 6t26 17l120 119q27 27 66 42t84 16v80q-62 0-112.5-19T718-476l-40-42-88 88 90 90-262 151-40-69 172-99-68-68-266 265Zm-96-280v-80h200v80H120ZM40-560v-80h200v80H40Zm739-80q-33 0-57-23.5T698-720q0-33 24-56.5t57-23.5q33 0 57 23.5t24 56.5q0 33-24 56.5T779-640Zm-659-40v-80h200v80H120Z" />
                 </svg>
@@ -145,12 +157,12 @@ export default function Admin_coaches() {
             </a>
             <a
               href="/"
-              className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
+              className="w-[90%] border-[2px] border-crimsonRed bg-crimsonRed text-black text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
             >
               <p>مربی‌ها</p>
               <div className="h-[30px]">
                 <img
-                  src="/Images/bodybuilding-White.png"
+                  src="/Images/bodybuilding-Black.png"
                   alt="coaches_icon"
                   className="h-full"
                 />
@@ -204,7 +216,7 @@ export default function Admin_coaches() {
 
       <div className="flex flex-col gap-5 justify-start w-[95%] py-[40px]">
         <div className="flex justify-between">
-          <h1 className="text-[45px] font-bold text-mintCream">شاگردان</h1>
+          <h1 className="text-[45px] font-bold text-mintCream">مربی‌ها</h1>
           {/* <a href="/user_panel/info_edit" className="text-superRed text-[25px] font-semibold border-[2px] border-superRed rounded-[15px] max-h-[59px] pt-2 px-8 hover:bg-superRed hover:text-black transition-all duration-300">ویرایش</a> */}
           <div className=" text-white font-iranyekan">
             {/* Navbar */}
@@ -281,7 +293,7 @@ export default function Admin_coaches() {
                   </a>
                   <a
                     href="/coach_panel/coach_trainees"
-                    className="w-[90%] border-[2px] border-crimsonRed bg-crimsonRed text-black text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
+                    className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
                   >
                     <p>شاگردان</p>
                     <div className="h-[30px]">
@@ -290,7 +302,7 @@ export default function Admin_coaches() {
                         height="24px"
                         viewBox="0 -960 960 960"
                         width="24px"
-                        fill="#000"
+                        fill="mintCream"
                       >
                         <path d="m216-160-56-56 384-384H440v80h-80v-160h233q16 0 31 6t26 17l120 119q27 27 66 42t84 16v80q-62 0-112.5-19T718-476l-40-42-88 88 90 90-262 151-40-69 172-99-68-68-266 265Zm-96-280v-80h200v80H120ZM40-560v-80h200v80H40Zm739-80q-33 0-57-23.5T698-720q0-33 24-56.5t57-23.5q33 0 57 23.5t24 56.5q0 33-24 56.5T779-640Zm-659-40v-80h200v80H120Z" />
                       </svg>
@@ -299,12 +311,12 @@ export default function Admin_coaches() {
 
                   <a
               href="/"
-              className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
+              className="w-[90%] border-[2px] border-crimsonRed bg-crimsonRed text-black text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
             >
               <p>مربی‌ها</p>
               <div className="h-[30px]">
                 <img
-                  src="/Images/bodybuilding-White.png"
+                  src="/Images/bodybuilding-Black.png"
                   alt="coaches_icon"
                   className="h-full"
                 />
@@ -358,18 +370,20 @@ export default function Admin_coaches() {
           </div>
         </div>
         <div className="max-md:overflow-y-auto mb-[22px] rounded-[10px] h-[618px] overflow-hidden flex flex-col justify-start gap-5 text-mintCream">
-          {coaches.map((trainee) => (
-            <Trainee_card
-              nameSurname={trainee.nameSurname}
-              username={trainee.username}
-              phoneNumber={trainee.phoneNumber}
-              email={trainee.email}
-              birthDate={trainee.birthDate}
-              gender={trainee.gender}
-              height={trainee.height}
-              weight={trainee.weight}
-              image={trainee.image}
-              onClick={() => handleCardClick(trainee)}
+          {coaches.map((coach) => (
+            <Coaches_card
+              nameSurname={coach.nameSurname}
+              username={coach.username}
+              phoneNumber={coach.phoneNumber}
+              email={coach.email}
+              birthDate={coach.birthDate}
+              gender={coach.gender}
+              height={coach.height}
+              weight={coach.weight}
+              image={coach.image}
+              about={coach.about}
+              status={coach.status}
+              onClick={() => handleCardClick(coach)}
             />
           ))}
         </div>
