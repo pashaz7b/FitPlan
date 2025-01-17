@@ -121,7 +121,7 @@ export default function Coach_panel() {
               </svg>
             </a>
             <a
-              href="/user_panel/user_exercisePlan"
+              href="/coach_panel/coach_exePlan"
               className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
             >
               <p>برنامه تمرینی</p>
@@ -151,7 +151,7 @@ export default function Coach_panel() {
               </svg>
             </a>
             <a
-              href="/user_panel/user_transactions"
+              href="/coach_panel/coach_transactions"
               className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
             >
               <p>تراکنش‌ها</p>
@@ -189,7 +189,7 @@ export default function Coach_panel() {
           </div>
         </div>
         <a
-          href="/"
+          href="/user_login"
           className="text-superRed font-medium text-[20px] flex justify-center mx-auto mt-5 hover:text-mintCream transition-all duration-300"
         >
           خروج
@@ -261,7 +261,7 @@ export default function Coach_panel() {
               <div className="overflow-y-auto font-medium max-h-[330px] scrollbar-thin scrollbar-thumb-superRed scrollbar-track-coal">
                 <div className="flex flex-col gap-1 p-2">
                   <a
-                    href="/user_panel"
+                    href="/coach_panel"
                     className="w-[90%] border-crimsonRed bg-crimsonRed text-black text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
                   >
                     <p>اطلاعات کاربر</p>
@@ -294,7 +294,7 @@ export default function Coach_panel() {
                   </a>
 
                   <a
-                    href="/user_panel/user_mealPlan"
+                    href="/coach_panel/coach_mealPlan"
                     className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
                   >
                     <p>برنامه غذایی</p>
@@ -312,7 +312,7 @@ export default function Coach_panel() {
                     </svg>
                   </a>
                   <a
-                    href="/user_panel/user_exercisePlan"
+                    href="/coach_panel/coach_exePlan"
                     className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
                   >
                     <p>برنامه تمرینی</p>
@@ -342,7 +342,7 @@ export default function Coach_panel() {
                     </svg>
                   </a>
                   <a
-                    href="/user_panel/user_transactions"
+                    href="/coach_panel/coach_transactions"
                     className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
                   >
                     <p>تراکنش‌ها</p>
@@ -380,7 +380,7 @@ export default function Coach_panel() {
                 </div>
               </div>
               <a
-                href="/"
+                href="/user_login"
                 className="text-superRed font-medium text-[20px] flex justify-center mx-auto mt-5 hover:text-mintCream transition-all duration-300"
               >
                 خروج
