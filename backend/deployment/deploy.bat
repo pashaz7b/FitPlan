@@ -6,7 +6,7 @@ docker compose -f docker-compose.yml ^
                -f ..\infra\api-gateway\docker-compose.yml ^
                -f ..\services\iam-service\docker-compose.yml ^
                -f ..\services\media-service\docker-compose.yml ^
-               -f ..\services\ocr-service\docker-compose.yml ^
+               -f ..\services\core-service\docker-compose.yml ^
                up -d --build
 
 REM Check the exit code of the last command and print result
