@@ -78,6 +78,7 @@ export default function Coach_mealplan() {
       height: "155",
       weight: "65",
       waistSize: "80",
+      planType: "کات",
       figureImgs: ["/Images/Anahita-Asayesh.jpg", "/Images/Anahita-Asayesh.jpg", "/Images/Anahita-Asayesh.jpg"]
     },
     {
@@ -88,6 +89,7 @@ export default function Coach_mealplan() {
       height: "155",
       weight: "65",
       waistSize: "80",
+      planType: "کات",
       figureImgs: ["/Images/Anahita-Asayesh.jpg", "/Images/Anahita-Asayesh.jpg", "/Images/Anahita-Asayesh.jpg"]
     },
     {
@@ -98,6 +100,7 @@ export default function Coach_mealplan() {
       height: "155",
       weight: "65",
       waistSize: "80",
+      planType: "کات",
       figureImgs: ["/Images/Anahita-Asayesh.jpg", "/Images/Anahita-Asayesh.jpg", "/Images/Anahita-Asayesh.jpg"]
     },
   ];
@@ -216,7 +219,7 @@ export default function Coach_mealplan() {
               </svg>
             </a>
             <a
-              href="/user_panel/user_exercisePlan"
+              href="/coach_panel/coach_exePlan"
               className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
             >
               <p>برنامه تمرینی</p>
@@ -405,7 +408,7 @@ export default function Coach_mealplan() {
                     </svg>
                   </a>
                   <a
-                    href="/user_panel/user_exercisePlan"
+                    href="/coach_panel/coach_exePlan"
                     className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
                   >
                     <p>برنامه تمرینی</p>
@@ -435,7 +438,7 @@ export default function Coach_mealplan() {
                     </svg>
                   </a>
                   <a
-                    href="/user_panel/user_transactions"
+                    href="/coach_panel/coach_exePlan"
                     className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
                   >
                     <p>تراکنش‌ها</p>
