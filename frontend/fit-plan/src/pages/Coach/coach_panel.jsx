@@ -103,7 +103,7 @@ export default function Coach_panel() {
               </div>
             </a>
             <a
-              href="/user_panel/user_mealPlan"
+              href="/coach_panel/coach_mealplan"
               className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
             >
               <p>برنامه غذایی</p>

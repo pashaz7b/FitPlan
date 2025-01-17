@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import fit_logo from "/Images/Fit-Logo-Resized.png";
 import { useNavigate } from "react-router-dom";
 import Trainee_card from "../../components/trainee_card";
+import Coach_meal_req_card from "../../components/coach_meal_req_card";
 
-export default function Coach_trainees() {
+export default function Coach_mealplan() {
   const [coachInfo, setCoachInfo] = useState({
     nameSurname: "دانا لاجوردی",
     username: "Dana_Laj",
@@ -68,9 +69,43 @@ export default function Coach_trainees() {
     },
   ];
 
+  const mealPlans = [
+    {
+      image: "/Images/Anahita-Asayesh.jpg",
+      nameSurname: "آناهیتا آسایش",
+      gender: "خانم",
+      birthDate: "1380/7/18",
+      height: "155",
+      weight: "65",
+      waistSize: "80",
+      figureImgs: ["/Images/Anahita-Asayesh.jpg", "/Images/Anahita-Asayesh.jpg", "/Images/Anahita-Asayesh.jpg"]
+    },
+    {
+      image: "/Images/Anahita-Asayesh.jpg",
+      nameSurname: "آناهیتا آسایش",
+      gender: "خانم",
+      birthDate: "1380/7/18",
+      height: "155",
+      weight: "65",
+      waistSize: "80",
+      figureImgs: ["/Images/Anahita-Asayesh.jpg", "/Images/Anahita-Asayesh.jpg", "/Images/Anahita-Asayesh.jpg"]
+    },
+    {
+      image: "/Images/Anahita-Asayesh.jpg",
+      nameSurname: "آناهیتا آسایش",
+      gender: "خانم",
+      birthDate: "1380/7/18",
+      height: "155",
+      weight: "65",
+      waistSize: "80",
+      figureImgs: ["/Images/Anahita-Asayesh.jpg", "/Images/Anahita-Asayesh.jpg", "/Images/Anahita-Asayesh.jpg"]
+    },
+  ];
+
   const [tempInfo, setTempInfo] = useState(coachInfo);
   const [profilePhoto, setProfilePhoto] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [planExist, setPlanExist] = useState(false);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -84,6 +119,18 @@ export default function Coach_trainees() {
   const handleNavigate = (e) => {
     navigate("./user_login");
   };
+
+  const checkPlan = () => {
+    if (mealPlans.length > 0) {
+      setPlanExist(true);
+    } else if (mealPlans.length == 0) {
+      setPlanExist(false);
+    }
+  };
+
+  useEffect(() => {
+    checkPlan();
+  }, []);
 
   return (
     <div className="max-lg:pr-0 max-lg:justify-center max-lg:text-center max-lg:mx-auto bg-black w-full h-full flex justify-start pr-[400px] gap-[35px] mx-auto font-iranyekan">
@@ -135,7 +182,7 @@ export default function Coach_trainees() {
             </a>
             <a
               href="/coach_panel/coach_trainees"
-              className="w-[90%] border-[2px] border-crimsonRed bg-crimsonRed text-black text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
+              className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
             >
               <p>شاگردان</p>
               <div className="h-[30px]">
@@ -144,15 +191,15 @@ export default function Coach_trainees() {
                   height="24px"
                   viewBox="0 -960 960 960"
                   width="24px"
-                  fill="#000"
+                  fill="#e8eaed"
                 >
                   <path d="m216-160-56-56 384-384H440v80h-80v-160h233q16 0 31 6t26 17l120 119q27 27 66 42t84 16v80q-62 0-112.5-19T718-476l-40-42-88 88 90 90-262 151-40-69 172-99-68-68-266 265Zm-96-280v-80h200v80H120ZM40-560v-80h200v80H40Zm739-80q-33 0-57-23.5T698-720q0-33 24-56.5t57-23.5q33 0 57 23.5t24 56.5q0 33-24 56.5T779-640Zm-659-40v-80h200v80H120Z" />
                 </svg>
               </div>
             </a>
             <a
-              href="/coach_panel/coach_mealPlan"
-              className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
+              href="/user_panel/user_mealPlan"
+              className="w-[90%] border-[2px] border-crimsonRed bg-crimsonRed text-black text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
             >
               <p>برنامه غذایی</p>
               <svg
@@ -164,7 +211,7 @@ export default function Coach_trainees() {
               >
                 <path
                   d="M7.41475 10.154V2C7.41475 1.71667 7.51235 1.47922 7.70756 1.28767C7.90276 1.09589 8.14457 1 8.43296 1C8.72159 1 8.96328 1.09589 9.15803 1.28767C9.35301 1.47922 9.4505 1.71667 9.4505 2V10.154H11.3298V2C11.3298 1.71667 11.4273 1.47922 11.6223 1.28767C11.8175 1.09589 12.0594 1 12.3481 1C12.6364 1 12.8781 1.09589 13.0731 1.28767C13.2679 1.47922 13.3652 1.71667 13.3652 2V10.154C13.3652 11.3471 12.9882 12.374 12.234 13.2347C11.4797 14.0953 10.5518 14.6428 9.4505 14.877V26C9.4505 26.2833 9.3529 26.5208 9.15769 26.7123C8.96248 26.9041 8.72068 27 8.43228 27C8.14366 27 7.90197 26.9041 7.70722 26.7123C7.51224 26.5208 7.41475 26.2833 7.41475 26V14.877C6.31341 14.6428 5.38556 14.0953 4.6312 13.2347C3.87707 12.374 3.5 11.3471 3.5 10.154V2C3.5 1.71667 3.5976 1.47922 3.79281 1.28767C3.98779 1.09589 4.22959 1 4.51821 1C4.80661 1 5.0483 1.09589 5.24328 1.28767C5.43803 1.47922 5.53541 1.71667 5.53541 2V10.154H7.41475ZM20.4642 16.3333H17.9867C17.6359 16.3333 17.3434 16.2179 17.1093 15.987C16.8754 15.7559 16.7585 15.4697 16.7585 15.1283V7.33333C16.7585 5.658 17.2517 4.18367 18.2382 2.91033C19.2246 1.63678 20.2267 1 21.2446 1C21.6258 1 21.9303 1.13422 22.1583 1.40267C22.3861 1.67089 22.5 2.00767 22.5 2.413V26C22.5 26.2833 22.4024 26.5208 22.2072 26.7123C22.0122 26.9041 21.7704 27 21.4818 27C21.1934 27 20.9517 26.9041 20.7567 26.7123C20.5617 26.5208 20.4642 26.2833 20.4642 26V16.3333Z"
-                  fill="#FFF7ED"
+                  fill="black"
                 />
               </svg>
             </a>
@@ -199,7 +246,7 @@ export default function Coach_trainees() {
               </svg>
             </a>
             <a
-              href="/user_panel/user_transactions"
+              href="/coach_panel/coach_exePlan"
               className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
             >
               <p>تراکنش‌ها</p>
@@ -246,7 +293,7 @@ export default function Coach_trainees() {
 
       <div className="flex flex-col gap-5 justify-start w-[95%] py-[40px]">
         <div className="flex justify-between">
-          <h1 className="text-[45px] font-bold text-mintCream">شاگردان</h1>
+          <h1 className="text-[45px] font-bold text-mintCream">برنامه غذایی</h1>
           {/* <a href="/user_panel/info_edit" className="text-superRed text-[25px] font-semibold border-[2px] border-superRed rounded-[15px] max-h-[59px] pt-2 px-8 hover:bg-superRed hover:text-black transition-all duration-300">ویرایش</a> */}
           <div className=" text-white font-iranyekan">
             {/* Navbar */}
@@ -323,7 +370,7 @@ export default function Coach_trainees() {
                   </a>
                   <a
                     href="/coach_panel/coach_trainees"
-                    className="w-[90%] border-[2px] border-crimsonRed bg-crimsonRed text-black text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
+                    className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
                   >
                     <p>شاگردان</p>
                     <div className="h-[30px]">
@@ -332,7 +379,7 @@ export default function Coach_trainees() {
                         height="24px"
                         viewBox="0 -960 960 960"
                         width="24px"
-                        fill="#000"
+                        fill="#e8eaed"
                       >
                         <path d="m216-160-56-56 384-384H440v80h-80v-160h233q16 0 31 6t26 17l120 119q27 27 66 42t84 16v80q-62 0-112.5-19T718-476l-40-42-88 88 90 90-262 151-40-69 172-99-68-68-266 265Zm-96-280v-80h200v80H120ZM40-560v-80h200v80H40Zm739-80q-33 0-57-23.5T698-720q0-33 24-56.5t57-23.5q33 0 57 23.5t24 56.5q0 33-24 56.5T779-640Zm-659-40v-80h200v80H120Z" />
                       </svg>
@@ -340,8 +387,8 @@ export default function Coach_trainees() {
                   </a>
 
                   <a
-                    href="/coach_panel/coach_mealPlan"
-                    className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
+                    href="/user_panel/user_mealPlan"
+                    className="w-[90%] border-[2px] border-crimsonRed bg-crimsonRed text-black text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
                   >
                     <p>برنامه غذایی</p>
                     <svg
@@ -353,7 +400,7 @@ export default function Coach_trainees() {
                     >
                       <path
                         d="M7.41475 10.154V2C7.41475 1.71667 7.51235 1.47922 7.70756 1.28767C7.90276 1.09589 8.14457 1 8.43296 1C8.72159 1 8.96328 1.09589 9.15803 1.28767C9.35301 1.47922 9.4505 1.71667 9.4505 2V10.154H11.3298V2C11.3298 1.71667 11.4273 1.47922 11.6223 1.28767C11.8175 1.09589 12.0594 1 12.3481 1C12.6364 1 12.8781 1.09589 13.0731 1.28767C13.2679 1.47922 13.3652 1.71667 13.3652 2V10.154C13.3652 11.3471 12.9882 12.374 12.234 13.2347C11.4797 14.0953 10.5518 14.6428 9.4505 14.877V26C9.4505 26.2833 9.3529 26.5208 9.15769 26.7123C8.96248 26.9041 8.72068 27 8.43228 27C8.14366 27 7.90197 26.9041 7.70722 26.7123C7.51224 26.5208 7.41475 26.2833 7.41475 26V14.877C6.31341 14.6428 5.38556 14.0953 4.6312 13.2347C3.87707 12.374 3.5 11.3471 3.5 10.154V2C3.5 1.71667 3.5976 1.47922 3.79281 1.28767C3.98779 1.09589 4.22959 1 4.51821 1C4.80661 1 5.0483 1.09589 5.24328 1.28767C5.43803 1.47922 5.53541 1.71667 5.53541 2V10.154H7.41475ZM20.4642 16.3333H17.9867C17.6359 16.3333 17.3434 16.2179 17.1093 15.987C16.8754 15.7559 16.7585 15.4697 16.7585 15.1283V7.33333C16.7585 5.658 17.2517 4.18367 18.2382 2.91033C19.2246 1.63678 20.2267 1 21.2446 1C21.6258 1 21.9303 1.13422 22.1583 1.40267C22.3861 1.67089 22.5 2.00767 22.5 2.413V26C22.5 26.2833 22.4024 26.5208 22.2072 26.7123C22.0122 26.9041 21.7704 27 21.4818 27C21.1934 27 20.9517 26.9041 20.7567 26.7123C20.5617 26.5208 20.4642 26.2833 20.4642 26V16.3333Z"
-                        fill="#FFF7ED"
+                        fill="black"
                       />
                     </svg>
                   </a>
@@ -435,20 +482,40 @@ export default function Coach_trainees() {
           </div>
         </div>
         <div className="max-md:overflow-y-auto mb-[22px] rounded-[10px] h-[618px] overflow-hidden flex flex-col justify-start gap-5 text-mintCream">
-          {trainees.map((trainee) => (
-            <Trainee_card
-              nameSurname={trainee.nameSurname}
-              username={trainee.username}
-              phoneNumber={trainee.phoneNumber}
-              email={trainee.email}
-              birthDate={trainee.birthDate}
-              gender={trainee.gender}
-              height={trainee.height}
-              weight={trainee.weight}
-              image={trainee.image}
-              onClick={() => handleCardClick(trainee)}
+        <div
+          id="no-plan"
+          className={`mb-[22px] rounded-[10px] h-[618px] overflow-hidden justify-centert gap-5 text-mintCream ${
+            planExist ? "hidden" : "flex"
+          }`}
+        >
+          <div className="flex flex-col justify-center text-center max-h-[600px] mx-auto">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="248px"
+              viewBox="0 -960 960 960"
+              width="243px"
+              fill="#e8eaed"
+              className="flex justify-center mx-auto"
+            >
+              <path d="m734.61-339.23-61.84-61.85v-7.69h-7.69l-99.69-99.69V-680q0-37.08 12.38-71.23 12.38-34.15 31.73-60.65t42.73-42.31Q675.61-870 697.61-870q16.85 0 26.93 12.08 10.07 12.07 10.07 30.31v488.38ZM853.39-65.08q-9.31 9.31-21.39 9.31t-21.38-9.31l-95.7-95.08h19.69v40.78q0 12.76-8.61 21.38-8.62 8.61-21.39 8.61-12.76 0-21.38-8.61-8.62-8.62-8.62-21.38v-81.08L72.92-802.15q-8.92-8.93-9.11-21.5-.19-12.58 9.11-21.89 9.31-9.31 21.39-9.31t21.38 9.31l737.7 738.31q8.92 8.92 9.11 20.88.19 11.96-9.11 21.27ZM465.38-608.46l-59.99-60V-840q0-12.77 8.61-21.38 8.62-8.62 21.38-8.62 12.77 0 21.39 8.62 8.61 8.61 8.61 21.38v231.54ZM350-723.85l-60-60V-840q0-12.77 8.62-21.38Q307.23-870 320-870t21.38 8.62Q350-852.77 350-840v116.15ZM234.61-839.23 203.85-870q12.84 0 21.8 8.96t8.96 21.81ZM320-90q-12.77 0-21.38-8.62Q290-107.23 290-120v-333.69q-48.69-10.54-82.04-49.27-33.34-38.73-33.34-92.42V-786l59.99 60v130.62H290v-75.23l60 59.99v15.24h15.23l77.31 77.3q-15.23 24.54-39.31 41.43-24.08 16.88-53.23 22.96V-120q0 12.77-8.62 21.38Q332.77-90 320-90Z" />
+            </svg>
+            <h1 className="font-medium text-[25px]">
+              شما هیچ درخواستی برای برنامه غذایی ندارید
+            </h1>
+          </div>
+        </div>
+        <div
+          id="requests-for-plan"
+          className={`mb-[22px] rounded-[10px] h-[618px] overflow-hidden flex flex-col justify-centert gap-5 text-mintCream ${
+            planExist ? "flex" : "hidden"
+          }`}
+        >
+          {mealPlans.map((requests) => (
+            <Coach_meal_req_card 
+              requestList={requests}
             />
           ))}
+        </div>
         </div>
       </div>
     </div>
