@@ -8,7 +8,7 @@ import User_signup from "./pages/user_signup";
 import Otp_page from "./pages/otp_page";
 import User_panel from "./pages/user_panel";
 import Coach_panel from "./pages/Coach/coach_panel";
-import Admin_panel from "./pages/admin_panel";
+import Admin_panel from "./pages/Admin/admin_panel";
 import About_us from "./pages/about_us";
 import Coaches from "./pages/coaches";
 import Podcasts from "./pages/podcasts";
@@ -25,6 +25,9 @@ import Coach_trainees from "./pages/Coach/coach_trainees";
 import Coach_mealplan from "./pages/Coach/coach_mealPlan";
 import Coach_exeplan from "./pages/Coach/coach_exePlan";
 import Coach_transactions from "./pages/Coach/coach_transactions";
+import Admin_info_edit from "./pages/Admin/admin_info_edit";
+import Admin_trainees from "./pages/Admin/admin_trainees";
+import Admin_coaches from "./pages/Admin/admin_coaches";
 
 function App() {
   // const [count, setCount] = useState(0);
@@ -59,6 +62,9 @@ function App() {
           <Route path="/coach_panel/coach_transactions" element={<Coach_transactions />} />
 
           <Route path="/admin_panel" element={<Admin_panel />} />
+          <Route path="/admin_panel/info_edit" element={<Admin_info_edit />} />
+          <Route path="/admin_panel/admin_trainees" element={<Admin_trainees />} />
+          <Route path="/admin_panel/admin_coaches" element={<Admin_coaches />} />
           
           <Route path="/about_us" element={<About_us />} />
           <Route path="/coaches" element={<Coaches />} />
