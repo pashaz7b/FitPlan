@@ -28,6 +28,7 @@ import Coach_transactions from "./pages/Coach/coach_transactions";
 import Admin_info_edit from "./pages/Admin/admin_info_edit";
 import Admin_trainees from "./pages/Admin/admin_trainees";
 import Admin_coaches from "./pages/Admin/admin_coaches";
+import Admin_transactions from "./pages/Admin/admin_transactions";
 
 function App() {
   // const [count, setCount] = useState(0);
@@ -65,6 +66,7 @@ function App() {
           <Route path="/admin_panel/info_edit" element={<Admin_info_edit />} />
           <Route path="/admin_panel/admin_trainees" element={<Admin_trainees />} />
           <Route path="/admin_panel/admin_coaches" element={<Admin_coaches />} />
+          <Route path="/admin_panel/admin_transactions" element={<Admin_transactions />} />
           
           <Route path="/about_us" element={<About_us />} />
           <Route path="/coaches" element={<Coaches />} />
