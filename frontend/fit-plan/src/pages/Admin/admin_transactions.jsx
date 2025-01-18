@@ -101,7 +101,7 @@ export default function Admin_transactions() {
         <div className="overflow-y-auto font-medium max-h-[330px] scrollbar-thin scrollbar-thumb-superRed scrollbar-track-coal">
           <div className="flex flex-col gap-1 p-2">
             <a
-              href="/coach_panel"
+              href="/admin_panel"
               className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
             >
               <p>اطلاعات کاربر</p>
@@ -116,7 +116,7 @@ export default function Admin_transactions() {
               </svg>
             </a>
             <a
-              href="/coach_panel/coach_trainees"
+              href="/admin_panel/admin_trainees"
               className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
             >
               <p>شاگردان</p>
@@ -146,7 +146,7 @@ export default function Admin_transactions() {
               </div>
             </a>
             <a
-              href="/coach_panel/coach_transactions"
+              href="/admin_panel/admin_transactions"
               className="w-[90%] border-[2px] border-crimsonRed bg-crimsonRed text-black text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
             >
               <p>تراکنش‌ها</p>
@@ -254,7 +254,7 @@ export default function Admin_transactions() {
               <div className="overflow-y-auto font-medium max-h-[330px] scrollbar-thin scrollbar-thumb-superRed scrollbar-track-coal">
                 <div className="flex flex-col gap-1 p-2">
                   <a
-                    href="/coach_panel"
+                    href="/admin_panel"
                     className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
                   >
                     <p>اطلاعات کاربر</p>
@@ -269,7 +269,7 @@ export default function Admin_transactions() {
                     </svg>
                   </a>
                   <a
-                    href="/coach_panel/coach_trainees"
+                    href="/admin_panel/admin_trainees"
                     className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
                   >
                     <p>شاگردان</p>
@@ -300,7 +300,7 @@ export default function Admin_transactions() {
                     </div>
                   </a>
                   <a
-                    href="/coach_panel/coach_transactions"
+                    href="/admin_panel/admin_transactions"
                     className="w-[90%] border-[2px] border-crimsonRed bg-crimsonRed text-black text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
                   >
                     <p>تراکنش‌ها</p>

@@ -4,15 +4,15 @@ import { useNavigate } from "react-router-dom";
 import Coaches_card from "../../components/coaches_card";
 
 export default function Admin_coaches() {
-    const [adminInfo, setAdminInfo] = useState({
-        nameSurname: "نیوشا قنبری",
-        username: "im_new",
-        password: "********",
-        phoneNumber: "989123456789+",
-        email: "new.mewj@gmail.com",
-        birthDate: "1365/7/18",
-        image: "/Images/michael-dam-mEZ3PoFGs_k-unsplash.jpg",
-      });
+  const [adminInfo, setAdminInfo] = useState({
+    nameSurname: "نیوشا قنبری",
+    username: "im_new",
+    password: "********",
+    phoneNumber: "989123456789+",
+    email: "new.mewj@gmail.com",
+    birthDate: "1365/7/18",
+    image: "/Images/michael-dam-mEZ3PoFGs_k-unsplash.jpg",
+  });
 
   const coaches = [
     {
@@ -26,8 +26,8 @@ export default function Admin_coaches() {
       weight: "65",
       status: "در دسترس",
       image: "/Images/Coach-Afshin-Khamse.png",
-      about: "افشین از جوانی به ورزش علاقه‌مند بود و بعد از ورود به دانشگاه رشته تربیت بدنی، به طور جدی وارد دنیای بدنسازی شد. او بیش از ۱۰ سال است که به عنوان مربی حرفه‌ای فعالیت می‌کند و با تمرکز بر روی تمرینات قدرتی و استقامتی، به ویژه برای ورزشکاران رشته‌های دو و میدانی و فوتبال شناخته شده است. آرش به توانمندسازی شاگردان خود در بهبود عملکرد ورزشی‌شان افتخار می‌کند.",
-
+      about:
+        "افشین از جوانی به ورزش علاقه‌مند بود و بعد از ورود به دانشگاه رشته تربیت بدنی، به طور جدی وارد دنیای بدنسازی شد. او بیش از ۱۰ سال است که به عنوان مربی حرفه‌ای فعالیت می‌کند و با تمرکز بر روی تمرینات قدرتی و استقامتی، به ویژه برای ورزشکاران رشته‌های دو و میدانی و فوتبال شناخته شده است. آرش به توانمندسازی شاگردان خود در بهبود عملکرد ورزشی‌شان افتخار می‌کند.",
     },
     {
       nameSurname: "آلابه عبادی",
@@ -40,8 +40,8 @@ export default function Admin_coaches() {
       weight: "65",
       status: "در دسترس",
       image: "/Images/Coach-Alaleh-Ebadi.png",
-      about: "آرش از جوانی به ورزش علاقه‌مند بود و بعد از ورود به دانشگاه رشته تربیت بدنی، به طور جدی وارد دنیای بدنسازی شد. او بیش از ۱۰ سال است که به عنوان مربی حرفه‌ای فعالیت می‌کند و با تمرکز بر روی تمرینات قدرتی و استقامتی، به ویژه برای ورزشکاران رشته‌های دو و میدانی و فوتبال شناخته شده است. آرش به توانمندسازی شاگردان خود در بهبود عملکرد ورزشی‌شان افتخار می‌کند.",
-
+      about:
+        "آرش از جوانی به ورزش علاقه‌مند بود و بعد از ورود به دانشگاه رشته تربیت بدنی، به طور جدی وارد دنیای بدنسازی شد. او بیش از ۱۰ سال است که به عنوان مربی حرفه‌ای فعالیت می‌کند و با تمرکز بر روی تمرینات قدرتی و استقامتی، به ویژه برای ورزشکاران رشته‌های دو و میدانی و فوتبال شناخته شده است. آرش به توانمندسازی شاگردان خود در بهبود عملکرد ورزشی‌شان افتخار می‌کند.",
     },
     {
       nameSurname: "فربد ثابتی",
@@ -54,8 +54,8 @@ export default function Admin_coaches() {
       weight: "80",
       status: "در دسترس",
       image: "/Images/Coach-Farbod-Sabeti.png",
-      about: "آرش از جوانی به ورزش علاقه‌مند بود و بعد از ورود به دانشگاه رشته تربیت بدنی، به طور جدی وارد دنیای بدنسازی شد. او بیش از ۱۰ سال است که به عنوان مربی حرفه‌ای فعالیت می‌کند و با تمرکز بر روی تمرینات قدرتی و استقامتی، به ویژه برای ورزشکاران رشته‌های دو و میدانی و فوتبال شناخته شده است. آرش به توانمندسازی شاگردان خود در بهبود عملکرد ورزشی‌شان افتخار می‌کند.",
-
+      about:
+        "آرش از جوانی به ورزش علاقه‌مند بود و بعد از ورود به دانشگاه رشته تربیت بدنی، به طور جدی وارد دنیای بدنسازی شد. او بیش از ۱۰ سال است که به عنوان مربی حرفه‌ای فعالیت می‌کند و با تمرکز بر روی تمرینات قدرتی و استقامتی، به ویژه برای ورزشکاران رشته‌های دو و میدانی و فوتبال شناخته شده است. آرش به توانمندسازی شاگردان خود در بهبود عملکرد ورزشی‌شان افتخار می‌کند.",
     },
     {
       nameSurname: "آرش فانی",
@@ -68,7 +68,8 @@ export default function Admin_coaches() {
       weight: "70",
       status: "در دسترس",
       image: "",
-      about: "آرش از جوانی به ورزش علاقه‌مند بود و بعد از ورود به دانشگاه رشته تربیت بدنی، به طور جدی وارد دنیای بدنسازی شد. او بیش از ۱۰ سال است که به عنوان مربی حرفه‌ای فعالیت می‌کند و با تمرکز بر روی تمرینات قدرتی و استقامتی، به ویژه برای ورزشکاران رشته‌های دو و میدانی و فوتبال شناخته شده است. آرش به توانمندسازی شاگردان خود در بهبود عملکرد ورزشی‌شان افتخار می‌کند.",
+      about:
+        "آرش از جوانی به ورزش علاقه‌مند بود و بعد از ورود به دانشگاه رشته تربیت بدنی، به طور جدی وارد دنیای بدنسازی شد. او بیش از ۱۰ سال است که به عنوان مربی حرفه‌ای فعالیت می‌کند و با تمرکز بر روی تمرینات قدرتی و استقامتی، به ویژه برای ورزشکاران رشته‌های دو و میدانی و فوتبال شناخته شده است. آرش به توانمندسازی شاگردان خود در بهبود عملکرد ورزشی‌شان افتخار می‌کند.",
     },
   ];
 
@@ -123,7 +124,7 @@ export default function Admin_coaches() {
         <div className="overflow-y-auto font-medium max-h-[330px] scrollbar-thin scrollbar-thumb-superRed scrollbar-track-coal">
           <div className="flex flex-col gap-1 p-2">
             <a
-              href="/coach_panel"
+              href="/admin_panel"
               className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
             >
               <p>اطلاعات کاربر</p>
@@ -138,7 +139,7 @@ export default function Admin_coaches() {
               </svg>
             </a>
             <a
-              href="/coach_panel/coach_trainees"
+              href="/admin_panel/admin_trainees"
               className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
             >
               <p>شاگردان</p>
@@ -155,7 +156,7 @@ export default function Admin_coaches() {
               </div>
             </a>
             <a
-              href="/"
+              href="/admin_panel/admin_coaches"
               className="w-[90%] border-[2px] border-crimsonRed bg-crimsonRed text-black text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
             >
               <p>مربی‌ها</p>
@@ -276,7 +277,7 @@ export default function Admin_coaches() {
               <div className="overflow-y-auto font-medium max-h-[330px] scrollbar-thin scrollbar-thumb-superRed scrollbar-track-coal">
                 <div className="flex flex-col gap-1 p-2">
                   <a
-                    href="/coach_panel"
+                    href="/admin_panel"
                     className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
                   >
                     <p>اطلاعات کاربر</p>
@@ -291,7 +292,7 @@ export default function Admin_coaches() {
                     </svg>
                   </a>
                   <a
-                    href="/coach_panel/coach_trainees"
+                    href="/admin_panel/admin_trainees"
                     className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
                   >
                     <p>شاگردان</p>
@@ -309,18 +310,18 @@ export default function Admin_coaches() {
                   </a>
 
                   <a
-              href="/"
-              className="w-[90%] border-[2px] border-crimsonRed bg-crimsonRed text-black text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
-            >
-              <p>مربی‌ها</p>
-              <div className="h-[30px]">
-                <img
-                  src="/Images/bodybuilding-Black.png"
-                  alt="coaches_icon"
-                  className="h-full"
-                />
-              </div>
-            </a>
+                    href="/admin_panel/admin_coaches"
+                    className="w-[90%] border-[2px] border-crimsonRed bg-crimsonRed text-black text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
+                  >
+                    <p>مربی‌ها</p>
+                    <div className="h-[30px]">
+                      <img
+                        src="/Images/bodybuilding-Black.png"
+                        alt="coaches_icon"
+                        className="h-full"
+                      />
+                    </div>
+                  </a>
                   <a
                     href="/admin_panel/admin_transactions"
                     className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"

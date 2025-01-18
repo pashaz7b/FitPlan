@@ -110,7 +110,7 @@ export default function Admin_panel() {
             </a>
 
             <a
-              href="/coach_panel/coach_transactions"
+              href="/admin_panel/admin_transactions"
               className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
             >
               <p>تراکنش‌ها</p>
@@ -266,7 +266,7 @@ export default function Admin_panel() {
                   </a>
 
                   <a
-                    href="/coach_panel/coach_transactions"
+                    href="/admin_panel/admin_transactions"
                     className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
                   >
                     <p>تراکنش‌ها</p>
