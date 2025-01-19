@@ -181,3 +181,16 @@ async def user_get_meal(
 ):
     logger.info(f'[...] Getting meal for user {current_user.id}')
     return await user_service.get_user_meal(current_user.id)
+
+
+@user_core_router.get(
+    "/get_user_all_coach_free",
+    status_code=status.HTTP_200_OK,
+    response_model=list[GetUserAllCoachSchema]
+)
+async def get_user_all_coach_free(
+        user_service: Annotated[UserMainService, Depends()]
+):
+    current_user_id = 1
+    logger.info(f'[...] Getting all coach for user')
+    return await user_service.get_user_all_coach(current_user_id)
