@@ -4,7 +4,7 @@ from fastapi import Depends, HTTPException, status
 
 from app.domain.schemas.coach_schema import (GetCoachUserSchema, SetCoachUserMealSchema, GetCoachUserMealRequestSchema,
                                              GetCoachUserExerciseRequestSchema, SetCoachUserExerciseSchema,
-                                             GetCoachInfoSchema, SetCoachWorkOutPlanSchema
+                                             GetCoachInfoSchema, SetCoachWorkOutPlanSchema, SetCoachInfoSchema
                                              )
 
 from app.subservices.coach_subservice import CoachSubService
@@ -67,7 +67,7 @@ class CoachMainService(BaseService):
             biography=coach_metrics.biography
         )
 
-    async def change_coach_info(self, coach_id: int, coach: GetCoachInfoSchema):
+    async def change_coach_info(self, coach_id: int, coach: SetCoachInfoSchema):
         current_coach = await self.coach_subservice.get_coach(coach_id)
         current_coach_metrics = await self.coach_subservice.get_coach_metrics(coach_id)
 

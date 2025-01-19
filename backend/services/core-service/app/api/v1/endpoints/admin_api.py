@@ -92,9 +92,11 @@ async def change_user_info(
         current_admin: Annotated[TokenDataSchema, Depends(get_current_admin)],
         user_data: SetUserInfoSchema,
         user_service: Annotated[UserMainService, Depends()],
+        admin_service: Annotated[AdminMainService, Depends()],
         user_id: int
 ):
     logger.info(f'[...] Changing user info for user {user_id}')
+    await admin_service.check_user_exits(user_id)
     return await user_service.change_user_info(user_id, user_data)
 
 
@@ -107,7 +109,9 @@ async def change_coach_info(
         current_admin: Annotated[TokenDataSchema, Depends(get_current_admin)],
         set_coach_info: SetCoachInfoSchema,
         coach_service: Annotated[CoachMainService, Depends()],
+        admin_service: Annotated[AdminMainService, Depends()],
         coach_id: int
 ):
     logger.info(f'Change coach info for coach {coach_id}')
+    await admin_service.check_coach_exits(coach_id)
     return await coach_service.change_coach_info(coach_id, set_coach_info)

@@ -14,7 +14,8 @@ from app.domain.models.fitplan_model import (User,
                                              WorkoutPlan,
                                              UserExercise,
                                              UserRequestExercise, UserExerciseExercise, Exercise, UserMeal,
-                                             UserRequestMeal, MealSupplement, UserMealMealSupplement)
+                                             UserRequestMeal, MealSupplement, UserMealMealSupplement,
+                                             WorkoutPlanExercise, WorkoutPlanMealSupplement)
 
 
 class UserRepository:
@@ -141,6 +142,10 @@ class UserRepository:
         logger.info(f"[+] Fetching User Exercise For User With Id ---> {user_id}")
         fetched_exercise = (
             self.db.query(Exercise)
+            .join(WorkoutPlanExercise, Exercise.id == WorkoutPlanExercise.exercise_id)
+            .join(WorkoutPlan, WorkoutPlanExercise.workout_plan_id == WorkoutPlan.id)
+            .join(Present, WorkoutPlan.id == Present.workout_plan_id)
+            .join(Coach, Present.coach_id == Coach.id)
             .join(UserExerciseExercise, Exercise.id == UserExerciseExercise.exercise_id)
             .join(UserExercise, UserExerciseExercise.user_exercise_id == UserExercise.id)
             .join(UserRequestExercise, UserExercise.id == UserRequestExercise.user_exercise_id)
@@ -166,15 +171,19 @@ class UserRepository:
 
     def get_user_meal(self, user_id: int):
         logger.info(f"[+] Fetching User Meal For User With Id ---> {user_id}")
+
         fetched_meal = (
             self.db.query(MealSupplement)
+            .join(WorkoutPlanMealSupplement, MealSupplement.id == WorkoutPlanMealSupplement.meal_supplement_id)
+            .join(WorkoutPlan, WorkoutPlanMealSupplement.workout_plan_id == WorkoutPlan.id)
+            .join(Present, WorkoutPlan.id == Present.workout_plan_id)
+            .join(Coach, Present.coach_id == Coach.id)
             .join(UserMealMealSupplement, MealSupplement.id == UserMealMealSupplement.meal_supplement_id)
             .join(UserMeal, UserMealMealSupplement.user_meal_id == UserMeal.id)
             .join(UserRequestMeal, UserMeal.id == UserRequestMeal.user_meal_id)
             .join(User, UserRequestMeal.user_id == User.id)
             .filter(User.id == user_id)
-            .order_by(MealSupplement.id.desc())  # Order by descending ID to get the latest meal
-            .first()
+            .all()
         )
         return fetched_meal
 
@@ -202,3 +211,13 @@ class UserRepository:
         self.db.refresh(take)
         logger.info(f"[+] User Take Workout Coach Created With Id ---> {take.user_id}")
         return take
+
+    def update_user_coach(self, user_id: int, updated_user: Dict):
+        user_query = self.db.query(Take).filter(Take.user_id == user_id)
+        db_user = user_query.first()
+        user_query.filter(Take.user_id == user_id).update(
+            updated_user, synchronize_session=False
+        )
+        self.db.commit()
+        logger.info(f"[+] User With Id ---> {user_id} Updated")
+        return db_user

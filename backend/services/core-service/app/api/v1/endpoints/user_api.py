@@ -1,3 +1,4 @@
+from select import select
 from typing import Annotated
 from fastapi import APIRouter, Depends, status
 from loguru import logger
@@ -12,7 +13,8 @@ from app.domain.schemas.user_schema import (GetUserInfoSchema,
                                             UserRequestExerciseResponseSchema,
                                             GetUserExerciseSchema, UserRequestMealResponseSchema, UserRequestMealSchema,
                                             GetUserMealSchema, GetUserAllCoachSchema,
-                                            UserTakeWorkoutCoachResponseSchema, UserTakeWorkoutCoachSchema)
+                                            UserTakeWorkoutCoachResponseSchema, UserTakeWorkoutCoachSchema,
+                                            GroupedExerciseSchema, ChangeUserCoach, ChangeUserCoachResponse)
 
 from app.mainservices.user_mainservice import UserMainService
 
@@ -146,7 +148,7 @@ async def request_exercise(
 @user_core_router.get(
     "/user_get_exercise",
     status_code=status.HTTP_200_OK,
-    response_model=list[GetUserExerciseSchema]
+    response_model=list[GroupedExerciseSchema]
 )
 async def user_get_exercise(
         current_user: Annotated[TokenDataSchema, Depends(get_current_user)],
@@ -173,7 +175,7 @@ async def request_meal(
 @user_core_router.get(
     "/user_get_meal",
     status_code=status.HTTP_200_OK,
-    response_model=GetUserMealSchema
+    response_model=list[GetUserMealSchema]
 )
 async def user_get_meal(
         current_user: Annotated[TokenDataSchema, Depends(get_current_user)],
@@ -181,6 +183,21 @@ async def user_get_meal(
 ):
     logger.info(f'[...] Getting meal for user {current_user.id}')
     return await user_service.get_user_meal(current_user.id)
+
+
+@user_core_router.put(
+    "/change_user_coach",
+    status_code=status.HTTP_201_CREATED,
+    response_model=ChangeUserCoachResponse
+)
+async def change_user_coach(
+        current_user: Annotated[TokenDataSchema, Depends(get_current_user)],
+        new_workout_coach: ChangeUserCoach,
+        user_service: Annotated[UserMainService, Depends()]
+):
+    logger.info(f"[+] Updating Coach For User With ID {current_user.id}")
+    return await user_service.update_user_coach(current_user.id,
+                                                {"workout_plan_id": new_workout_coach.new_workout_plan_id})
 
 
 @user_core_router.get(
