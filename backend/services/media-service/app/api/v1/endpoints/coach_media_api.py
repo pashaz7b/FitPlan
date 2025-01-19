@@ -67,27 +67,13 @@ async def get_media(
 )
 async def get_user_profile(
         media_service: Annotated[MediaService, Depends()],
-        user_service: Annotated[UserProfile, Depends()],
+        coach_service: Annotated[CoachProfile, Depends()],
         current_coach: Annotated[TokenDataSchema, Depends(get_current_coach)],
         user_email: str
 ):
-    user_response = await user_service.get_user_profile(user_email)
-    logger.info(f"[+] User Profile Retrieved ---> {user_response}")
+    logger.info(f"[+] Fetching User For Coach With Email ---> {current_coach.email}")
 
-    if not user_response:
-        logger.error(f"No user found with email {user_email}")
-        raise HTTPException(
-            status_code=404,
-            detail=f"No user found with email {user_email}"
-        )
-
-    if not user_response.image:
-        raise HTTPException(
-            status_code=404,
-            detail="No image found for the specified user"
-        )
-
-    mongo_id = ObjectId(user_response.image)
+    mongo_id = await coach_service.coach_get_user_profile(user_email)
     logger.info(f"[+] Mongo Id ---> {mongo_id}")
 
     media_schema, file_stream = await media_service.get_media(
