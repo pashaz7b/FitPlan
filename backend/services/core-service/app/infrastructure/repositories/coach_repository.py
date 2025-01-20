@@ -237,3 +237,7 @@ class CoachRepository:
         self.db.refresh(present)
         logger.info(f"[+] Present Created")
         return present
+
+    def check_if_workout_plan_exists(self, coach_id: int):
+        logger.info(f"[+] Checking If Workout Plan Exists for Coach With Id ---> {coach_id}")
+        return self.db.query(Present).filter(Present.coach_id == coach_id).first()

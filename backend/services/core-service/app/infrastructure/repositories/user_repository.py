@@ -221,3 +221,7 @@ class UserRepository:
         self.db.commit()
         logger.info(f"[+] User With Id ---> {user_id} Updated")
         return db_user
+
+    def check_if_user_take_workout_coach_exists(self, user_id: int):
+        logger.info(f"[+] Checking If User Take Workout Coach Exists For User With Id ---> {user_id}")
+        return self.db.query(Take).filter(Take.user_id == user_id).first()

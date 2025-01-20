@@ -341,6 +341,13 @@ class UserMainService(BaseService):
 
     async def create_user_take_workout_coach(self, user_id: int, take_strucr: UserTakeWorkoutCoachSchema):
         logger.info(f"[+] User With Id ---> {user_id} Take Workout With Id ---> {take_strucr.work_out_plan_id}")
+
+        existed_workout_coach = await self.user_subservice.check_if_user_take_workout_coach_exists(user_id)
+
+        if existed_workout_coach:
+            logger.info(f"[-] User With Id ---> {user_id} Already Take Workout")
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="User Already Take Workout Coach")
+
         result = await self.user_subservice.create_user_take_workout_coach(user_id, take_strucr)
 
         return UserTakeWorkoutCoachResponseSchema(
