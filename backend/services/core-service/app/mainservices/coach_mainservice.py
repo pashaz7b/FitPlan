@@ -4,7 +4,7 @@ from fastapi import Depends, HTTPException, status
 
 from app.domain.schemas.coach_schema import (GetCoachUserSchema, SetCoachUserMealSchema, GetCoachUserMealRequestSchema,
                                              GetCoachUserExerciseRequestSchema, SetCoachUserExerciseSchema,
-                                             GetCoachInfoSchema, SetCoachWorkOutPlanSchema
+                                             GetCoachInfoSchema, SetCoachWorkOutPlanSchema, SetCoachInfoSchema
                                              )
 
 from app.subservices.coach_subservice import CoachSubService
@@ -67,7 +67,7 @@ class CoachMainService(BaseService):
             biography=coach_metrics.biography
         )
 
-    async def change_coach_info(self, coach_id: int, coach: GetCoachInfoSchema):
+    async def change_coach_info(self, coach_id: int, coach: SetCoachInfoSchema):
         current_coach = await self.coach_subservice.get_coach(coach_id)
         current_coach_metrics = await self.coach_subservice.get_coach_metrics(coach_id)
 
@@ -221,5 +221,12 @@ class CoachMainService(BaseService):
 
     async def create_workout_plan(self, coach_id: int, workout_plan: SetCoachWorkOutPlanSchema):
         logger.info(f"[+] Creating Workout Plan With Coach ID ---> {coach_id}")
+
+        existed_workout_plan = await self.coach_subservice.check_if_workout_plan_exists(coach_id)
+        if existed_workout_plan:
+            logger.error(f"[-] Workout Plan Already Exists For Coach With ID ---> {coach_id}")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, detail="Workout Plan Already Exists For This Coach"
+            )
 
         return await self.coach_subservice.create_workout_plan(coach_id, workout_plan)

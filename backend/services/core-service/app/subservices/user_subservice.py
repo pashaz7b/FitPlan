@@ -216,3 +216,12 @@ class UserSubService(BaseService):
         )
 
         return self.user_repo.create_user_take_workout_coach(take)
+
+    async def update_user_coach(self, user_id: int, updated_user: Dict):
+        logger.info(f"[+] Updating user coach with user_id{user_id}")
+
+        return self.user_repo.update_user_coach(user_id, updated_user)
+
+    async def check_if_user_take_workout_coach_exists(self, user_id: int):
+        logger.info(f"[...] Checking if user take workout coach exists for user {user_id}")
+        return self.user_repo.check_if_user_take_workout_coach_exists(user_id)

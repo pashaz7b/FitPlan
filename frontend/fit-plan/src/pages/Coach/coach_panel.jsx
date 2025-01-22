@@ -1,8 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import fit_logo from "/Images/Fit-Logo-Resized.png";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function Coach_panel() {
+  useEffect(() => {
+      userSet();
+      console.log("sss");
+    }, []);
+
   const [coachInfo, setCoachInfo] = useState({
     nameSurname: "دانا لاجوردی",
     username: "Dana_Laj",
@@ -19,6 +25,35 @@ export default function Coach_panel() {
       "دانا با بیش از ۱۵ سال تجربه در زمینه بدنسازی و تمرینات قدرتی، یکی از مربیان پیشرو در این حوزه به شمار می‌رود. او کار خود را به عنوان مربی شخصی در باشگاه‌های کوچک شروع کرد و به تدریج توانست با تدوین برنامه‌های تمرینی تخصصی برای ورزشکاران حرفه‌ای، شهرت زیادی کسب کند. دانا به بهینه‌سازی قدرت بدنی علاقه ویژه‌ای دارد و موفق شده چندین قهرمان مسابقات بدنسازی را آماده کند.",
     image: "/Images/Coach-Dana-Lajevardi.png",
   });
+
+  const value = localStorage.getItem("token").toString();
+
+  async function userSet() {
+    console.log("salam");
+    const res = await axios.get(
+      "http://fitplan.localhost/api/v1/coach/get_coach_info",
+      {
+        headers: {
+          Authorization: `Bearer ${JSON.parse(value)}`,
+        },
+      }
+    );
+    const data = res.data;
+    setCoachInfo((prevState) => ({
+      ...prevState,
+      nameSurname: data.name,
+      username: data.user_name,
+      password: data.password,
+      phoneNumber: data.phone_number,
+      email: data.email,
+      birthDate: data.date_of_birth,
+      gender: data.gender,
+      height: data.height,
+      weight: data.weight,
+      about: data.biography,
+      speciality: data.specialization
+    }));
+  }
 
   const [tempInfo, setTempInfo] = useState(coachInfo);
   const [profilePhoto, setProfilePhoto] = useState(null);
@@ -150,7 +185,7 @@ export default function Coach_panel() {
                 </defs>
               </svg>
             </a>
-            <a
+            {/* <a
               href="/coach_panel/coach_transactions"
               className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
             >
@@ -167,7 +202,7 @@ export default function Coach_panel() {
                   fill="#FFF7ED"
                 />
               </svg>
-            </a>
+            </a> */}
             <a
               href="/"
               className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
@@ -341,7 +376,7 @@ export default function Coach_panel() {
                       </defs>
                     </svg>
                   </a>
-                  <a
+                  {/* <a
                     href="/coach_panel/coach_transactions"
                     className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
                   >
@@ -358,7 +393,7 @@ export default function Coach_panel() {
                         fill="#FFF7ED"
                       />
                     </svg>
-                  </a>
+                  </a> */}
                   <a
                     href="/"
                     className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
@@ -441,11 +476,11 @@ export default function Coach_panel() {
               </div>
             </div>
             <div className="max-md:flex-col max-md:gap-4 w-full flex justify-between gap-11">
-              {/* <div className="w-full flex justify-between">
+              <div className="w-full flex justify-between">
                 <p className="font-medium text-[20px]">تخصص:</p>
                 <p className="text-[20px] font-light">{coachInfo.speciality}</p>
-              </div> */}
-              <div className="w-full flex justify-center gap-11">
+              </div> 
+              <div className="w-full flex justify-between">
                 <p className="font-medium text-[20px]">وضعیت:</p>
                 <p className="text-[20px] font-light">{coachInfo.status}</p>
               </div>

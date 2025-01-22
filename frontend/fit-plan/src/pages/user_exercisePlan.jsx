@@ -4,8 +4,14 @@ import { Navigate, useNavigate } from "react-router-dom";
 import fit_logo from "/Images/Fit-Logo-Resized.png";
 import { useEffect } from "react";
 import Exe_plan_card from "../components/exe_plan_card";
+import axios from "axios";
 
 export default function User_exercisePlan() {
+  useEffect(() => {
+    userSet();
+    getExercise();
+  }, []);
+
   const [userInfo, setUserInfo] = useState({
     nameSurname: "آونگ روزبه",
     username: "AAAvng",
@@ -35,60 +41,113 @@ export default function User_exercisePlan() {
       "آرش از جوانی به ورزش علاقه‌مند بود و بعد از ورود به دانشگاه رشته تربیت بدنی، به طور جدی وارد دنیای بدنسازی شد. او بیش از ۱۰ سال است که به عنوان مربی حرفه‌ای فعالیت می‌کند و با تمرکز بر روی تمرینات قدرتی و استقامتی، به ویژه برای ورزشکاران رشته‌های دو و میدانی و فوتبال شناخته شده است. آرش به توانمندسازی شاگردان خود در بهبود عملکرد ورزشی‌شان افتخار می‌کند.",
   });
 
-  const exercisePlans = [
-    // {
-    //   day: "Day 1",
-    //   name: coachInfo.nameSurname,
-    //   image: coachInfo.image,
-    //   description: "شما یک برنامه تمرینی جدید دریافت کردید!",
-    //   movements: ["Push-ups", "Pull-ups"],
-    // },
-    {
-      title: coachInfo.nameSurname,
-      image: coachInfo.image,
-      description: "شما یک برنامه تمرینی جدید دریافت کردید!",
-      days: [
-        {
-          name: "روز اول",
-          movements: [
-            { name: "Push-ups", repeats: "3X10" },
-            { name: "Pull-ups", repeats: "3X12" },
-          ],
-        },
-        {
-          name: "روز دوم",
-          movements: [
-            { name: "Squats", repeats: "12-10-8" },
-            { name: "Lunges", repeats: "3 دقیقه" },
-          ],
-        },
-      ],
-    },
-    {
-      title: coachInfo.nameSurname,
-      image: coachInfo.image,
-      description: "شما یک برنامه تمرینی جدید دریافت کردید!",
-      days: [
-        {
-          name: "روز اول",
-          movements: [
-            { name: "Push-ups", repeats: "3X10" },
-            { name: "Pull-ups", repeats: "3X12" },
-          ],
-        },
-        {
-          name: "روز دوم",
-          movements: [
-            { name: "Squats", repeats: "12-10-8" },
-            { name: "Lunges", repeats: "3 دقیقه" },
-          ],
-        },
-      ],
-    },
-  ];
+  // const exercisePlans = [
+  //   // {
+  //   //   day: "Day 1",
+  //   //   name: coachInfo.nameSurname,
+  //   //   image: coachInfo.image,
+  //   //   description: "شما یک برنامه تمرینی جدید دریافت کردید!",
+  //   //   movements: ["Push-ups", "Pull-ups"],
+  //   // },
+  //   {
+  //     title: coachInfo.nameSurname,
+  //     image: coachInfo.image,
+  //     description: "شما یک برنامه تمرینی جدید دریافت کردید!",
+  //     days: [
+  //       {
+  //         name: "روز اول",
+  //         movements: [
+  //           { name: "Push-ups", repeats: "3X10" },
+  //           { name: "Pull-ups", repeats: "3X12" },
+  //         ],
+  //       },
+  //       {
+  //         name: "روز دوم",
+  //         movements: [
+  //           { name: "Squats", repeats: "12-10-8" },
+  //           { name: "Lunges", repeats: "3 دقیقه" },
+  //         ],
+  //       },
+  //     ],
+  //   },
+  //   {
+  //     title: coachInfo.nameSurname,
+  //     image: coachInfo.image,
+  //     description: "شما یک برنامه تمرینی جدید دریافت کردید!",
+  //     days: [
+  //       {
+  //         name: "روز اول",
+  //         movements: [
+  //           { name: "Push-ups", repeats: "3X10" },
+  //           { name: "Pull-ups", repeats: "3X12" },
+  //         ],
+  //       },
+  //       {
+  //         name: "روز دوم",
+  //         movements: [
+  //           { name: "Squats", repeats: "12-10-8" },
+  //           { name: "Lunges", repeats: "3 دقیقه" },
+  //         ],
+  //       },
+  //     ],
+  //   },
+  // ];
 
   const [planExist, setPlanExist] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [exercisePlans, setExercisePlans] = useState([]);
+
+  const value = localStorage.getItem("token").toString();
+
+  async function userSet() {
+    console.log("salam");
+    const res = await axios.get(
+      "http://fitplan.localhost/api/v1/user/get_user_info",
+      {
+        headers: {
+          Authorization: `Bearer ${JSON.parse(value)}`,
+        },
+      }
+    );
+    const data = res.data;
+    setUserInfo((prevState) => ({
+      ...prevState,
+      nameSurname: data.name,
+      username: data.user_name,
+      password: data.password,
+      phoneNumber: data.phone_number,
+      email: data.email,
+      birthDate: data.date_of_birth,
+      gender: data.gender,
+      height: data.height,
+      weight: data.weight,
+    }));
+  }
+
+  async function getExercise(){
+    try {
+      console.log("Getting exercise...");
+      const res = await axios.get(
+        "http://fitplan.localhost/api/v1/user/user_get_exercise",
+        {
+          headers: {
+            Authorization: `Bearer ${JSON.parse(value)}`,
+          },
+        }
+      );
+
+      // If the response is successful, set the meal plans
+      setExercisePlans(res.data); // Assuming res.data contains the list of meal plans
+      setPlanExist(true);
+    } catch (error) {
+      if (error.response && error.response.status === 404) {
+        console.log("No exercise plan found!");
+        setPlanExist(false);
+      } else {
+        console.error("An error occurred:", error);
+      }
+    }
+  }
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);

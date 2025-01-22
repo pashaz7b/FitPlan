@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import fit_logo from "/Images/Fit-Logo-Resized.png";
+import axios from "axios";
 
 export default function Exerciseplan_req() {
   const [userInfo, setUserInfo] = useState({
@@ -27,7 +28,9 @@ export default function Exerciseplan_req() {
 
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const value = localStorage.getItem("token").toString();
+
+  async function handleSubmit (e) {
     e.preventDefault();
     handleWeight(e);
     handleWaistSize(e);
@@ -36,9 +39,22 @@ export default function Exerciseplan_req() {
       setShowError(true);
     } else {
       setShowError(false);
-      console.log("Submit Successful!");
-      console.log(waistSize);
-      console.log(weight);
+      // console.log("Submit Successful!");
+      // console.log(waistSize);
+      // console.log(weight);
+      const res = await axios.post(
+        "http://fitplan.localhost/api/v1/user/request_exercise",
+        {
+          weight: weight,
+          waist: waistSize,
+          type: selectedPlan,
+        },
+        {
+            headers: {
+              Authorization: `Bearer ${JSON.parse(value)}`,
+            },
+        }
+      );
       navigate("/user_panel/user_exercisePlan");
     }
   };

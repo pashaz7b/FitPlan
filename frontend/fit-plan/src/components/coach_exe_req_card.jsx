@@ -1,21 +1,76 @@
 import React, { useState } from "react";
 import movements from "./movements"; // Import the movements list
+import axios from "axios";
 
 export default function CoachExeReqCard({ requestList, onClick }) {
-  const [planMovements, setPlanMovements] = useState([]);
+  const [dayMovements, setDayMovements] = useState(
+    // Initialize state for each day with an empty array
+    {
+      "روز اول": [],
+      "روز دوم": [],
+      "روز سوم": [],
+      "روز چهارم": [],
+    }
+  );
+
   const days = ["روز اول", "روز دوم", "روز سوم", "روز چهارم"];
 
-  const handleCheckboxChange = (movementName) => {
-    setPlanMovements((prev) => {
-      if (prev.includes(movementName)) {
-        // Remove if already selected
-        return prev.filter((name) => name !== movementName);
-      } else {
-        // Add if not selected
-        return [...prev, movementName];
+  const handleCheckboxChange = (day, movement) => {
+    setDayMovements((prev) => {
+      const updatedMovements = { ...prev };
+
+      // If the day does not exist in the state, initialize it as an empty array
+      if (!updatedMovements[day]) {
+        updatedMovements[day] = [];
       }
+
+      // Toggle the movement in the list
+      updatedMovements[day] = updatedMovements[day].some(
+        (m) => m.name === movement.name
+      )
+        ? updatedMovements[day].filter((m) => m.name !== movement.name)
+        : [...updatedMovements[day], movement];
+
+      return updatedMovements;
     });
   };
+
+  const value = localStorage.getItem("token")?.toString();
+
+  async function handleSubmit() {
+    // Convert the state to match the required format
+    const formattedData = Object.entries(dayMovements).flatMap(([day, movements]) =>
+      movements.map((movement) => ({
+        day,
+        name: movement.name,
+        set: movement.set,
+        expire_time: 2,
+      }))
+    );
+
+    try {
+      console.log(formattedData);
+      console.log(requestList.work_out_plan_id);
+      console.log(requestList.user_exercise_id);
+      
+
+      const res = await axios.post(
+        //  "http://fitplan.localhost/api/v1/coach/accept_exercise_request",
+         `http://fitplan.localhost/api/v1/coach/accept_exercise_request?work_out_plan_id=${requestList.work_out_plan_id}&user_exercise_id=${requestList.user_exercise_id}`,
+        formattedData,
+        {
+          headers: {
+            // work_out_plan_id: requestList.work_out_plan_id,
+            // user_exercise_id: requestList.user_exercise_id,
+            Authorization: `Bearer ${JSON.parse(value)}`, // Ensure `value` is correctly set
+          },
+        }
+      );
+      console.log("Plan submitted successfully:", res.data);
+    } catch (error) {
+      console.error("Error submitting plan:", error.response?.data || error.message);
+    }
+  }
 
   return (
     <div className="collapse max-h-[500px] overflow-y-auto scrollbar-none">
@@ -40,7 +95,7 @@ export default function CoachExeReqCard({ requestList, onClick }) {
         )}
         <div className="w-[75%] h-full flex flex-col gap-2 text-right p-4 transition-all duration-300">
           <p className="text-mintCream text-[23px] font-normal text-center flex flex-col justify-center md:pt-8">
-            شما یک درخواست برنامه تمرینی از "{requestList.nameSurname}" دارید
+            شما یک درخواست برنامه تمرینی از "{requestList.name}" دارید
           </p>
         </div>
       </div>
@@ -63,8 +118,10 @@ export default function CoachExeReqCard({ requestList, onClick }) {
                     <input
                       type="checkbox"
                       value={movement.name}
-                      checked={planMovements.includes(movement.name)}
-                      onChange={() => handleCheckboxChange(movement.name)}
+                      checked={dayMovements[day]?.some(
+                        (m) => m.name === movement.name
+                      )}
+                      onChange={() => handleCheckboxChange(day, movement)}
                       className="form-checkbox"
                     />
                     <div className="flex justify-between w-full">
@@ -77,7 +134,10 @@ export default function CoachExeReqCard({ requestList, onClick }) {
             </div>
           </div>
         ))}
-        <button className="bg-irishGreen w-[20%] max-sm:w-[80%] text-center text-[20px] font-medium py-1 rounded-[10px] mx-auto hover:bg-[#01651b] transition-all duration-200">
+        <button
+          onClick={handleSubmit}
+          className="bg-irishGreen w-[20%] max-sm:w-[80%] text-center text-[20px] font-medium py-1 rounded-[10px] mx-auto hover:bg-[#01651b] transition-all duration-200"
+        >
           ارسال برنامه
         </button>
       </div>

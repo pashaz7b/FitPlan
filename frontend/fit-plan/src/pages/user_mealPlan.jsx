@@ -3,8 +3,13 @@ import Plan_card from "../components/plan_card";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import fit_logo from "/Images/Fit-Logo-Resized.png";
+import axios from "axios";
 
 export default function User_mealPlan() {
+  useEffect(() => {
+    userSet();
+    getMeal();
+  }, []);
   const [userInfo, setUserInfo] = useState({
     nameSurname: "آونگ روزبه",
     username: "AAAvng",
@@ -34,32 +39,61 @@ export default function User_mealPlan() {
       "آرش از جوانی به ورزش علاقه‌مند بود و بعد از ورود به دانشگاه رشته تربیت بدنی، به طور جدی وارد دنیای بدنسازی شد. او بیش از ۱۰ سال است که به عنوان مربی حرفه‌ای فعالیت می‌کند و با تمرکز بر روی تمرینات قدرتی و استقامتی، به ویژه برای ورزشکاران رشته‌های دو و میدانی و فوتبال شناخته شده است. آرش به توانمندسازی شاگردان خود در بهبود عملکرد ورزشی‌شان افتخار می‌کند.",
   });
 
-  const mealPlans = [
-    {
-      name: coachInfo.nameSurname,
-      image: coachInfo.image,
-      description: "شما یک برنامه غذایی جدید دریافت کردید!",
-      breakfast:
-        "تخم مرغ نیمرو + نان تست با کره بادام‌زمینی + اسموتی موز و شیر کامل + یک مشت آجیل + پرو ماست + کرومیوم",
-      lunch:
-        "برنج سفید + مرغ سرخ‌شده + سیب‌زمینی پخته + سالاد با سس ماست پرچرب + یک لیوان آب‌میوه طبیعی + ویتامین ث",
-      dinner:
-        "پاستا با سس گوشت و پنیر + نان سیر + سالاد با روغن زیتون + یک لیوان شیر کامل",
-    },
-    {
-      name: coachInfo.nameSurname,
-      image: coachInfo.image,
-      description: "شما یک برنامه غذایی جدید دریافت کردید!",
-      breakfast:
-        "تخم مرغ نیمرو + نان تست با کره بادام‌زمینی + اسموتی موز و شیر کامل + یک مشت آجیل + پرو ماست + کرومیوم",
-      lunch:
-        "برنج سفید + مرغ سرخ‌شده + سیب‌زمینی پخته + سالاد با سس ماست پرچرب + یک لیوان آب‌میوه طبیعی + ویتامین ث",
-      dinner:
-        "پاستا با سس گوشت و پنیر + نان سیر + سالاد با روغن زیتون + یک لیوان شیر کامل",
-    },
-  ];
+  const value = localStorage.getItem("token").toString();
+
+  async function userSet() {
+    console.log("salam");
+    const res = await axios.get(
+      "http://fitplan.localhost/api/v1/user/get_user_info",
+      {
+        headers: {
+          Authorization: `Bearer ${JSON.parse(value)}`,
+        },
+      }
+    );
+    const data = res.data;
+    setUserInfo((prevState) => ({
+      ...prevState,
+      nameSurname: data.name,
+      username: data.user_name,
+      password: data.password,
+      phoneNumber: data.phone_number,
+      email: data.email,
+      birthDate: data.date_of_birth,
+      gender: data.gender,
+      height: data.height,
+      weight: data.weight,
+    }));
+  }
 
   const [planExist, setPlanExist] = useState(false);
+  const [mealPlans, setMealPlans] = useState([]); // Array to store meal plans
+
+  async function getMeal() {
+    try {
+      console.log("Getting meal...");
+      const res = await axios.get(
+        "http://fitplan.localhost/api/v1/user/user_get_meal",
+        {
+          headers: {
+            Authorization: `Bearer ${JSON.parse(value)}`,
+          },
+        }
+      );
+
+      // If the response is successful, set the meal plans
+      setMealPlans(res.data); // Assuming res.data contains the list of meal plans
+      setPlanExist(true);
+    } catch (error) {
+      if (error.response && error.response.status === 404) {
+        console.log("No meal plan found!");
+        setPlanExist(false);
+      } else {
+        console.error("An error occurred:", error);
+      }
+    }
+  }
+
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleMenu = () => {
@@ -468,10 +502,9 @@ export default function User_mealPlan() {
           <div className="flex flex-col gap-3 justify-start text-center max-h-[600px] mx-auto w-full">
             {mealPlans.map((mealPlan) => (
               <Plan_card
-                key={mealPlan.name}
-                name={mealPlan.name}
+                key={mealPlan.coach_name}
+                name={mealPlan.coach_name}
                 image={mealPlan.image}
-                description={mealPlan.description}
                 breakfast={mealPlan.breakfast}
                 lunch={mealPlan.lunch}
                 dinner={mealPlan.dinner}

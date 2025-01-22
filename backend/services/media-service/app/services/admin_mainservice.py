@@ -66,3 +66,25 @@ class AdminProfile():
 
         mongo_id = ObjectId(fetched_coach.image)
         return mongo_id
+
+    async def admin_check_user(self, user_email: str):
+        logger.info(f"Retrieving User with email {user_email}")
+        fetched_user = await self.user_subservice.get_user_by_email(user_email)
+
+        if not fetched_user:
+            logger.error(f"No user found with email {user_email}")
+            raise HTTPException(
+                status_code=404,
+                detail=f"No user found with email {user_email}"
+            )
+
+    async def admin_check_coach(self, coach_email: str):
+        logger.info(f"Retrieving Coach with email {coach_email}")
+        fetched_coach = await self.coach_subservice.get_coach_by_email(coach_email)
+
+        if not fetched_coach:
+            logger.error(f"No coach found with email {coach_email}")
+            raise HTTPException(
+                status_code=404,
+                detail=f"No coach found with email {coach_email}"
+            )

@@ -126,12 +126,14 @@ async def upload_user_media(
         media_service: Annotated[MediaService, Depends()],
         file: UploadFile,
         current_admin: Annotated[TokenDataSchema, Depends(get_current_admin)],
+        admin_service: Annotated[AdminProfile, Depends()],
         user_service: Annotated[UserProfile, Depends()],
         user_email: str
 ):
     logger.info("[...] Validating Image File")
     validate_image_file(file)
 
+    await admin_service.admin_check_user(user_email)
     logger.info(f"[+] Uploading Media File ---> {file.filename}")
     output = await media_service.create_media(file, user_email)
     await user_service.change_profile(user_email, {"image": str(output.mongo_id)})
@@ -146,11 +148,13 @@ async def upload_coach_media(
         file: UploadFile,
         current_admin: Annotated[TokenDataSchema, Depends(get_current_admin)],
         coach_service: Annotated[CoachProfile, Depends()],
+        admin_service: Annotated[AdminProfile, Depends()],
         coach_email: str
 ):
     logger.info("[...] Validating Image File")
     validate_image_file(file)
 
+    await admin_service.admin_check_coach(coach_email)
     logger.info(f"[+] Uploading Coach Profile Picture ---> {file.filename}")
     output = await media_service.create_media(file, coach_email)
     await coach_service.change_coach_profile(coach_email, {"image": str(output.mongo_id)})

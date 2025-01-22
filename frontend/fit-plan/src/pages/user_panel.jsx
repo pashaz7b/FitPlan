@@ -1,8 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import fit_logo from "/Images/Fit-Logo-Resized.png";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function User_panel() {
+  useEffect(() => {
+    userSet();
+    console.log("sss");
+  }, []);
+  
   const [userInfo, setUserInfo] = useState({
     nameSurname: "آونگ روزبه",
     username: "AAAvng",
@@ -15,6 +21,33 @@ export default function User_panel() {
     weight: "65",
     image: "/Images/payton-tuttle-RFFR1JjkJx8-unsplash.jpg",
   });
+
+  const value = localStorage.getItem("token").toString();
+
+  async function userSet() {
+    console.log("salam");
+    const res = await axios.get(
+      "http://fitplan.localhost/api/v1/user/get_user_info",
+      {
+        headers: {
+          Authorization: `Bearer ${JSON.parse(value)}`,
+        },
+      }
+    );
+    const data = res.data;
+    setUserInfo((prevState) => ({
+      ...prevState,
+      nameSurname: data.name,
+      username: data.user_name,
+      password: data.password,
+      phoneNumber: data.phone_number,
+      email: data.email,
+      birthDate: data.date_of_birth,
+      gender: data.gender,
+      height: data.height,
+      weight: data.weight,
+    }));
+  }
 
   const [tempInfo, setTempInfo] = useState(userInfo);
   const [profilePhoto, setProfilePhoto] = useState(null);
@@ -38,11 +71,23 @@ export default function User_panel() {
       <div className="max-lg:hidden fixed top-[48px] right-[51px] w-[320px] h-[700px] overflow-hidden bg-coal rounded-[15px] shadow-lg font-iranyekan">
         {/* Static Header Section */}
         <div className="flex flex-col items-center bg-coal">
-          <img
-            src="/Images/payton-tuttle-RFFR1JjkJx8-unsplash.jpg"
-            alt="User Avatar"
-            className="w-full max-h-[220px] object-cover"
-          />
+        {userInfo.image && userInfo.image.trim() ? (
+            <img
+              src={userInfo.image}
+              alt={userInfo.nameSurname}
+              className="w-full max-h-[220px] object-cover object-top"
+            />
+          ) : (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="220px"
+              viewBox="0 -960 960 960"
+              width="full"
+              fill="#e8eaed"
+            >
+              <path d="M480-492.31q-57.75 0-98.87-41.12Q340-574.56 340-632.31q0-57.75 41.13-98.87 41.12-41.13 98.87-41.13 57.75 0 98.87 41.13Q620-690.06 620-632.31q0 57.75-41.13 98.88-41.12 41.12-98.87 41.12ZM180-248.46v-28.16q0-29.38 15.96-54.42 15.96-25.04 42.66-38.5 59.3-29.07 119.65-43.61 60.35-14.54 121.73-14.54t121.73 14.54q60.35 14.54 119.65 43.61 26.7 13.46 42.66 38.5Q780-306 780-276.62v28.16q0 25.3-17.73 43.04-17.73 17.73-43.04 17.73H240.77q-25.31 0-43.04-17.73Q180-223.16 180-248.46Zm60 .77h480v-28.93q0-12.15-7.04-22.5-7.04-10.34-19.11-16.88-51.7-25.46-105.42-38.58Q534.7-367.69 480-367.69q-54.7 0-108.43 13.11-53.72 13.12-105.42 38.58-12.07 6.54-19.11 16.88-7.04 10.35-7.04 22.5v28.93Zm240-304.62q33 0 56.5-23.5t23.5-56.5q0-33-23.5-56.5t-56.5-23.5q-33 0-56.5 23.5t-23.5 56.5q0 33 23.5 56.5t56.5 23.5Zm0-80Zm0 384.62Z" />
+            </svg>
+          )}
           <p className="mt-3 text-lg font-semibold text-superRed">
             {userInfo.nameSurname}
           </p>

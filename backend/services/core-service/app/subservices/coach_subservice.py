@@ -214,3 +214,7 @@ class CoachSubService(BaseService):
             workout_plan_id=created_workout_plan.id,
             message="Exercise Created Successfully"
         )
+
+    async def check_if_workout_plan_exists(self, coach_id: int):
+        logger.info(f"[+] Checking If Workout Plan Exists for Coach With Id ---> {coach_id}")
+        return self.coach_repo.check_if_workout_plan_exists(coach_id)

@@ -2,6 +2,7 @@ import fit_logo from "/Images/Fit-Logo-Resized.png";
 import peoson_svg from "/SVGs/person_24dp_E8EAED_FILL0_wght300_GRAD0_opsz24.svg";
 import React, {useEffect, useState} from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function User_signup() {
 
@@ -47,7 +48,16 @@ export default function User_signup() {
     }
   };
 
-    const handleSubmit = (e) => {
+//   const handleMail = (e) => {
+//     if (!/^[a-zA-Z0-9._%+-]+@(gmail\.com|yahoo\.com)$/.test(phoneOrMail)) {
+//       setMailError(true);
+//       console.log(setPhoneOrMail);
+//     } else {
+//       setMailError(false);
+//     }
+//   };
+
+    async function handleSubmit(e){
         e.preventDefault();
         handlePhone();
         handleHeight(e);
@@ -57,8 +67,24 @@ export default function User_signup() {
             setShowError(true);
         } else {
             setShowError(false);
-            console.log("Submit Successful!");
-            navigate(`/otp_page/${role}`);
+            // console.log("Submit Successful!");
+            const res = await axios.post(
+                "http://iam.localhost/api/v1/users/signup",
+                {password: password,
+                 user_name: username,
+                 name: nameSurname,
+                 email: email,
+                 phone_number: phone,
+                 gender: gender,
+                 date_of_birth: birthDate,
+                 height: height,
+                 weight: weight
+                }
+            );
+            if(res.data.id){
+                sessionStorage.setItem("email", email);
+                navigate(`/otp_page/${role}`);
+            }
         }
     }; 
 
@@ -108,7 +134,7 @@ export default function User_signup() {
             <p className={`text-superRed text-[20px] mt-11 ${ showError ? "block" : "hidden"}`}>لطفا فیلدهای الزامی را پر کنید</p>
             <div id="identity_info" className="w-[70%] flex flex-col justify-between text-right">
                 <p className="max-sm:flex max-sm:flex-col max-sm:text-center max-sm:mx-auto text-superRed text-[30px] font-medium mt-10">اطلاعات هویتی</p>
-                <div className="max-sm:flex max-sm:flex-col max-sm:gap-5 max-sm:text-center max-sm:mx-auto flex justify-between align-bottom items-end mt-auto">
+                <div className="max-sm:flex max-sm:flex-col max-sm:gap-5 max-sm:text-center max-sm:mx-auto flex justify-center gap-10 align-bottom items-end mt-auto">
                     <div className="max-sm:flex max-sm:flex-col max-sm:text-center max-sm:mx-auto flex flex-col text-right">
                         <label htmlFor="first_surname" className="mb-3">نام و نام‌خانوادگی</label>
                         <input 
@@ -129,7 +155,7 @@ export default function User_signup() {
                         placeholder="1380/8/22"
                         />
                     </div>
-                    <div className="max-sm:flex max-sm:flex-col-reverse max-sm:text-center max-sm:mx-auto max-sm:items-center flex justify-between gap-5 align-bottom items-end mt-auto">
+                    {/* <div className="max-sm:flex max-sm:flex-col-reverse max-sm:text-center max-sm:mx-auto max-sm:items-center flex justify-between gap-5 align-bottom items-end mt-auto">
                         <label 
                         htmlFor="upload"
                         className="h-[35px] w-auto px-5 text-black bg-mintCream rounded-lg cursor-pointer hover:bg-irishGreen hover:text-mintCream transition">
@@ -158,7 +184,7 @@ export default function User_signup() {
                                 />
                             )}
                          </div>
-                    </div>
+                    </div> */}
                 </div>
             </div>
             <div id="user_info" className="w-[70%] flex flex-col justify-between text-right">

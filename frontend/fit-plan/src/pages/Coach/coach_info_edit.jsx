@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function Coach_info_edit() {
   const navigate = useNavigate();
@@ -18,11 +19,14 @@ export default function Coach_info_edit() {
     about:
       "دانا با بیش از ۱۵ سال تجربه در زمینه بدنسازی و تمرینات قدرتی، یکی از مربیان پیشرو در این حوزه به شمار می‌رود. او کار خود را به عنوان مربی شخصی در باشگاه‌های کوچک شروع کرد و به تدریج توانست با تدوین برنامه‌های تمرینی تخصصی برای ورزشکاران حرفه‌ای، شهرت زیادی کسب کند. دانا به بهینه‌سازی قدرت بدنی علاقه ویژه‌ای دارد و موفق شده چندین قهرمان مسابقات بدنسازی را آماده کند.",
     image: "/Images/Coach-Dana-Lajevardi.png",
+    spiciality: "بدنساز"
   });
 
   const [showStatus, setShowStatus] = useState(true);
 
   useEffect(() => {
+    userSet();
+
     if (userInfo.status === "در دسترس") {
       setShowStatus(true);
       console.log(tempInfo.status);
@@ -44,19 +48,104 @@ export default function Coach_info_edit() {
     status: userInfo.status,
     about: userInfo.about,
     image: userInfo.image,
+    speciality: userInfo.speciality
   });
+
   const [profilePhoto, setProfilePhoto] = useState(null);
+
+  const value = localStorage.getItem("token");
+
+  async function userSet() {
+    console.log("salam");
+    const res = await axios.get(
+      "http://fitplan.localhost/api/v1/coach/get_coach_info",
+      {
+        headers: {
+          Authorization: `Bearer ${JSON.parse(value)}`,
+        },
+      }
+    );
+
+    const data = res.data;
+    setUserInfo((prevState) => ({
+      ...prevState,
+      nameSurname: data.name,
+      username: data.user_name,
+      password: data.password,
+      phoneNumber: data.phone_number,
+      email: data.email,
+      birthDate: data.date_of_birth,
+      gender: data.gender,
+      height: data.height,
+      weight: data.weight,
+      about: data.biography,
+      status: data.status,
+      speciality: data.specialization
+
+    }));
+
+    setTempInfo((prevState) => ({
+      ...prevState,
+      nameSurname: data.name,
+      username: data.user_name,
+      password: data.password,
+      phoneNumber: data.phone_number,
+      email: data.email,
+      birthDate: data.date_of_birth,
+      gender: data.gender,
+      height: data.height,
+      weight: data.weight,
+      about: data.biography,
+      status: data.status,
+      speciality: data.specialization
+
+    }));
+  }
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setTempInfo((tempInfo) => ({ ...tempInfo, [name]: value }));
   };
 
-  const handleSave = () => {
-    setUserInfo(tempInfo);
-    alert("Changes saved!");
-    navigate("/coach_panel");
-  };
+  async function handleSave() {
+    try {
+      const payload = {
+        password: tempInfo.password,
+        user_name: tempInfo.username,
+        name: tempInfo.nameSurname,
+        email: tempInfo.email,
+        phone_number: tempInfo.phoneNumber,
+        gender: tempInfo.gender,
+        date_of_birth: tempInfo.birthDate,
+        height: tempInfo.height,
+        weight: tempInfo.weight,
+        status: tempInfo.status, // Include status
+        biography: tempInfo.about, // Include about
+        specialization: tempInfo.speciality
+      };
+
+      const res = await axios.put(
+        "http://fitplan.localhost/api/v1/coach/change_coach_info",
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${JSON.parse(
+              localStorage.getItem("token")
+            )}`,
+          },
+        }
+      );
+
+      alert("Changes saved!");
+      navigate("/coach_panel"); // Redirect user after saving changes
+    } catch (error) {
+      console.error("Error updating coach info:", error.response?.data);
+      alert(
+        error.response?.data?.message ||
+          "Failed to save changes. Please try again later."
+      );
+    }
+  }
 
   const handleCancel = () => {
     setTempInfo(userInfo);
@@ -213,7 +302,17 @@ export default function Coach_info_edit() {
               </div>
             </div>
             <div className="w-full flex max-lg:flex-col justify-between gap-11">
-              
+              <div className="w-full flex justify-between">
+                <p className="font-medium text-[20px]">تخصص:</p>
+                <input
+                  type="text"
+                  id="specialization"
+                  name="specialization"
+                  value={tempInfo.speciality}
+                  onChange={handleInputChange}
+                  className="text-[20px] text-left font-light max-w-[180px] bg-coal border rounded-[8px] px-2"
+                />
+              </div>
               <div className="w-full flex justify-end max-lg:justify-center max-lg:mx-auto">
                 <button
                   type="button"

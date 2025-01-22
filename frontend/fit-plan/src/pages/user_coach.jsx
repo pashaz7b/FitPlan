@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import fit_logo from "/Images/Fit-Logo-Resized.png";
+import axios from "axios";
 
 export default function User_coach() {
   const [userInfo, setUserInfo] = useState({
@@ -31,6 +32,66 @@ export default function User_coach() {
     about:
       "آرش از جوانی به ورزش علاقه‌مند بود و بعد از ورود به دانشگاه رشته تربیت بدنی، به طور جدی وارد دنیای بدنسازی شد. او بیش از ۱۰ سال است که به عنوان مربی حرفه‌ای فعالیت می‌کند و با تمرکز بر روی تمرینات قدرتی و استقامتی، به ویژه برای ورزشکاران رشته‌های دو و میدانی و فوتبال شناخته شده است. آرش به توانمندسازی شاگردان خود در بهبود عملکرد ورزشی‌شان افتخار می‌کند.",
   });
+
+  useEffect(() => {
+      userSet();
+      coachSet();
+      console.log("sss");
+    }, []);
+
+  const value = localStorage.getItem("token").toString();
+
+  async function userSet() {
+    console.log("salam");
+    const res = await axios.get(
+      "http://fitplan.localhost/api/v1/user/get_user_info",
+      {
+        headers: {
+          Authorization: `Bearer ${JSON.parse(value)}`,
+        },
+      }
+    );
+    const data = res.data;
+    setUserInfo((prevState) => ({
+      ...prevState,
+      nameSurname: data.name,
+      username: data.user_name,
+      password: data.password,
+      phoneNumber: data.phone_number,
+      email: data.email,
+      birthDate: data.date_of_birth,
+      gender: data.gender,
+      height: data.height,
+      weight: data.weight,
+    }));
+  }
+
+  async function coachSet() {
+    console.log("salam");
+    const res = await axios.get(
+      "http://fitplan.localhost/api/v1/user/get_user_coach",
+      {
+        headers: {
+          Authorization: `Bearer ${JSON.parse(value)}`,
+        },
+      }
+    );
+    const data = res.data;
+    setCoachInfo((prevState) => ({
+      ...prevState,
+      nameSurname: data.name,
+      username: data.user_name,
+      password: data.password,
+      phoneNumber: data.phone_number,
+      email: data.email,
+      birthDate: data.date_of_birth,
+      gender: data.gender,
+      height: data.height,
+      weight: data.weight,
+      about: data.biography,
+      speciality: data.specialization
+    }));
+  }
 
   const [tempInfo, setTempInfo] = useState(userInfo);
   const [profilePhoto, setProfilePhoto] = useState(null);

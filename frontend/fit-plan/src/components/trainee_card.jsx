@@ -10,7 +10,6 @@ export default function Trainee_card({
   height,
   weight,
   image,
-  coach,
   onClick,
 }) {
   return (
@@ -86,12 +85,12 @@ export default function Trainee_card({
               <p className="text-[20px] font-light">{weight}</p>
             </div>
           </div>
-          <div className="max-md:flex-col max-md:gap-4 w-[35%] flex justify-between mx-auto gap-11">
+          {/* <div className="max-md:flex-col max-md:gap-4 w-[35%] flex justify-between mx-auto gap-11">
             <div className="w-full flex justify-between">
               <p className="font-medium text-[20px]">مربی:</p>
               <p className="text-[20px] font-light">{coach}</p>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

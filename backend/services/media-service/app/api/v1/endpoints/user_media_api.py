@@ -79,29 +79,13 @@ async def get_media(
 )
 async def get_coach_profile(
         media_service: Annotated[MediaService, Depends()],
-        coach_service: Annotated[CoachProfile, Depends()],
+        user_service: Annotated[UserProfile, Depends()],
         current_user: Annotated[TokenDataSchema, Depends(get_current_user)],
         coach_email: str
 ):
-    coach_response = await coach_service.get_coach_profile(coach_email)
-    logger.info(f"[+] Coach Profile Retrieved ---> {coach_response}")
+    logger.info(f"[+] Fetching Coach For User With Email ---> {current_user.email}")
 
-    if not coach_response:
-        logger.error(f"No coach found with email {coach_email}")
-        raise HTTPException(
-            status_code=404,
-            detail=f"No coach found with email {coach_email}"
-        )
-
-    logger.info(f"[+] Coach Profile Retrieved ---> {coach_response}")
-
-    if not coach_response.image:
-        raise HTTPException(
-            status_code=404,
-            detail="No image found for the specified coach"
-        )
-
-    mongo_id = ObjectId(coach_response.image)
+    mongo_id = await user_service.user_get_coach_profile(coach_email)
     logger.info(f"[+] Mongo Id ---> {mongo_id}")
 
     media_schema, file_stream = await media_service.get_media(
@@ -117,6 +101,7 @@ async def get_coach_profile(
             "Content-Disposition": f"attachment; filename={media_schema.filename}"
         },
     )
+
 
 # @media_router.post(
 #     "/send_meal_media", response_model=MediaSchema, status_code=status.HTTP_201_CREATED
@@ -154,3 +139,30 @@ async def get_coach_profile(
 #             "Content-Disposition": f"attachment; filename={media_schema.filename}"
 #         },
 #     )
+
+@user_media_router.get(
+    "/get_all_coach_profile/{coach_email}", response_class=StreamingResponse, status_code=status.HTTP_200_OK
+)
+async def get_all_coach_profile(
+        media_service: Annotated[MediaService, Depends()],
+        user_service: Annotated[UserProfile, Depends()],
+        coach_email: str
+):
+    logger.info(f"[+] Fetching Coach For User With Email")
+
+    mongo_id = await user_service.user_get_coach_profile(coach_email)
+    logger.info(f"[+] Mongo Id ---> {mongo_id}")
+
+    media_schema, file_stream = await media_service.get_media(
+        mongo_id, coach_email
+    )
+
+    logger.info(f"Retrieving media file {media_schema.filename}")
+
+    return StreamingResponse(
+        content=file_stream(),
+        media_type=media_schema.content_type,
+        headers={
+            "Content-Disposition": f"attachment; filename={media_schema.filename}"
+        },
+    )

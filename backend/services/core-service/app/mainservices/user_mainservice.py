@@ -1,6 +1,9 @@
+from pyexpat.errors import messages
 from typing import Annotated
 from loguru import logger
 from fastapi import Depends, HTTPException, status
+from collections import defaultdict
+from typing import Dict
 
 from app.domain.schemas.user_schema import (GetUserInfoSchema,
                                             SetUserInfoSchema,
@@ -9,7 +12,8 @@ from app.domain.schemas.user_schema import (GetUserInfoSchema,
                                             UserRequestExerciseSchema,
                                             GetUserExerciseSchema, UserRequestMealSchema, GetUserMealSchema,
                                             GetUserAllCoachSchema, UserTakeWorkoutCoachSchema,
-                                            UserTakeWorkoutCoachResponseSchema)
+                                            UserTakeWorkoutCoachResponseSchema, GroupedExerciseSchema, ExerciseSchema,
+                                            ChangeUserCoachResponse)
 
 from app.subservices.user_subservice import UserSubService
 from app.subservices.user_duplicates_subservice import UserDuplicatesSubService
@@ -208,26 +212,38 @@ class UserMainService(BaseService):
     async def get_user_exercise(self, user_id):
         logger.info(f"[+] Fetching Exercise For User With Id ---> {user_id}")
 
-        exercises = await self.user_subservice.get_user_exercise(user_id)
+        fetched_exercises = await self.user_subservice.get_user_exercise(user_id)
 
-        if not exercises:
+        if not fetched_exercises:
             logger.info(f"[-] No exercise found for user with id ---> {user_id}")
             raise HTTPException(status_code=404, detail="No exercise found for this user")
 
-        exercise_schemas = [
-            GetUserExerciseSchema(
-                id=exercise.id,
-                day=exercise.day,
-                name=exercise.name,
-                set=exercise.set,
-                expire_time=exercise.expire_time,
-                created_at=exercise.created_at,
-                updated_at=exercise.updated_at
-            )
-            for exercise in exercises
-        ]
+        grouped_exercises = defaultdict(list)
+        for exercise in fetched_exercises:
+            created_at_date = exercise.created_at.replace(second=0, microsecond=0)
+            grouped_exercises[created_at_date].append(exercise)
 
-        return exercise_schemas
+        response = []
+        for created_at, exercises in grouped_exercises.items():
+            response.append(GroupedExerciseSchema(
+                created_at=created_at.isoformat(),
+                coach_name=exercises[0].workout_plans[0].workout_plan.present[0].coach.name,
+                coach_email=exercises[0].workout_plans[0].workout_plan.present[0].coach.email,
+                exercises=[
+                    ExerciseSchema(
+                        id=exercise.id,
+                        day=exercise.day,
+                        name=exercise.name,
+                        set=exercise.set,
+                        expire_time=exercise.expire_time,
+                        created_at=exercise.created_at,
+                        updated_at=exercise.updated_at
+                    )
+                    for exercise in exercises
+                ]
+            ))
+
+        return response
 
     async def create_user_meal(self, user_id, user_struct: UserRequestMealSchema):
         logger.info(f"[+] Creating Request Meal For User With Id ---> {user_id}")
@@ -241,24 +257,35 @@ class UserMainService(BaseService):
     async def get_user_meal(self, user_id):
         logger.info(f"[+] Fetching Meal For User With Id ---> {user_id}")
 
-        meal = await self.user_subservice.get_user_meal(user_id)
+        fetched_meals = await self.user_subservice.get_user_meal(user_id)
 
-        if not meal:
+        if not fetched_meals:
             logger.info(f"[-] No meal found for user with id ---> {user_id}")
             raise HTTPException(status_code=404, detail="No meal found for this user")
 
-        meal_schema = GetUserMealSchema(
-            id=meal.id,
-            breakfast=meal.breakfast,
-            lunch=meal.lunch,
-            dinner=meal.dinner,
-            supplement=meal.supplement,
-            expire_time=meal.expire_time,
-            created_at=meal.created_at,
-            updated_at=meal.updated_at
-        )
+        grouped_meals = defaultdict(list)
+        for meal in fetched_meals:
+            created_at_date = meal.created_at.replace(second=0, microsecond=0)
+            grouped_meals[created_at_date].append(meal)
 
-        return meal_schema
+        response = []
+        for created_at, meals in grouped_meals.items():
+            meal = meals[0]
+            response.append(GetUserMealSchema(
+                created_date=created_at.isoformat(),
+                coach_name=meal.workout_plan_meal_supplements[0].workout_plan.present[0].coach.name,
+                coach_email=meal.workout_plan_meal_supplements[0].workout_plan.present[0].coach.email,
+                id=meal.id,
+                breakfast=meal.breakfast,
+                lunch=meal.lunch,
+                dinner=meal.dinner,
+                supplement=meal.supplement,
+                expire_time=meal.expire_time,
+                created_at=meal.created_at,
+                updated_at=meal.updated_at
+            ))
+
+        return response
 
     async def get_user_all_coach(self, user_id: int):
         logger.info(f"[...] Fetching All Coaches For User With Id ---> {user_id}")
@@ -314,9 +341,23 @@ class UserMainService(BaseService):
 
     async def create_user_take_workout_coach(self, user_id: int, take_strucr: UserTakeWorkoutCoachSchema):
         logger.info(f"[+] User With Id ---> {user_id} Take Workout With Id ---> {take_strucr.work_out_plan_id}")
+
+        existed_workout_coach = await self.user_subservice.check_if_user_take_workout_coach_exists(user_id)
+
+        if existed_workout_coach:
+            logger.info(f"[-] User With Id ---> {user_id} Already Take Workout")
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="User Already Take Workout Coach")
+
         result = await self.user_subservice.create_user_take_workout_coach(user_id, take_strucr)
 
         return UserTakeWorkoutCoachResponseSchema(
             work_out_plan_id=take_strucr.work_out_plan_id,
             msg="Workout Plan Taken Successfully"
+        )
+
+    async def update_user_coach(self, user_id: int, updated_user: Dict):
+        await self.user_subservice.update_user_coach(user_id, updated_user)
+
+        return ChangeUserCoachResponse(
+            message="Coach Changed Successfully"
         )

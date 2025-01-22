@@ -3,9 +3,14 @@ import fit_logo from "/Images/Fit-Logo-Resized.png";
 import { useNavigate } from "react-router-dom";
 import Trainee_card from "../../components/trainee_card";
 import Coach_exe_req_card from "../../components/coach_exe_req_card";
-
+import axios from "axios";
 
 export default function Coach_exeplan() {
+  useEffect(() => {
+    userSet();
+    checkPlan();
+  }, []);
+
   const [coachInfo, setCoachInfo] = useState({
     nameSurname: "دانا لاجوردی",
     username: "Dana_Laj",
@@ -23,93 +28,148 @@ export default function Coach_exeplan() {
     image: "/Images/Coach-Dana-Lajevardi.png",
   });
 
-  const trainees = [
-    {
-      nameSurname: "آونگ روزبه",
-      username: "AAAvng",
-      phoneNumber: "989123456789+",
-      email: "avng.rzbh@gmail.com",
-      birthDate: "1365/7/18",
-      gender: "آقا",
-      height: "175",
-      weight: "65",
-      image: "/Images/payton-tuttle-RFFR1JjkJx8-unsplash.jpg",
-    },
-    {
-      nameSurname: "آناهیتا آسایش",
-      username: "annaasa",
-      phoneNumber: "989123456789+",
-      email: "anna.assa@gmail.com",
-      birthDate: "1380/7/18",
-      gender: "خانم",
-      height: "155",
-      weight: "65",
-      image: "/Images/Anahita-Asayesh.jpg",
-    },
-    {
-      nameSurname: "هربد دانا",
-      username: "herbd_dna",
-      phoneNumber: "989123456789+",
-      email: "herbd.dna@yahoo.com",
-      birthDate: "1377/7/18",
-      gender: "آقا",
-      height: "178",
-      weight: "80",
-      image: "/Images/mohamad-khosravi-5KyzZbonwqQ-unsplash.jpg",
-    },
-    {
-      nameSurname: "دارمان ثلاثی",
-      username: "djdarmaan",
-      phoneNumber: "989123456789+",
-      email: "djdarmaan@gmail.com",
-      birthDate: "1369/7/18",
-      gender: "آقا",
-      height: "173",
-      weight: "70",
-      image: "",
-    },
-  ];
+  // const trainees = [
+  //   {
+  //     nameSurname: "آونگ روزبه",
+  //     username: "AAAvng",
+  //     phoneNumber: "989123456789+",
+  //     email: "avng.rzbh@gmail.com",
+  //     birthDate: "1365/7/18",
+  //     gender: "آقا",
+  //     height: "175",
+  //     weight: "65",
+  //     image: "/Images/payton-tuttle-RFFR1JjkJx8-unsplash.jpg",
+  //   },
+  //   {
+  //     nameSurname: "آناهیتا آسایش",
+  //     username: "annaasa",
+  //     phoneNumber: "989123456789+",
+  //     email: "anna.assa@gmail.com",
+  //     birthDate: "1380/7/18",
+  //     gender: "خانم",
+  //     height: "155",
+  //     weight: "65",
+  //     image: "/Images/Anahita-Asayesh.jpg",
+  //   },
+  //   {
+  //     nameSurname: "هربد دانا",
+  //     username: "herbd_dna",
+  //     phoneNumber: "989123456789+",
+  //     email: "herbd.dna@yahoo.com",
+  //     birthDate: "1377/7/18",
+  //     gender: "آقا",
+  //     height: "178",
+  //     weight: "80",
+  //     image: "/Images/mohamad-khosravi-5KyzZbonwqQ-unsplash.jpg",
+  //   },
+  //   {
+  //     nameSurname: "دارمان ثلاثی",
+  //     username: "djdarmaan",
+  //     phoneNumber: "989123456789+",
+  //     email: "djdarmaan@gmail.com",
+  //     birthDate: "1369/7/18",
+  //     gender: "آقا",
+  //     height: "173",
+  //     weight: "70",
+  //     image: "",
+  //   },
+  // ];
 
-  const mealPlans = [
-    {
-      image: "/Images/Anahita-Asayesh.jpg",
-      nameSurname: "آناهیتا آسایش",
-      gender: "خانم",
-      birthDate: "1380/7/18",
-      height: "155",
-      weight: "65",
-      waistSize: "80",
-      planType: "کات",
-      figureImgs: ["/Images/Anahita-Asayesh.jpg", "/Images/Anahita-Asayesh.jpg", "/Images/Anahita-Asayesh.jpg"]
-    },
-    {
-      image: "/Images/Anahita-Asayesh.jpg",
-      nameSurname: "آناهیتا آسایش",
-      gender: "خانم",
-      birthDate: "1380/7/18",
-      height: "155",
-      weight: "65",
-      waistSize: "80",
-      planType: "کات",
-      figureImgs: ["/Images/Anahita-Asayesh.jpg", "/Images/Anahita-Asayesh.jpg", "/Images/Anahita-Asayesh.jpg"]
-    },
-    {
-      image: "/Images/Anahita-Asayesh.jpg",
-      nameSurname: "آناهیتا آسایش",
-      gender: "خانم",
-      birthDate: "1380/7/18",
-      height: "155",
-      weight: "65",
-      waistSize: "80",
-      planType: "کات",
-      figureImgs: ["/Images/Anahita-Asayesh.jpg", "/Images/Anahita-Asayesh.jpg", "/Images/Anahita-Asayesh.jpg"]
-    },
-  ];
+  // const mealPlans = [
+  //   {
+  //     image: "/Images/Anahita-Asayesh.jpg",
+  //     nameSurname: "آناهیتا آسایش",
+  //     gender: "خانم",
+  //     birthDate: "1380/7/18",
+  //     height: "155",
+  //     weight: "65",
+  //     waistSize: "80",
+  //     planType: "کات",
+  //     figureImgs: ["/Images/Anahita-Asayesh.jpg", "/Images/Anahita-Asayesh.jpg", "/Images/Anahita-Asayesh.jpg"]
+  //   },
+  //   {
+  //     image: "/Images/Anahita-Asayesh.jpg",
+  //     nameSurname: "آناهیتا آسایش",
+  //     gender: "خانم",
+  //     birthDate: "1380/7/18",
+  //     height: "155",
+  //     weight: "65",
+  //     waistSize: "80",
+  //     planType: "کات",
+  //     figureImgs: ["/Images/Anahita-Asayesh.jpg", "/Images/Anahita-Asayesh.jpg", "/Images/Anahita-Asayesh.jpg"]
+  //   },
+  //   {
+  //     image: "/Images/Anahita-Asayesh.jpg",
+  //     nameSurname: "آناهیتا آسایش",
+  //     gender: "خانم",
+  //     birthDate: "1380/7/18",
+  //     height: "155",
+  //     weight: "65",
+  //     waistSize: "80",
+  //     planType: "کات",
+  //     figureImgs: ["/Images/Anahita-Asayesh.jpg", "/Images/Anahita-Asayesh.jpg", "/Images/Anahita-Asayesh.jpg"]
+  //   },
+  // ];
 
   const [tempInfo, setTempInfo] = useState(coachInfo);
   const [profilePhoto, setProfilePhoto] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const [planExist, setPlanExist] = useState(false);
+  const [exePlans, setExePlans] = useState([]);
+
+  const value = localStorage.getItem("token").toString();
+
+  async function userSet() {
+    console.log("salam");
+    const res = await axios.get(
+      "http://fitplan.localhost/api/v1/coach/get_coach_info",
+      {
+        headers: {
+          Authorization: `Bearer ${JSON.parse(value)}`,
+        },
+      }
+    );
+    const data = res.data;
+    setCoachInfo((prevState) => ({
+      ...prevState,
+      nameSurname: data.name,
+      username: data.user_name,
+      password: data.password,
+      phoneNumber: data.phone_number,
+      email: data.email,
+      birthDate: data.date_of_birth,
+      gender: data.gender,
+      height: data.height,
+      weight: data.weight,
+      about: data.biography,
+      speciality: data.specialization
+    }));
+  }
+
+  async function checkPlan() {
+    try{
+
+      const res = await axios.get(
+        "http://fitplan.localhost/api/v1/coach/get_user_exercise_request",
+        {
+          headers: {
+            Authorization: `Bearer ${JSON.parse(value)}`,
+          },
+        }
+      );
+      console.log(res.data);
+      setExePlans(res.data);
+      setPlanExist(true);
+    }
+    catch (error) {
+      if ( error.response && error.response.status === 404 ){
+        console.log("No exercise plan found!");
+        setPlanExist(false);
+      } else {
+        console.error("An error occurres:", error);
+      }
+    }
+  };
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -123,18 +183,6 @@ export default function Coach_exeplan() {
   const handleNavigate = (e) => {
     navigate("./user_login");
   };
-
-  const checkPlan = () => {
-    if (mealPlans.length > 0) {
-      setPlanExist(true);
-    } else if (mealPlans.length == 0) {
-      setPlanExist(false);
-    }
-  };
-
-  useEffect(() => {
-    checkPlan();
-  }, []);
 
   return (
     <div className="max-lg:pr-0 max-lg:justify-center max-lg:text-center max-lg:mx-auto bg-black w-full h-full flex justify-start pr-[400px] gap-[35px] mx-auto font-iranyekan">
@@ -249,7 +297,7 @@ export default function Coach_exeplan() {
                 </defs>
               </svg>
             </a>
-            <a
+            {/* <a
               href="/coach_panel/coach_transactions"
               className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
             >
@@ -266,7 +314,7 @@ export default function Coach_exeplan() {
                   fill="#FFF7ED"
                 />
               </svg>
-            </a>
+            </a> */}
             <a
               href="/"
               className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
@@ -438,7 +486,7 @@ export default function Coach_exeplan() {
                       </defs>
                     </svg>
                   </a>
-                  <a
+                  {/* <a
                     href="/coach_panel/coach_transactions"
                     className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
                   >
@@ -455,7 +503,7 @@ export default function Coach_exeplan() {
                         fill="#FFF7ED"
                       />
                     </svg>
-                  </a>
+                  </a> */}
                   <a
                     href="/"
                     className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
@@ -514,7 +562,7 @@ export default function Coach_exeplan() {
             planExist ? "flex" : "hidden"
           }`}
         >
-          {mealPlans.map((requests) => (
+          {exePlans.map((requests) => (
             <Coach_exe_req_card
               requestList={requests}
             />

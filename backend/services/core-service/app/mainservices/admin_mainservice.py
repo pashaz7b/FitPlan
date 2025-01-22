@@ -7,6 +7,8 @@ from app.domain.schemas.admin_schema import (GetAdminInfoSchema,
                                              UserSchema, TransactionSchema, GetAdminAllTransactionSchema)
 
 from app.subservices.admin_subservice import AdminSubService
+from app.subservices.coach_subservice import CoachSubService
+from app.subservices.user_subservice import UserSubService
 from app.subservices.user_duplicates_subservice import UserDuplicatesSubService
 from app.subservices.baseconfig import BaseService
 from app.subservices.auth.hash_subservice import HashService
@@ -15,11 +17,15 @@ from app.subservices.auth.hash_subservice import HashService
 class AdminMainService(BaseService):
     def __init__(self,
                  admin_subservice: Annotated[AdminSubService, Depends()],
+                 coach_subservice: Annotated[CoachSubService, Depends()],
+                 user_subservice: Annotated[UserSubService, Depends()],
                  user_duplicates_subservice: Annotated[UserDuplicatesSubService, Depends()],
                  hash_subservice: Annotated[HashService, Depends()]
                  ) -> None:
         super().__init__()
         self.admin_subservice = admin_subservice
+        self.coach_subservice = coach_subservice
+        self.uer_subservice = user_subservice
         self.user_duplicates_subservice = user_duplicates_subservice
         self.hash_subservice = hash_subservice
 
@@ -280,3 +286,21 @@ class AdminMainService(BaseService):
 
         logger.info(f"[+] Successfully fetched {len(result)} users and their transactions")
         return result
+
+    async def check_coach_exits(self, coach_id: int):
+        coach = await self.coach_subservice.get_coach(coach_id)
+        if not coach:
+            logger.error(f"[-] Coach With Id ---> {coach_id} Not Found")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Coach Not Found"
+            )
+        return coach
+
+    async def check_user_exits(self, user_id: int):
+        user = await self.uer_subservice.get_user(user_id)
+        if not user:
+            logger.error(f"[-] User With Id ---> {user_id} Not Found")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="User Not Found"
+            )
+        return user

@@ -1,9 +1,10 @@
 import { useState } from "react";
 import fit_logo from "/Images/Fit-Logo-Resized.png";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function Admin_panel() {
-  const [adminInfo, setAdminInfo] = useState({
+  const [userInfo, setUserInfo] = useState({
     nameSurname: "نیوشا قنبری",
     username: "im_new",
     password: "********",
@@ -13,9 +14,36 @@ export default function Admin_panel() {
     image: "/Images/michael-dam-mEZ3PoFGs_k-unsplash.jpg",
   });
 
-  const [tempInfo, setTempInfo] = useState(adminInfo);
+  // const [tempInfo, setTempInfo] = useState(user);
   const [profilePhoto, setProfilePhoto] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
+
+  const value = localStorage.getItem("token").toString();
+
+  async function userSet() {
+    console.log("salam");
+    const res = await axios.get(
+      "http://fitplan.localhost/api/v1/admin/get_admin_info",
+      {
+        headers: {
+          Authorization: `Bearer ${JSON.parse(value)}`,
+        },
+      }
+    );
+    const data = res.data;
+    setUserInfo((prevState) => ({
+      ...prevState,
+      nameSurname: data.name,
+      username: data.user_name,
+      password: data.password,
+      phoneNumber: data.phone_number,
+      email: data.email,
+      birthDate: data.date_of_birth,
+      gender: data.gender,
+      height: data.height,
+      weight: data.weight,
+    }));
+  }
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -35,10 +63,10 @@ export default function Admin_panel() {
       <div className="max-lg:hidden fixed top-[48px] right-[51px] w-[320px] h-[700px] overflow-hidden bg-coal rounded-[15px] shadow-lg font-iranyekan">
         {/* Static Header Section */}
         <div className="flex flex-col items-center bg-coal">
-          {adminInfo.image && adminInfo.image.trim() ? (
+          {userInfo.image && userInfo.image.trim() ? (
             <img
-              src={adminInfo.image}
-              alt={adminInfo.nameSurname}
+              src={userInfo.image}
+              alt={userInfo.nameSurname}
               className="w-full max-h-[220px] object-cover object-top"
             />
           ) : (
@@ -53,10 +81,10 @@ export default function Admin_panel() {
             </svg>
           )}
           <p className="mt-3 text-lg font-semibold text-superRed">
-            {adminInfo.nameSurname}
+            {userInfo.nameSurname}
           </p>
           <p className="mt-2 text-lg text-superRed font-light">
-            {adminInfo.username}@
+            {userInfo.username}@
           </p>
         </div>
 
@@ -193,10 +221,10 @@ export default function Admin_panel() {
               </div>
 
               <div className="flex flex-col items-center bg-coal">
-                {adminInfo.image && adminInfo.image.trim() ? (
+                {userInfo.image && userInfo.image.trim() ? (
                   <img
-                    src={adminInfo.image}
-                    alt={adminInfo.nameSurname}
+                    src={userInfo.image}
+                    alt={userInfo.nameSurname}
                     className="w-full max-h-[250px] object-cover"
                   />
                 ) : (
@@ -211,10 +239,10 @@ export default function Admin_panel() {
                   </svg>
                 )}
                 <p className="mt-3 text-lg font-semibold text-superRed">
-                  {adminInfo.nameSurname}
+                  {userInfo.nameSurname}
                 </p>
                 <p className="mt-2 text-lg text-superRed font-light">
-                  {adminInfo.username}@
+                  {userInfo.username}@
                 </p>
               </div>
               <div className="overflow-y-auto font-medium max-h-[330px] scrollbar-thin scrollbar-thumb-superRed scrollbar-track-coal">
@@ -315,17 +343,17 @@ export default function Admin_panel() {
         <div className="max-md:flex-col max-md:justify-start max-md:gap-3 max-md:text-center max-md:overflow-y-auto border mb-[22px] rounded-[10px] h-[618px] overflow-hidden flex justify-start gap-5 text-mintCream">
           <div className="max-md:text-center max-md:justify-center max-md:h-full max-md:w-full max-md:mx-auto h-full w-[25%] overflow-hidden">
             <img
-              src={adminInfo.image}
+              src={userInfo.image}
               alt="user_image"
               className="max-md:text-center max-md:justify-center max-md:w-full max-md:object-cover object-cover object-center h-full scale-[100%]"
             />
           </div>
           <div className="max-md:w-[95%] max-md:gap-4 overflow-y-auto scrollbar-none max-md:mx-auto w-[70%] py-5 px-2 flex flex-col gap-11">
-            <h1 className="text-[45px] font-medium">{adminInfo.nameSurname}</h1>
+            <h1 className="text-[45px] font-medium">{userInfo.nameSurname}</h1>
             <div className="max-md:flex-col max-md:gap-4 w-full flex justify-between gap-11">
               <div className="w-full flex justify-between">
                 <p className="font-medium text-[20px]">نام کاربری:</p>
-                <p className="text-[20px] font-light">{adminInfo.username}</p>
+                <p className="text-[20px] font-light">{userInfo.username}</p>
               </div>
               <div className="w-full flex justify-between">
                 <p className="font-medium text-[20px]">گذرواژه:</p>
@@ -336,18 +364,18 @@ export default function Admin_panel() {
               <div className="w-full flex justify-between">
                 <p className="font-medium text-[20px]">شماره تماس:</p>
                 <p className="text-[20px] font-light">
-                  {adminInfo.phoneNumber}
+                  {userInfo.phoneNumber}
                 </p>
               </div>
               <div className="w-full flex justify-between">
                 <p className="font-medium text-[20px]">آدرس ایمیل:</p>
-                <p className="text-[15px] font-light">{adminInfo.email}</p>
+                <p className="text-[15px] font-light">{userInfo.email}</p>
               </div>
             </div>
             <div className="max-md:flex-col max-md:gap-4 max-lg:w-[35%] w-[30%] flex mx-auto justify-between gap-11">
               <div className="w-full flex justify-between">
                 <p className="font-medium text-[20px]">تاریخ تولد:</p>
-                <p className="text-[20px] font-light">{adminInfo.birthDate}</p>
+                <p className="text-[20px] font-light">{userInfo.birthDate}</p>
               </div>
             </div>
             <button className="text-center max-md:text-center max-md:flex max-md:justify-center max-md:mx-auto text-superRed text-[25px] font-semibold  max-h-[62px]">

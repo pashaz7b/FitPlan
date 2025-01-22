@@ -1,6 +1,47 @@
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function CoachMealReqCard({ requestList, onClick }) {
+  // console.log(requestList.name);
+  const [breakfast, setBreakFast] = useState("");
+  const [lunch, setLunch] = useState("");
+  const [dinner, setDinner] = useState("");
+
+  const value = localStorage.getItem("token").toString();
+  const naviagte = useNavigate();
+
+  const handleNavigate = () => {
+    naviagte("/coach_panel/coach_mealPlan")
+  };
+
+  async function handleSubmit(event) {
+    event.preventDefault(); // Prevent the form from refreshing the page
+    try {
+      const res = await axios.post(
+        "http://fitplan.localhost/api/v1/coach/accept_meal_request",
+        {
+          work_out_plan_id: requestList.work_out_plan_id,
+          user_meal_id: requestList.user_meal_id,
+          breakfast: breakfast,
+          lunch: lunch,
+          dinner: dinner,
+          supplement: "کراتین",
+          expire_time: 2
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${JSON.parse(value)}`, // Replace `value` with your token logic
+          },
+        }
+      );
+      console.log("Meal submitted successfully:", res.data);
+      handleNavigate();
+    } catch (error) {
+      console.error("Error submitting meal:", error.response || error);
+    }
+  }
+
   return (
     <div className="collapse max-h-[500px] overflow-y-auto scrollbar-none">
       <input type="radio" name="my-accordion-1" />
@@ -8,7 +49,7 @@ export default function CoachMealReqCard({ requestList, onClick }) {
         {requestList.image && requestList.image.trim() ? (
           <img
             src={requestList.image}
-            alt={requestList.nameSurname}
+            alt={requestList.name}
             className="w-[25%] h-full object-cover object-top"
           />
         ) : (
@@ -24,13 +65,13 @@ export default function CoachMealReqCard({ requestList, onClick }) {
         )}
         <div className="w-[75%] h-full flex flex-col gap-2 text-right p-4 transition-all duration-300">
           <p className="text-mintCream text-[23px] font-normal text-center flex flex-col justify-center md:pt-8">
-            شما یک درخواست برنامه غذایی از "{requestList.nameSurname}" دارید
+            شما یک درخواست برنامه غذایی از "{requestList.name}" دارید
           </p>
         </div>
       </div>
       <div className="collapse-content max-h-[1200px] bg-coal rounded-[10px] flex flex-col gap-10 text-mintCream text-center px-4 pt-6">
         <p className="text-center text-[25px] font-medium">
-          {requestList.nameSurname}
+          {requestList.name}
         </p>
         <div className="flex flex-wrap gap-4 justify-center">
           {requestList.figureImgs && requestList.figureImgs.length > 0 ? (
@@ -53,55 +94,65 @@ export default function CoachMealReqCard({ requestList, onClick }) {
           </div>
           <div className="flex gap-3 my-2">
             <p className="font-medium">تاریخ تولد:</p>
-            <p>{requestList.birthDate}</p>
+            <p>{requestList.date_of_birth}</p>
           </div>
-          <div className="flex gap-3 my-2">
+          {/* <div className="flex gap-3 my-2">
             <p className="font-medium">قد:</p>
             <p>{requestList.height}</p>
-          </div>
+          </div> */}
           <div className="flex gap-3 my-2">
             <p className="font-medium">وزن:</p>
-            <p>{requestList.weight}</p>
+            <p>{requestList.user_meal_weight}</p>
           </div>
           <div className="flex gap-3 my-2">
             <p className="font-medium">دور کمر:</p>
-            <p>{requestList.waistSize}</p>
+            <p>{requestList.user_meal_waist}</p>
           </div>
           <div className="flex gap-3 my-2">
             <p className="font-medium">نوع برنامه:</p>
-            <p>{requestList.planType}</p>
+            <p>{requestList.user_meal_type}</p>
           </div>
         </div>
 
-        <div id="breakfast">
-          <p className="font-semibold text-[35px]">صبحانه</p>
-          <textarea
-            name="breakfast"
-            cols="30"
-            rows="10"
-            className="border rounded-[15px] bg-gray-950 p-3 w-full"
-          ></textarea>
-        </div>
-        <div id="lunch">
-          <p className="font-semibold text-[35px]">ناهار</p>
-          <textarea
-            name="breakfast"
-            cols="30"
-            rows="10"
-            className="border rounded-[15px] bg-gray-950 p-3 w-full"
-          ></textarea>
-        </div>
-        <div id="dinner">
-          <p className="font-semibold text-[35px]">شام</p>
-          <textarea
-            name="breakfast"
-            cols="30"
-            rows="10"
-            className="border rounded-[15px] bg-gray-950 p-3 w-full"
-          ></textarea>
-        </div>
+        <form onSubmit={handleSubmit}>
+          <div id="breakfast">
+            <p className="font-semibold text-[35px]">صبحانه</p>
+            <textarea
+              id="breakfast"
+              cols="30"
+              rows="10"
+              onChange={(e) => setBreakFast(e.target.value)}
+              className="border rounded-[15px] bg-gray-950 p-3 w-full"
+            ></textarea>
+          </div>
+          <div id="lunch">
+            <p className="font-semibold text-[35px]">ناهار</p>
+            <textarea
+              id="breakfast"
+              cols="30"
+              rows="10"
+              onChange={(e) => setLunch(e.target.value)}
+              className="border rounded-[15px] bg-gray-950 p-3 w-full"
+            ></textarea>
+          </div>
+          <div id="dinner">
+            <p className="font-semibold text-[35px]">شام</p>
+            <textarea
+              id="breakfast"
+              cols="30"
+              rows="10"
+              onChange={(e) => setDinner(e.target.value)}
+              className="border rounded-[15px] bg-gray-950 p-3 w-full"
+            ></textarea>
+          </div>
 
-        <button className="bg-irishGreen w-[20%] max-sm:w-[80%] text-center text-[20px] font-medium py-1 rounded-[10px] mx-auto hover:bg-[#01651b] transition-all duration-200">ارسال برنامه</button>
+          <button
+            type="submit"
+            className="bg-irishGreen w-[20%] max-sm:w-[80%] text-center text-[20px] font-medium py-1 rounded-[10px] mx-auto hover:bg-[#01651b] transition-all duration-200"
+          >
+            ارسال برنامه
+          </button>
+        </form>
       </div>
     </div>
   );

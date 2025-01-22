@@ -1,9 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import fit_logo from "/Images/Fit-Logo-Resized.png";
 import { useNavigate } from "react-router-dom";
 import Trainee_card from "../../components/trainee_card";
+import axios from "axios";
 
 export default function Coach_trainees() {
+  useEffect(() => {
+    userSet();
+    takeTrainees();
+  }, []);
   const [coachInfo, setCoachInfo] = useState({
     nameSurname: "دانا لاجوردی",
     username: "Dana_Laj",
@@ -21,60 +26,109 @@ export default function Coach_trainees() {
     image: "/Images/Coach-Dana-Lajevardi.png",
   });
 
-  const trainees = [
-    {
-      nameSurname: "آونگ روزبه",
-      username: "AAAvng",
-      phoneNumber: "989123456789+",
-      email: "avng.rzbh@gmail.com",
-      birthDate: "1365/7/18",
-      gender: "آقا",
-      height: "175",
-      weight: "65",
-      image: "/Images/payton-tuttle-RFFR1JjkJx8-unsplash.jpg",
-      coach: "دانا لاجوردی"
-    },
-    {
-      nameSurname: "آناهیتا آسایش",
-      username: "annaasa",
-      phoneNumber: "989123456789+",
-      email: "anna.assa@gmail.com",
-      birthDate: "1380/7/18",
-      gender: "خانم",
-      height: "155",
-      weight: "65",
-      image: "/Images/Anahita-Asayesh.jpg",
-      coach: "دانا لاجوردی"
-    },
-    {
-      nameSurname: "هربد دانا",
-      username: "herbd_dna",
-      phoneNumber: "989123456789+",
-      email: "herbd.dna@yahoo.com",
-      birthDate: "1377/7/18",
-      gender: "آقا",
-      height: "178",
-      weight: "80",
-      image: "/Images/mohamad-khosravi-5KyzZbonwqQ-unsplash.jpg",
-      coach: "دانا لاجوردی"
-    },
-    {
-      nameSurname: "دارمان ثلاثی",
-      username: "djdarmaan",
-      phoneNumber: "989123456789+",
-      email: "djdarmaan@gmail.com",
-      birthDate: "1369/7/18",
-      gender: "آقا",
-      height: "173",
-      weight: "70",
-      image: "",
-      coach: "دانا لاجوردی"
-    },
-  ];
+  // const trainees = [
+  //   {
+  //     nameSurname: "آونگ روزبه",
+  //     username: "AAAvng",
+  //     phoneNumber: "989123456789+",
+  //     email: "avng.rzbh@gmail.com",
+  //     birthDate: "1365/7/18",
+  //     gender: "آقا",
+  //     height: "175",
+  //     weight: "65",
+  //     image: "/Images/payton-tuttle-RFFR1JjkJx8-unsplash.jpg",
+  //     coach: "دانا لاجوردی"
+  //   },
+  //   {
+  //     nameSurname: "آناهیتا آسایش",
+  //     username: "annaasa",
+  //     phoneNumber: "989123456789+",
+  //     email: "anna.assa@gmail.com",
+  //     birthDate: "1380/7/18",
+  //     gender: "خانم",
+  //     height: "155",
+  //     weight: "65",
+  //     image: "/Images/Anahita-Asayesh.jpg",
+  //     coach: "دانا لاجوردی"
+  //   },
+  //   {
+  //     nameSurname: "هربد دانا",
+  //     username: "herbd_dna",
+  //     phoneNumber: "989123456789+",
+  //     email: "herbd.dna@yahoo.com",
+  //     birthDate: "1377/7/18",
+  //     gender: "آقا",
+  //     height: "178",
+  //     weight: "80",
+  //     image: "/Images/mohamad-khosravi-5KyzZbonwqQ-unsplash.jpg",
+  //     coach: "دانا لاجوردی"
+  //   },
+  //   {
+  //     nameSurname: "دارمان ثلاثی",
+  //     username: "djdarmaan",
+  //     phoneNumber: "989123456789+",
+  //     email: "djdarmaan@gmail.com",
+  //     birthDate: "1369/7/18",
+  //     gender: "آقا",
+  //     height: "173",
+  //     weight: "70",
+  //     image: "",
+  //     coach: "دانا لاجوردی"
+  //   },
+  // ];
 
   const [tempInfo, setTempInfo] = useState(coachInfo);
   const [profilePhoto, setProfilePhoto] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [trainees, setTrainees] = useState([]);
+
+  const value = localStorage.getItem("token").toString();
+
+  async function userSet() {
+    console.log("salam");
+    const res = await axios.get(
+      "http://fitplan.localhost/api/v1/coach/get_coach_info",
+      {
+        headers: {
+          Authorization: `Bearer ${JSON.parse(value)}`,
+        },
+      }
+    );
+    const data = res.data;
+    setCoachInfo((prevState) => ({
+      ...prevState,
+      nameSurname: data.name,
+      username: data.user_name,
+      password: data.password,
+      phoneNumber: data.phone_number,
+      email: data.email,
+      birthDate: data.date_of_birth,
+      gender: data.gender,
+      height: data.height,
+      weight: data.weight,
+      about: data.biography,
+      speciality: data.specialization
+    }));
+  }
+
+  async function takeTrainees() {
+    try{
+      const res = await axios.get(
+        "http://fitplan.localhost/api/v1/coach/get_coach_user",
+        {
+          headers: {
+            Authorization: `Bearer ${JSON.parse(value)}`,
+          },
+        }
+      );
+      setTrainees(res.data);
+      console.log(res.data);
+      
+    } catch (e) {
+      console.log(e);
+      
+    }
+  };
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -202,7 +256,7 @@ export default function Coach_trainees() {
                 </defs>
               </svg>
             </a>
-            <a
+            {/* <a
               href="/coach_panel/coach_transactions"
               className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
             >
@@ -219,7 +273,7 @@ export default function Coach_trainees() {
                   fill="#FFF7ED"
                 />
               </svg>
-            </a>
+            </a> */}
             <a
               href="/"
               className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
@@ -391,7 +445,7 @@ export default function Coach_trainees() {
                       </defs>
                     </svg>
                   </a>
-                  <a
+                  {/* <a
                     href="/coach_panel/coach_transactions"
                     className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
                   >
@@ -408,7 +462,7 @@ export default function Coach_trainees() {
                         fill="#FFF7ED"
                       />
                     </svg>
-                  </a>
+                  </a> */}
                   <a
                     href="/"
                     className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
@@ -441,16 +495,14 @@ export default function Coach_trainees() {
         <div className="max-md:overflow-y-auto mb-[22px] rounded-[10px] h-[618px] overflow-hidden flex flex-col justify-start gap-5 text-mintCream">
           {trainees.map((trainee) => (
             <Trainee_card
-              nameSurname={trainee.nameSurname}
-              username={trainee.username}
-              phoneNumber={trainee.phoneNumber}
+              nameSurname={trainee.name}
+              username={trainee.user_name}
+              phoneNumber={trainee.phone_number}
               email={trainee.email}
-              birthDate={trainee.birthDate}
+              birthDate={trainee.date_of_birth}
               gender={trainee.gender}
               height={trainee.height}
               weight={trainee.weight}
-              image={trainee.image}
-              coach={trainee.coach}
               onClick={() => handleCardClick(trainee)}
             />
           ))}

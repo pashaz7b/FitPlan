@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 from pydantic import BaseModel, constr
 
 
@@ -82,6 +82,23 @@ class GetUserExerciseSchema(BaseModel):
     updated_at: Optional[datetime] = None
 
 
+class ExerciseSchema(BaseModel):
+    id: int
+    day: str
+    name: str
+    set: str
+    expire_time: int
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+
+
+class GroupedExerciseSchema(BaseModel):
+    created_at: str
+    coach_name: str
+    coach_email: str
+    exercises: List[ExerciseSchema]
+
+
 class SetUserTransactionsSchema(BaseModel):
     amount: float
     reason: str
@@ -107,6 +124,9 @@ class UserRequestMealResponseSchema(BaseModel):
 
 
 class GetUserMealSchema(BaseModel):
+    created_date: str
+    coach_name: str
+    coach_email: str
     id: int
     breakfast: str
     lunch: str
@@ -143,3 +163,11 @@ class UserTakeWorkoutCoachSchema(BaseModel):
 class UserTakeWorkoutCoachResponseSchema(BaseModel):
     work_out_plan_id: int
     msg: str
+
+
+class ChangeUserCoach(BaseModel):
+    new_workout_plan_id: int
+
+
+class ChangeUserCoachResponse(BaseModel):
+    message: str

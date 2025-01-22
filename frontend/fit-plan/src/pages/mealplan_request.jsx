@@ -1,8 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import fit_logo from "/Images/Fit-Logo-Resized.png";
+import axios from "axios";
 
 export default function Mealplan_req() {
+
+  useEffect(() => {
+    userSet();
+  }, []);
+
   const [userInfo, setUserInfo] = useState({
     nameSurname: "آونگ روزبه",
     username: "AAAvng",
@@ -27,7 +33,34 @@ export default function Mealplan_req() {
 
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const value = localStorage.getItem("token").toString();
+
+  async function userSet() {
+    console.log("salam");
+    const res = await axios.get(
+      "http://fitplan.localhost/api/v1/user/get_user_info",
+      {
+        headers: {
+          Authorization: `Bearer ${JSON.parse(value)}`,
+        },
+      }
+    );
+    const data = res.data;
+    setUserInfo((prevState) => ({
+      ...prevState,
+      nameSurname: data.name,
+      username: data.user_name,
+      password: data.password,
+      phoneNumber: data.phone_number,
+      email: data.email,
+      birthDate: data.date_of_birth,
+      gender: data.gender,
+      height: data.height,
+      weight: data.weight,
+    }));
+  }
+
+  async function handleSubmit (e) {
     e.preventDefault();
     handleWeight(e);
     handleWaistSize(e);
@@ -36,9 +69,22 @@ export default function Mealplan_req() {
       setShowError(true);
     } else {
       setShowError(false);
-      console.log("Submit Successful!");
-      console.log(waistSize);
-      console.log(weight);
+      // console.log("Submit Successful!");
+      // console.log(waistSize);
+      // console.log(weight);
+      const res = await axios.post(
+        "http://fitplan.localhost/api/v1/user/request_meal",
+        {
+          weight: weight,
+          waist: waistSize,
+          type: selectedPlan,
+        },
+        {
+            headers: {
+              Authorization: `Bearer ${JSON.parse(value)}`,
+            },
+        }
+      );
       navigate("/user_panel/user_mealPlan");
     }
   };
@@ -64,7 +110,7 @@ export default function Mealplan_req() {
       .replace(/[^\d.]/g, "")
       .replace(/(\..*?)\..*/g, "$1");
 
-    if (sanitizedValue == "") {
+    if (sanitizedValue === "") {
       console.log("No Size");
       setWaistSizeError(true);
     } else {

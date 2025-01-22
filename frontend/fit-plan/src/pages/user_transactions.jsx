@@ -1,7 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import fit_logo from "/Images/Fit-Logo-Resized.png";
+import axios from "axios";
 
 export default function User_transactions() {
+  useEffect(() => {
+    userSet();
+    transactionGet();
+  }, []);
+
   const [userInfo, setUserInfo] = useState({
     nameSurname: "آونگ روزبه",
     username: "AAAvng",
@@ -15,29 +21,76 @@ export default function User_transactions() {
     image: "/Images/payton-tuttle-RFFR1JjkJx8-unsplash.jpg",
   });
 
-  const data = [
-    {
-      number: "1",
-      date: "1403/6/23",
-      description: "برنامه ورزشی",
-      cost: "1,000,000",
-    },
-    {
-      number: "2",
-      date: "1403/6/23",
-      description: "برنامه ورزشی",
-      cost: "1,000,000",
-    },
-    {
-      number: "3",
-      date: "1403/6/23",
-      description: "برنامه ورزشی",
-      cost: "1,000,000",
-    },
-  ];
+  // const data = [
+  //   {
+  //     number: "1",
+  //     date: "1403/6/23",
+  //     description: "برنامه ورزشی",
+  //     cost: "1,000,000",
+  //   },
+  //   {
+  //     number: "2",
+  //     date: "1403/6/23",
+  //     description: "برنامه ورزشی",
+  //     cost: "1,000,000",
+  //   },
+  //   {
+  //     number: "3",
+  //     date: "1403/6/23",
+  //     description: "برنامه ورزشی",
+  //     cost: "1,000,000",
+  //   },
+  // ];
 
   const [isOpen, setIsOpen] = useState(false);
+  const [data, setData] = useState([]);
 
+  const value = localStorage.getItem("token").toString();
+
+  async function userSet() {
+    console.log("salam");
+    const res = await axios.get(
+      "http://fitplan.localhost/api/v1/user/get_user_info",
+      {
+        headers: {
+          Authorization: `Bearer ${JSON.parse(value)}`,
+        },
+      }
+    );
+    const data = res.data;
+    setUserInfo((prevState) => ({
+      ...prevState,
+      nameSurname: data.name,
+      username: data.user_name,
+      password: data.password,
+      phoneNumber: data.phone_number,
+      email: data.email,
+      birthDate: data.date_of_birth,
+      gender: data.gender,
+      height: data.height,
+      weight: data.weight,
+    }));
+  }
+
+  async function transactionGet(){
+    try{
+
+      const res = await axios.get(
+        "http://fitplan.localhost/api/v1/user/get_user_transactions",
+        {
+          headers: {
+            Authorization: `Bearer ${JSON.parse(value)}`,
+          },
+        }
+      );
+      console.log(res.data);
+      setData(res.data);
+    } catch (e){
+      console.log(e);
+      
+    }
+
+  };
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -410,16 +463,16 @@ export default function User_transactions() {
                     }
                   >
                     <td className="py-4 px-4 text-center text-[17px]">
-                      {row.number}
+                      {row.id}
                     </td>
                     <td className="py-4 px-4 text-center text-[17px]">
                       {row.date}
                     </td>
                     <td className="py-4 px-4 text-center text-[17px]">
-                      {row.description}
+                      {row.reason === "Meal" ? "برنامه غذایی" : "برنامه تمرینی"}
                     </td>
                     <td className="py-4 px-4 text-center text-[17px]">
-                      {row.cost}
+                      {row.amount}
                     </td>
                   </tr>
                 ))}

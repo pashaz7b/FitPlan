@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function User_info_edit() {
   const navigate = useNavigate();
@@ -29,18 +30,115 @@ export default function User_info_edit() {
     weight: userInfo.weight,
     image: userInfo.image,
   });
+
   const [profilePhoto, setProfilePhoto] = useState(null);
+
+  const value = localStorage.getItem("token");
+
+  async function userSet() {
+    console.log("salam");
+    const res = await axios.get(
+      "http://fitplan.localhost/api/v1/user/get_user_info",
+      {
+        headers: {
+          Authorization: `Bearer ${JSON.parse(value)}`,
+        },
+      }
+    );
+
+    const data = res.data;
+    setUserInfo((prevState) => ({
+      ...prevState,
+      nameSurname: data.name,
+      username: data.user_name,
+      password: data.password,
+      phoneNumber: data.phone_number,
+      email: data.email,
+      birthDate: data.date_of_birth,
+      gender: data.gender,
+      height: data.height,
+      weight: data.weight,
+    }));
+
+    setTempInfo((prevState) => ({
+      ...prevState,
+      nameSurname: data.name,
+      username: data.user_name,
+      password: data.password,
+      phoneNumber: data.phone_number,
+      email: data.email,
+      birthDate: data.date_of_birth,
+      gender: data.gender,
+      height: data.height,
+      weight: data.weight,
+    }));
+    // userInfo.nameSurname = res.data.name;
+    // userInfo.username = res.data.user_name;
+    // userInfo.password = res.data.password;
+    // userInfo.phoneNumber = res.data.phone_number;
+    // userInfo.email = res.data.email;
+    // userInfo.birthDate = res.data.date_of_birth;
+    // userInfo.gender = res.data.gender;
+    // userInfo.height = res.data.height;
+    // userInfo.weight = res.data.weight;
+    // // userInfo.image = res.data.;
+
+    // tempInfo.nameSurname = res.data.name;
+    // tempInfo.username = res.data.user_name;
+    // tempInfo.password = res.data.password;
+    // tempInfo.phoneNumber = res.data.phone_number;
+    // tempInfo.email = res.data.email;
+    // tempInfo.birthDate = res.data.date_of_birth;
+    // tempInfo.gender = res.data.gender;
+    // tempInfo.height = res.data.height;
+    // tempInfo.weight = res.data.weight;
+  }
+
+  useEffect(() => {
+    userSet();
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setTempInfo((tempInfo) => ({ ...tempInfo, [name]: value }));
   };
 
-  const handleSave = () => {
-    setUserInfo(tempInfo);
-    alert("Changes saved!");
-    navigate("/user_panel");
-  };
+  async function handleSave() {
+    setUserInfo(tempInfo); // Temporarily save data locally
+
+    try {
+        // Make the PUT request to the backend
+        const res = await axios.put(
+            "http://fitplan.localhost/api/v1/user/change_user_info",
+            {
+                password: tempInfo.password,
+                user_name: tempInfo.username, // Aligns with Swagger's 'user_name'
+                name: tempInfo.nameSurname,
+                email: tempInfo.email,
+                phone_number: tempInfo.phoneNumber,
+                gender: tempInfo.gender,
+                date_of_birth: tempInfo.birthDate, // Make sure you provide this if required
+                height: tempInfo.height,
+                weight: tempInfo.weight,
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${JSON.parse(localStorage.getItem("token"))}`,
+                },
+            }
+        );
+
+        alert("Changes saved!");
+        navigate("/user_panel"); // Redirect user after saving changes
+    } catch (error) {
+        console.error("Error updating user info:", error.response?.data);
+        alert(
+            error.response?.data?.message ||
+                "Failed to save changes. Please try again later."
+        );
+    }
+}
+
 
   const handleCancel = () => {
     setTempInfo(userInfo);
