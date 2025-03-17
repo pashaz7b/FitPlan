@@ -23,9 +23,9 @@ class Settings(BaseSettings):
     #*************************
     SMTP_SERVER: str = "smtp.gmail.com"
     SMTP_PORT: int = 465
-    SMTP_USERNAME: str = "asldy3097@gmail.com"
-    SMTP_PASSWORD: str = "xrtwqctuprcgeiyj"
-    EMAIL_FROM: str = "asldy3097@gmail.com"
+    SMTP_USERNAME: str = ""
+    SMTP_PASSWORD: str = ""
+    EMAIL_FROM: str = ""
     # *****************************************
     Password_OTP_EXPIRE_TIME: int = 120
     Password_TOKEN_EXPIRE_MINUTES: int = 10
