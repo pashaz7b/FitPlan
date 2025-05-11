@@ -16,18 +16,6 @@ from bson import ObjectId
 user_media_router = APIRouter()
 
 
-# @media_router.post(
-#     "/UploadMedia", response_model=MediaSchema, status_code=status.HTTP_201_CREATED
-# )
-# async def upload_media(
-#     media_service: Annotated[MediaService, Depends()],
-#     file: UploadFile,
-#     current_user: Annotated[TokenDataSchema, Depends(get_current_user)],
-# ):
-#     logger.info(f"Uploading media file {file.filename}")
-#     return await media_service.create_media(file, current_user.id)
-
-
 @user_media_router.put(
     "/change_profile", response_model=MediaSchema, status_code=status.HTTP_201_CREATED
 )
