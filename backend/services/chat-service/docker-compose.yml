@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  chat:
+    build:
+      context: ../services/chat-service
+      dockerfile: Dockerfile
+    container_name: chat-service
+    networks:
+      - app-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.chat.rule=Host(`chat.localhost`)"
+      - "traefik.http.services.chat.loadbalancer.server.port=80"
+    restart: unless-stopped
+
+networks:
+  app-network:
+    driver: bridge
