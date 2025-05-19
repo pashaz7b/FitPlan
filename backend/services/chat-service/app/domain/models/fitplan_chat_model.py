@@ -13,6 +13,7 @@ class User(Base):
     user_coach_chat = relationship("UserCoachChat", back_populates="user")
     user_coach_with = relationship("UserCoachWith", back_populates="user")
 
+
 class Coach(Base):
     __tablename__ = "coach"
 

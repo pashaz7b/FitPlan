@@ -9,7 +9,6 @@ try:
     redis_client = Redis(
         host=config.REDIS_URL,
         port=6379,
-        charset="utf-8",
         decode_responses=True
     )
     logger.info("Redis Client Created")

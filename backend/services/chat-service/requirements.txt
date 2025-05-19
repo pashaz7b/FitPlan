@@ -19,3 +19,5 @@ passlib[bcrypt]
 uvicorn
 httpx-socks
 jdatetime
+asyncpg
+websockets
