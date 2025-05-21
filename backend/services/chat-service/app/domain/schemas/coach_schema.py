@@ -2,11 +2,11 @@ from pydantic import BaseModel
 from datetime import datetime
 
 
-class UserCreateChatSchema(BaseModel):
+class CoachCreateChatSchema(BaseModel):
     content: str
 
 
-class UserCreateChatResponseSchema(BaseModel):
+class CoachCreateChatResponseSchema(BaseModel):
     id: int
     user_id: int
     coach_id: int

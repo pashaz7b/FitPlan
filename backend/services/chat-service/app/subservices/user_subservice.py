@@ -3,7 +3,6 @@ import jdatetime
 from typing import Annotated, Dict
 from loguru import logger
 from fastapi import Depends
-
 from app.domain.models.fitplan_chat_model import (User,
                                                   UserCoachChat,
                                                   UserCoachWith)
@@ -38,3 +37,7 @@ class UserSubService(BaseService):
     async def get_user_coach(self, user_id: int):
         logger.info(f"Fetching user coach with user_id {user_id}")
         return await self.user_repo.get_user_coach(user_id)
+
+    async def get_user_chat_messages(self, user_id: int, coach_id: int, limit: int = 50, offset: int = 0):
+        logger.info(f"[+] getting user coach chat for user with id {user_id}")
+        return await self.user_repo.get_user_chat_messages(user_id, coach_id, limit, offset)

@@ -5,7 +5,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    IAM_URL: str = "http://iam"  # "http://iam.localhost"
+    IAM_URL: str = "http://iam.localhost"  # "http://iam"
     # ****************************************************
     REDIS_URL: str = "localhost"
     REDIS_URL: str = "redis"
