@@ -1,7 +1,6 @@
 from sqlalchemy import Column, Integer, String, Text, TIMESTAMP, func, Boolean, Sequence
-from sqlalchemy.ext.declarative import declarative_base
+from app.domain.models.base import Base
 
-Base = declarative_base()
 
 class UserDuplicates(Base):
     __tablename__ = 'user_duplicates'

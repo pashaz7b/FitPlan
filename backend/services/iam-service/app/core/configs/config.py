@@ -1,5 +1,5 @@
-from functools import lru_cache
-from pathlib import Path
+# from functools import lru_cache
+# from pathlib import Path
 
 from loguru import logger
 
@@ -14,8 +14,8 @@ class Settings(BaseSettings):
     DATABASE_PORT: int = 5432
     DATABASE_USERNAME: str = "postgres"
     DEBUG_MODE: bool = False
-    #REDIS_URL: str = "localhost"
-    REDIS_URL: str = "redis"
+    REDIS_URL: str = "localhost"
+    # REDIS_URL: str = "redis"
     JWT_SECRET_KEY: str = "1807372bcbf0963ebe30a1df3669690b8f0e4f83a1b52e7579cfee9ff08db230"
     JWT_ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30

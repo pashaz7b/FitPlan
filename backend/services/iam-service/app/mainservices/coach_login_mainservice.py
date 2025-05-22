@@ -15,6 +15,7 @@ from app.validators.regex_checker import RegexChecker
 
 coach_oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/v1/coach/login", scheme_name="CoachOAuth2")
 
+
 class AuthService(BaseService):
     def __init__(
             self,
