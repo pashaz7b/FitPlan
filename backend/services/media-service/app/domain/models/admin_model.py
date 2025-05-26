@@ -1,7 +1,9 @@
 from sqlalchemy import Column, Integer, String, Text, TIMESTAMP, func, Sequence, Boolean
-from sqlalchemy.ext.declarative import declarative_base
+# from sqlalchemy.ext.declarative import declarative_base
+#
+# Base = declarative_base()
 
-Base = declarative_base()
+from app.domain.models.base import Base
 
 
 class Admin(Base):

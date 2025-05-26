@@ -85,3 +85,41 @@ class MediaService:
         _, file = await self.__get_media_model(ObjectId(media_id), user_email)
         logger.info(f"Retrieving media file {media_id}")
         return file
+
+    # *******************************************************************************************
+
+    async def __get_gym_media_model(self, media_id: ObjectId) -> Tuple[
+        MediaGridFSModel, AsyncIOMotorGridOut]:
+        media = await self.media_repository.get_media(media_id)
+        if not media:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Media not found"
+            )
+
+        file = await self.storage.get_file(media.storage_id)
+
+        logger.info(f"Media {media.filename} retrieved")
+
+        return media, file
+
+    async def get_gym_media(
+            self, media_id: ObjectId
+    ) -> tuple[MediaSchema, Callable[[], Generator[Any, Any, None]]]:
+        media, file = await self.__get_gym_media_model(media_id)
+
+        def file_stream():
+            yield file
+
+        logger.info(f"Retrieving media file {media.filename}")
+        return (
+            MediaSchema(
+                mongo_id=media.mongo_id,
+                filename=media.filename,
+                content_type=media.content_type,
+                size=media.size,
+                upload_date=media.upload_date,
+                user_email=media.user_email,
+                message="Media downloaded successfully",
+            ),
+            file_stream,
+        )

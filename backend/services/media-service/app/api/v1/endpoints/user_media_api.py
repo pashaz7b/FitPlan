@@ -7,7 +7,7 @@ from fastapi.responses import StreamingResponse
 from app.domain.schemas.media_schema import MediaGetSchema, MediaSchema
 from app.domain.schemas.token_schema import TokenDataSchema
 from app.services.media_service import MediaService
-from app.services.auth_service import get_current_user
+from app.services.user_auth_service import get_current_user
 from app.services.user_mainservice import UserProfile
 from app.services.coach_main_service import CoachProfile
 from app.validators.file_validator import validate_image_file
