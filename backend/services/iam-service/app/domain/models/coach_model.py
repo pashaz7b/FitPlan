@@ -21,6 +21,7 @@ class Coach(Base):
     created_at = Column(TIMESTAMP, server_default=func.now())
     updated_at = Column(TIMESTAMP, server_default=func.now())
     is_verified = Column(Boolean, default=False)
+    verification_status = Column(String(50), default="pending")
 
     metrics = relationship("CoachMetrics", back_populates="coach", uselist=False)
 

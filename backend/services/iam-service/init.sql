@@ -52,7 +52,8 @@ CREATE TABLE coach (
     image TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    is_verified boolean DEFAULT false
+    is_verified boolean DEFAULT false,
+    verification_status VARCHAR(50) DEFAULT 'pending'
 );
 
 
@@ -473,7 +474,7 @@ CREATE TABLE gym (
     sport_facilities TEXT,
     welfare_facilities TEXT,
     rating INTEGER DEFAULT 0 CHECK (rating BETWEEN 0 AND 5),
-    verification_status VARCHAR(50),
+    verification_status VARCHAR(50) DEFAULT 'pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 

@@ -3,7 +3,6 @@ from sqlalchemy.sql import func
 from app.domain.models.base import Base
 
 
-
 class Gym(Base):
     __tablename__ = "gym"
 
