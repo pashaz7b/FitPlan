@@ -12,6 +12,7 @@ from app.services.coach_main_service import CoachProfile
 from app.services.user_mainservice import UserProfile
 from app.validators.file_validator import validate_image_file
 from bson import ObjectId
+from app.domain.schemas.coach_schema import CoachBaseSchema
 
 coach_media_router = APIRouter()
 
@@ -89,3 +90,20 @@ async def get_user_profile(
             "Content-Disposition": f"attachment; filename={media_schema.filename}"
         },
     )
+
+
+# ***************************************************************************************
+
+@coach_media_router.post(
+    "/upload_coaching_card", response_model=MediaSchema, status_code=status.HTTP_201_CREATED
+)
+async def upload_coaching_card(
+        media_service: Annotated[MediaService, Depends()],
+        file: UploadFile,
+        coach_schema: Annotated[CoachBaseSchema, Depends()]
+):
+    logger.info("[...] Validating Image File")
+    validate_image_file(file)
+
+    logger.info(f"[+] Uploading Coaching Card Image ---> {file.filename}")
+    return await media_service.create_media(file, coach_schema.email)

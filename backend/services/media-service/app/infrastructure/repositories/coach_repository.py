@@ -72,8 +72,10 @@ class CoachRepository:
 
     def get_coach_metrics(self, coach_id: int):
         logger.info(f"[+] Fetching Coach Metrics With Id ---> {coach_id}")
-        return self.db.query(CoachMetrics).filter(CoachMetrics.id == coach_id).first()
+        return self.db.query(CoachMetrics).filter(CoachMetrics.coach_id == coach_id).first()
 
     def get_coach_by_email(self, email: str):
         logger.info(f"[+] Fetching Coach With Email --> {email}")
         return self.db.query(Coach).filter(Coach.email == email).first()
+
+    # **********************************************************
