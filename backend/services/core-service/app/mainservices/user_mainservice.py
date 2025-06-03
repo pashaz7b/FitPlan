@@ -15,6 +15,12 @@ from app.domain.schemas.user_schema import (GetUserInfoSchema,
                                             UserTakeWorkoutCoachResponseSchema, GroupedExerciseSchema, ExerciseSchema,
                                             ChangeUserCoachResponse)
 
+from app.domain.schemas.user_schema import (UserGetAllVerifiedGymSchema,
+                                            UserGetVerifiedGymDetailSchema,
+                                            UserGetVerifiedGymCoachesSchema,
+                                            UserGetVerifiedGymPlanPriceSchema,
+                                            UserGetVerifiedGymCommentsSchema)
+
 from app.subservices.user_subservice import UserSubService
 from app.subservices.user_duplicates_subservice import UserDuplicatesSubService
 from app.subservices.baseconfig import BaseService
@@ -105,7 +111,7 @@ class UserMainService(BaseService):
         user_metrics = await self.user_subservice.get_user_metrics(user_id)
         empty_password = ""
         return GetUserInfoSchema(
-            id=user.id,
+            # id=user.id,
             password=empty_password,
             user_name=user.user_name,
             name=user.name,
@@ -361,3 +367,128 @@ class UserMainService(BaseService):
         return ChangeUserCoachResponse(
             message="Coach Changed Successfully"
         )
+
+    async def user_get_all_verified_gyms(self):
+        logger.info("[...] Getting All Verified Gym For User")
+        verified_gyms = await self.user_subservice.user_get_all_verified_gyms()
+
+        if not verified_gyms:
+            logger.info(f"[-] There is no Verified Gym")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="There is no Verified Gym")
+
+        verified_gyms_list = []
+        for verified_gym in verified_gyms:
+            verified_gyms_list.append(UserGetAllVerifiedGymSchema(
+                gym_id=verified_gym.id,
+                gym_name=verified_gym.name,
+                gym_location=verified_gym.location
+            ))
+
+        return verified_gyms_list
+
+    async def user_get_verified_gym_detail(self, gym_id: int):
+        logger.info(f"[...] Getting Verified Gym Detail With Gym ID {gym_id}")
+
+        verified_gym_detail = await self.user_subservice.user_get_verified_gym_detail(gym_id)
+
+        if not verified_gym_detail:
+            logger.info(f"[-] There is no Verified Gym Detail For That Gym With Gym ID {gym_id}")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                                detail="There is no Verified Gym Detail For That Gym")
+
+        verified_gym_detail_response = UserGetVerifiedGymDetailSchema(
+            gym_id=verified_gym_detail.id,
+            gym_owner_id=verified_gym_detail.owner_id,
+            gym_name=verified_gym_detail.name,
+            gym_location=verified_gym_detail.location,
+            gym_sport_facilities=verified_gym_detail.sport_facilities,
+            gym_welfare_facilities=verified_gym_detail.welfare_facilities,
+            gym_rating=verified_gym_detail.rating
+        )
+
+        return verified_gym_detail_response
+
+    async def user_get_verified_gym_coaches(self, gym_id: int):
+        logger.info(f"[...] Getting All Verified Gym With Gym Id {gym_id} Coaches For User")
+
+        verified_gym_coaches = await self.user_subservice.user_get_verified_gym_coaches(gym_id)
+
+        if not verified_gym_coaches:
+            logger.info(f"[-] There is no Verified Gym Coaches For That Gym With Gym ID {gym_id}")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                                detail="There is no Verified Gym Coaches For That Gym")
+
+        verified_gym_coaches_list = []
+
+        for verified_gym_coach in verified_gym_coaches:
+            verified_gym_coach_response = UserGetVerifiedGymCoachesSchema(
+                work_out_plan_id=verified_gym_coach.present[0].workout_plan_id,
+                work_out_plan_name=verified_gym_coach.present[0].workout_plan.name,
+                work_out_plan_description=verified_gym_coach.present[0].workout_plan.description,
+                work_out_plan_duration_month=verified_gym_coach.present[0].workout_plan.duration_month,
+                coach_id=verified_gym_coach.id,
+                coach_user_name=verified_gym_coach.user_name,
+                coach_name=verified_gym_coach.name,
+                coach_email=verified_gym_coach.email,
+                coach_phone_number=verified_gym_coach.phone_number,
+                coach_gender=verified_gym_coach.gender,
+                coach_date_of_birth=verified_gym_coach.date_of_birth,
+                coach_height=verified_gym_coach.metrics.height,
+                coach_weight=verified_gym_coach.metrics.weight,
+                coach_specialization=verified_gym_coach.metrics.specialization,
+                coach_biography=verified_gym_coach.metrics.biography,
+                coach_status=verified_gym_coach.status,
+                coach_rating=verified_gym_coach.metrics.rating,
+            )
+
+            verified_gym_coaches_list.append(verified_gym_coach_response)
+
+        return verified_gym_coaches_list
+
+    async def user_get_verified_gym_plan_price(self, gym_id: int):
+        logger.info(f"[...] Getting All Verified Gym Plan Price With Gym Id {gym_id} For User")
+
+        verified_gym_plan_prices = await self.user_subservice.user_get_verified_gym_plan_price(gym_id)
+
+        if not verified_gym_plan_prices:
+            logger.info(f"[-] There is No Verified Gym Plan Price For That Gym Id {gym_id}")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                                detail="There Is No Verified Gym Plan Price For That Gym")
+
+        verified_gym_plan_prices_list = []
+
+        for verified_gym_plan_price in verified_gym_plan_prices:
+            verified_gym_plan_price_response = UserGetVerifiedGymPlanPriceSchema(
+                session_counts=verified_gym_plan_price.session_counts,
+                duration_days=verified_gym_plan_price.duration_days,
+                is_vip=verified_gym_plan_price.is_vip,
+                price=verified_gym_plan_price.price,
+            )
+
+            verified_gym_plan_prices_list.append(verified_gym_plan_price_response)
+
+        return verified_gym_plan_prices_list
+
+    async def user_get_verified_gym_comments(self, gym_id: int):
+        logger.info(f"[...] Getting All Verified Gym Comments With Gym Id {gym_id} For User")
+
+        verified_gym_comments = await self.user_subservice.user_get_verified_gym_comments(gym_id)
+
+        if not verified_gym_comments:
+            logger.info(f"[-] There is No Verified Gym Comments For That Gym Id {gym_id}")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                                detail="There Is No Verified Gym Comments For That Gym")
+
+        verified_gym_comments_list = []
+
+        for verified_gym_comment in verified_gym_comments:
+            verified_gym_comment_response = UserGetVerifiedGymCommentsSchema(
+                users_name=verified_gym_comment.user.name,
+                comment=verified_gym_comment.comment,
+                rating=verified_gym_comment.rating,
+                date=verified_gym_comment.date,
+            )
+
+            verified_gym_comments_list.append(verified_gym_comment_response)
+
+        return verified_gym_comments_list

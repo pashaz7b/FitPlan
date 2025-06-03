@@ -225,3 +225,23 @@ class UserSubService(BaseService):
     async def check_if_user_take_workout_coach_exists(self, user_id: int):
         logger.info(f"[...] Checking if user take workout coach exists for user {user_id}")
         return self.user_repo.check_if_user_take_workout_coach_exists(user_id)
+
+    async def user_get_all_verified_gyms(self):
+        logger.info(f"[...] Getting all verified gyms for user")
+        return self.user_repo.user_get_all_verified_gyms()
+
+    async def user_get_verified_gym_detail(self, gym_id: int):
+        logger.info(f"[...] Getting verified gym detail with gym_id {gym_id}")
+        return self.user_repo.user_get_verified_gym_detail(gym_id)
+
+    async def user_get_verified_gym_coaches(self, gym_id: int):
+        logger.info(f"[...] Getting verified gym coaches for user with gym_id {gym_id}")
+        return self.user_repo.user_get_verified_gym_coaches(gym_id)
+
+    async def user_get_verified_gym_plan_price(self, gym_id: int):
+        logger.info(f"[...] Getting verified gym plan price for user with gym_id {gym_id}")
+        return self.user_repo.user_get_verified_gym_plan_price(gym_id)
+
+    async def user_get_verified_gym_comments(self, gym_id: int):
+        logger.info(f"[...] Getting verified gym comments for user with gym_id {gym_id}")
+        return self.user_repo.user_get_verified_gym_comments(gym_id)

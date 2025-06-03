@@ -15,7 +15,9 @@ from app.domain.models.fitplan_model import (User,
                                              UserExercise,
                                              UserRequestExercise, UserExerciseExercise, Exercise, UserMeal,
                                              UserRequestMeal, MealSupplement, UserMealMealSupplement,
-                                             WorkoutPlanExercise, WorkoutPlanMealSupplement)
+                                             WorkoutPlanExercise, WorkoutPlanMealSupplement, GymComment)
+
+from app.domain.models.fitplan_model import (Gym, CoachGym, GymPlanPrice, GymComment)
 
 
 class UserRepository:
@@ -225,3 +227,70 @@ class UserRepository:
     def check_if_user_take_workout_coach_exists(self, user_id: int):
         logger.info(f"[+] Checking If User Take Workout Coach Exists For User With Id ---> {user_id}")
         return self.db.query(Take).filter(Take.user_id == user_id).first()
+
+    def user_get_all_verified_gyms(self):
+        logger.info(f"[+] Fetching All Verified Gyms")
+
+        verified_gyms = (
+            self.db.query(Gym)
+            .filter(Gym.verification_status == "verified")
+            .all()
+        )
+
+        return verified_gyms
+
+    def user_get_verified_gym_detail(self, gym_id: int):
+        logger.info(f"[+] Fetching Verified Gym Detail With Gym Id ---> {gym_id}")
+
+        verified_gym_detail = (
+            self.db.query(Gym)
+            .filter(Gym.verification_status == "verified")
+            .filter(Gym.id == gym_id)
+            .first()
+        )
+
+        return verified_gym_detail
+
+    def user_get_verified_gym_coaches(self, gym_id: int):
+        logger.info(f"[+] Fetching Verified Gym Coaches With Gym Id ---> {gym_id}")
+
+        verified_gym_coaches = (
+            self.db.query(Coach)
+            .filter(Coach.verification_status == "verified")
+            .filter(Coach.status == True)
+            .filter(Coach.is_verified == True)
+            .join(CoachGym, Coach.id == CoachGym.coach_id)
+            .filter(CoachGym.gym_id == gym_id)
+            .join(Gym, CoachGym.gym_id == Gym.id)
+            .filter(Gym.verification_status == "verified")
+            .join(Present, Coach.id == Present.coach_id)
+            .all()
+        )
+
+        return verified_gym_coaches
+
+    def user_get_verified_gym_plan_price(self, gym_id: int):
+        logger.info(f"[+] Fetching Verified Gym Plan Price With Id ---> {gym_id}")
+
+        verified_gym_plan_price = (
+            self.db.query(GymPlanPrice)
+            .join(Gym, GymPlanPrice.gym_id == Gym.id)
+            .filter(Gym.id == gym_id)
+            .filter(Gym.verification_status == "verified")
+            .all()
+        )
+
+        return verified_gym_plan_price
+
+    def user_get_verified_gym_comments(self, gym_id: int):
+        logger.info(f"[+] Fetching Verified Gym Comments With Id ---> {gym_id}")
+
+        verified_gym_comments = (
+            self.db.query(GymComment)
+            .filter(GymComment.gym_id == gym_id)
+            .join(Gym, GymComment.gym_id == Gym.id)
+            .filter(Gym.verification_status == "verified")
+            .all()
+        )
+
+        return verified_gym_comments

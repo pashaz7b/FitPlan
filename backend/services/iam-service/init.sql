@@ -543,7 +543,7 @@ CREATE TABLE coach_plan_price (
 
 CREATE TABLE gym_plan_price (
     id SERIAL PRIMARY KEY,
-    gym_id INTEGER NOT NULL UNIQUE,
+    gym_id INTEGER NOT NULL,
     session_counts INTEGER NOT NULL CHECK (session_counts >= 0),
     duration_days INTEGER NOT NULL CHECK (duration_days >= 0),
     is_vip BOOLEAN DEFAULT FALSE,
@@ -556,10 +556,10 @@ CREATE TABLE gym_plan_price (
 
 
 CREATE TABLE coach_gym(
-    id SERIAL PRIMARY KEY,
     coach_id INTEGER NOT NULL,
     gym_id INTEGER NOT NULL,
 
     FOREIGN KEY (coach_id) REFERENCES coach (id) ON DELETE CASCADE,
-    FOREIGN KEY (gym_id) REFERENCES gym (id) ON DELETE CASCADE
+    FOREIGN KEY (gym_id) REFERENCES gym (id) ON DELETE CASCADE,
+    PRIMARY KEY (coach_id, gym_id)
 );

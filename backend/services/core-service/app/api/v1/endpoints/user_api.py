@@ -1,6 +1,6 @@
 from select import select
 from typing import Annotated
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, Request
 from loguru import logger
 
 from app.domain.schemas.token_schema import TokenDataSchema
@@ -16,10 +16,15 @@ from app.domain.schemas.user_schema import (GetUserInfoSchema,
                                             UserTakeWorkoutCoachResponseSchema, UserTakeWorkoutCoachSchema,
                                             GroupedExerciseSchema, ChangeUserCoach, ChangeUserCoachResponse)
 
+from app.domain.schemas.user_schema import (UserGetAllVerifiedGymSchema,
+                                            UserGetVerifiedGymDetailSchema,
+                                            UserGetVerifiedGymCoachesSchema,
+                                            UserGetVerifiedGymPlanPriceSchema,
+                                            UserGetVerifiedGymCommentsSchema)
+
 from app.mainservices.user_mainservice import UserMainService
 
 user_core_router = APIRouter()
-
 
 
 @user_core_router.get(
@@ -180,3 +185,79 @@ async def get_user_all_coach_free(
     current_user_id = 1
     logger.info(f'[...] Getting all coach for user')
     return await user_service.get_user_all_coach(current_user_id)
+
+
+# ********************************************************************************
+
+
+@user_core_router.get(
+    "/get_all_verified_gyms",
+    status_code=status.HTTP_200_OK,
+    response_model=list[UserGetAllVerifiedGymSchema]
+)
+async def user_get_all_verified_gyms(
+        user_service: Annotated[UserMainService, Depends()]
+):
+    logger.info(f'[...] Getting All Verified Gyms For User')
+    return await user_service.user_get_all_verified_gyms()
+
+
+@user_core_router.get(
+    "/get_verified_gym_detail",
+    status_code=status.HTTP_200_OK,
+    response_model=UserGetVerifiedGymDetailSchema
+)
+async def user_get_verified_gym_detail(
+        request: Request,
+        user_service: Annotated[UserMainService, Depends()],
+        gym_id: int
+):
+    user_ip = request.client.host
+    logger.info(f'[...] Getting Verified Gym Detail For User {user_ip}')
+    return await user_service.user_get_verified_gym_detail(gym_id)
+
+
+@user_core_router.get(
+    "/get_verified_gym_coaches",
+    status_code=status.HTTP_200_OK,
+    response_model=list[UserGetVerifiedGymCoachesSchema]
+)
+async def user_get_verified_gym_coaches(
+        request: Request,
+        user_service: Annotated[UserMainService, Depends()],
+        gym_id: int
+):
+    user_ip = request.client.host
+    logger.info(f'[...] Getting Verified Gym Coaches For User {user_ip}')
+    return await user_service.user_get_verified_gym_coaches(gym_id)
+
+
+@user_core_router.get(
+    "/get_verified_gym_plan_price",
+    status_code=status.HTTP_200_OK,
+    response_model=list[UserGetVerifiedGymPlanPriceSchema]
+)
+async def user_get_verified_gym_plan_price(
+        request: Request,
+        user_service: Annotated[UserMainService, Depends()],
+        gym_id: int
+):
+    user_ip = request.client.host
+    logger.info(f'[...] Getting Verified Gym Plan Price For User With IP {user_ip}')
+    return await user_service.user_get_verified_gym_plan_price(gym_id)
+
+
+
+@user_core_router.get(
+    "/get_verified_gym_comments",
+    status_code=status.HTTP_200_OK,
+    response_model=list[UserGetVerifiedGymCommentsSchema]
+)
+async def user_get_verified_gym_comments(
+        request: Request,
+        user_service: Annotated[UserMainService, Depends()],
+        gym_id: int
+):
+    user_ip = request.client.host
+    logger.info(f'[...] Getting Verified Gym Comments For User With IP {user_ip}')
+    return await user_service.user_get_verified_gym_comments(gym_id)

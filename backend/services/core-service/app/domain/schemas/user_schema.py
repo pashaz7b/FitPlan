@@ -171,3 +171,55 @@ class ChangeUserCoach(BaseModel):
 
 class ChangeUserCoachResponse(BaseModel):
     message: str
+
+
+# ********************************************************************************
+
+class UserGetAllVerifiedGymSchema(BaseModel):
+    gym_id: int
+    gym_name: str
+    gym_location: str
+
+
+class UserGetVerifiedGymDetailSchema(BaseModel):
+    gym_id: int
+    gym_owner_id: int
+    gym_name: str
+    gym_location: str
+    gym_sport_facilities: str
+    gym_welfare_facilities: str
+    gym_rating: int
+
+
+class UserGetVerifiedGymCoachesSchema(BaseModel):
+    work_out_plan_id: int
+    work_out_plan_name: str
+    work_out_plan_description: str
+    work_out_plan_duration_month: int
+    coach_id: int
+    coach_user_name: str
+    coach_name: str
+    coach_email: str
+    coach_phone_number: str
+    coach_gender: str
+    coach_date_of_birth: str
+    coach_height: float
+    coach_weight: float
+    coach_specialization: str
+    coach_biography: str
+    coach_status: bool
+    coach_rating: int
+
+
+class UserGetVerifiedGymPlanPriceSchema(BaseModel):
+    session_counts: int
+    duration_days: int
+    is_vip: bool
+    price: int
+
+
+class UserGetVerifiedGymCommentsSchema(BaseModel):
+    users_name: str
+    comment: str
+    rating: int
+    date: str

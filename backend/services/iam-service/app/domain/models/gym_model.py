@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime, CheckConstraint
+from sqlalchemy import Column, Integer, String, Text, ForeignKey, TIMESTAMP, CheckConstraint
 from sqlalchemy.sql import func
 from app.domain.models.base import Base
 
@@ -20,8 +20,8 @@ class Gym(Base):
     rating = Column(Integer, default=0)
     verification_status = Column(String(50), default="pending")
 
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    created_at = Column(TIMESTAMP, default=func.now())
+    updated_at = Column(TIMESTAMP, default=func.now(), onupdate=func.now())
 
     __table_args__ = (
         CheckConstraint('rating BETWEEN 0 AND 5', name='check_rating_range'),

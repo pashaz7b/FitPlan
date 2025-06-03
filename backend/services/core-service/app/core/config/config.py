@@ -5,11 +5,13 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    DATABASE_URL: str = "mongodb://localhost:27017"  # "mongodb://mongo:27017"
+    #DATABASE_URL: str = "mongodb://mongo:27017"
+    DATABASE_URL: str = "mongodb://localhost:27017"
     DATABASE_NAME: str = "FitPlanMediaDB"
     TESSERACT_CMD: str = ""
     MEDIA_SERVICE_GRPC: str = ""
-    IAM_URL: str = "http://iam"  # "http://iam.localhost"
+    #IAM_URL: str = "http://iam"
+    IAM_URL: str = "http://iam.localhost"
     # *************************
     # REDIS_URL: str = "localhost"
     REDIS_URL: str = "redis"
