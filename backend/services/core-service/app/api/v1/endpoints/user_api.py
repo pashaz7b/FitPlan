@@ -1,4 +1,4 @@
-from select import select
+# from select import select
 from typing import Annotated
 from fastapi import APIRouter, Depends, status, Request
 from loguru import logger
@@ -20,7 +20,14 @@ from app.domain.schemas.user_schema import (UserGetAllVerifiedGymSchema,
                                             UserGetVerifiedGymDetailSchema,
                                             UserGetVerifiedGymCoachesSchema,
                                             UserGetVerifiedGymPlanPriceSchema,
-                                            UserGetVerifiedGymCommentsSchema)
+                                            UserGetVerifiedGymCommentsSchema,
+                                            CreateUserGymRegistrationResponseSchema,
+                                            CreateUserGymRegistrationSchema,
+                                            UserGetGymRegistrationsSchema,
+                                            CreateUserGymCommentSchema,
+                                            CreateUserGymCommentResponseSchema,
+                                            UserGetVerifiedCoachCommentsSchema,
+                                            CreateUserCoachCommentSchema, CreateUserCoachCommentResponseSchema)
 
 from app.mainservices.user_mainservice import UserMainService
 
@@ -247,7 +254,6 @@ async def user_get_verified_gym_plan_price(
     return await user_service.user_get_verified_gym_plan_price(gym_id)
 
 
-
 @user_core_router.get(
     "/get_verified_gym_comments",
     status_code=status.HTTP_200_OK,
@@ -261,3 +267,76 @@ async def user_get_verified_gym_comments(
     user_ip = request.client.host
     logger.info(f'[...] Getting Verified Gym Comments For User With IP {user_ip}')
     return await user_service.user_get_verified_gym_comments(gym_id)
+
+
+@user_core_router.post(
+    "/gym_registration",
+    status_code=status.HTTP_201_CREATED,
+    response_model=CreateUserGymRegistrationResponseSchema
+)
+async def user_gym_registration(
+        current_user: Annotated[TokenDataSchema, Depends(get_current_user)],
+        user_gym_registration_schema: CreateUserGymRegistrationSchema,
+        user_service: Annotated[UserMainService, Depends()]
+):
+    logger.info(f'[...] Creating User Gym Registration for User {current_user.id}')
+    return await user_service.create_user_gym_registration(current_user.id, user_gym_registration_schema)
+
+
+@user_core_router.get(
+    "/get_gym_registration_info",
+    status_code=status.HTTP_200_OK,
+    response_model=UserGetGymRegistrationsSchema
+)
+async def user_get_gym_registration_info(
+        current_user: Annotated[TokenDataSchema, Depends(get_current_user)],
+        user_service: Annotated[UserMainService, Depends()]
+):
+    logger.info(f"[...] Getting Gym Registration Info For User {current_user.id}")
+    return await user_service.get_user_gym_registration_info(current_user.id)
+
+
+@user_core_router.post(
+    "/create_gym_comment",
+    status_code=status.HTTP_201_CREATED,
+    response_model=CreateUserGymCommentResponseSchema
+)
+async def user_gym_comment(
+        current_user: Annotated[TokenDataSchema, Depends(get_current_user)],
+        user_gym_comment_schema: CreateUserGymCommentSchema,
+        user_service: Annotated[UserMainService, Depends()]
+):
+    logger.info(f'[...] Creating User Gym Comment for User {current_user.id}')
+    return await user_service.create_user_gym_comment(current_user.id, user_gym_comment_schema)
+
+
+# **************************************************************************
+@user_core_router.get(
+    "/get_verified_coach_comments",
+    status_code=status.HTTP_200_OK,
+    response_model=list[UserGetVerifiedCoachCommentsSchema]
+)
+async def user_get_verified_coach_comments(
+        request: Request,
+        user_service: Annotated[UserMainService, Depends()],
+        coach_id: int
+):
+    user_ip = request.client.host
+    logger.info(f'[...] Getting Verified Coach Comments For User With IP {user_ip}')
+    return await user_service.user_get_verified_coach_comments(coach_id)
+
+
+@user_core_router.post(
+    "/create_coach_comment",
+    status_code=status.HTTP_201_CREATED,
+    response_model=CreateUserCoachCommentResponseSchema
+)
+async def user_coach_comment(
+        current_user: Annotated[TokenDataSchema, Depends(get_current_user)],
+        user_coach_comment_schema: CreateUserCoachCommentSchema,
+        user_service: Annotated[UserMainService, Depends()]
+):
+    logger.info(f'[...] Creating User Coach Comment for User {current_user.id}')
+    return await user_service.create_user_coach_comment(current_user.id, user_coach_comment_schema)
+
+

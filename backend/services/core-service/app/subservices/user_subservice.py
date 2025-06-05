@@ -8,12 +8,18 @@ from app.domain.models.fitplan_model import (User,
                                              UserExercise,
                                              UserRequestExercise, TransactionLog, UserTransactionLog,
                                              UserMeal, UserRequestMeal,
-                                             Take)
+                                             Take, UserGymRegistration, GymComment, CoachComment)
 from app.domain.models.fitplan_model import UserMetrics
 from app.domain.schemas.user_schema import (UserRequestExerciseSchema,
                                             UserRequestExerciseResponseSchema, SetUserTransactionsSchema,
                                             UserRequestMealSchema, UserRequestMealResponseSchema,
-                                            UserTakeWorkoutCoachSchema)
+                                            UserTakeWorkoutCoachSchema,
+                                            CreateUserGymRegistrationSchema,
+                                            CreateUserGymRegistrationResponseSchema,
+                                            CreateUserGymCommentSchema,
+                                            CreateUserGymCommentResponseSchema,
+                                            CreateUserCoachCommentSchema,
+                                            CreateUserCoachCommentResponseSchema)
 from app.infrastructure.repositories.user_repository import UserRepository
 from app.subservices.auth.hash_subservice import HashService
 from app.subservices.baseconfig import BaseService
@@ -245,3 +251,95 @@ class UserSubService(BaseService):
     async def user_get_verified_gym_comments(self, gym_id: int):
         logger.info(f"[...] Getting verified gym comments for user with gym_id {gym_id}")
         return self.user_repo.user_get_verified_gym_comments(gym_id)
+
+    async def get_user_gym_registration_all(self, user_id: int):
+        logger.info(f"[...] Getting User Gym Registration With Id ---> {user_id}")
+        return self.user_repo.get_user_gym_registration_all(user_id)
+
+    async def create_user_gym_registration(self, user_id: int,
+                                           user_gym_registration_schema: CreateUserGymRegistrationSchema):
+        logger.info(f"[...] Creating user gym registration for user with user_id {user_id}")
+
+        user_gym_registration_model = UserGymRegistration(
+            user_id=user_id,
+            gym_id=user_gym_registration_schema.gym_id,
+            registered_sessions=user_gym_registration_schema.registered_sessions,
+            registered_days=user_gym_registration_schema.registered_days,
+            is_vip=user_gym_registration_schema.is_vip,
+            remaining_sessions=user_gym_registration_schema.registered_sessions,
+            remaining_days=user_gym_registration_schema.registered_days,
+            is_expired=False,
+            date=jdatetime.date.today().strftime("%Y/%m/%d")
+        )
+
+        registered_user_in_gym = self.user_repo.create_user_gym_registration(user_gym_registration_model)
+
+        transaction = SetUserTransactionsSchema(amount=user_gym_registration_schema.price,
+                                                reason="Gym_Registration",
+                                                status="Success",
+                                                date=jdatetime.date.today().strftime("%Y/%m/%d"))
+
+        await self.create_transaction_log(user_id, transaction)
+
+        response = CreateUserGymRegistrationResponseSchema(
+            registration_id=registered_user_in_gym.id,
+            message="User Registration In Gym Was Successful",
+        )
+
+        return response
+
+    async def get_user_gym_registration_info(self, user_id: int):
+        logger.info(f"[...] Getting User Gym Registration Info With Id ---> {user_id}")
+        return self.user_repo.get_user_gym_registration_info(user_id)
+
+    async def create_user_gym_comment(self, user_id: int,
+                                      user_gym_comment_schema: CreateUserGymCommentSchema):
+        logger.info(f"[...] Creating user gym comment for user with user_id {user_id}")
+
+        user_gym_comment_model = GymComment(
+            user_id=user_id,
+            gym_id=user_gym_comment_schema.gym_id,
+            comment=user_gym_comment_schema.comment,
+            rating=user_gym_comment_schema.rating,
+            date=jdatetime.datetime.today().strftime("%Y/%m/%d %H:%M:%S")
+        )
+
+        created_user_gym_comment = self.user_repo.create_user_gym_comment(user_gym_comment_model)
+
+        response = CreateUserGymCommentResponseSchema(
+            registered_comment_id=created_user_gym_comment.id,
+            message="User Comment For That Gym Was Successfully Created",
+        )
+
+        return response
+
+    # ***********************************************************************************************
+
+    async def user_get_verified_coach_comments(self, coach_id: int):
+        logger.info(f"[...] Getting verified coach comments for user with coach_id {coach_id}")
+        return self.user_repo.user_get_verified_coach_comments(coach_id)
+
+    async def create_user_coach_comment(self, user_id: int,
+                                        user_coach_comment_schema: CreateUserCoachCommentSchema):
+        logger.info(f"[...] Creating user coach comment for user with user_id {user_id}")
+
+        user_coach_comment_model = CoachComment(
+            user_id=user_id,
+            coach_id=user_coach_comment_schema.coach_id,
+            comment=user_coach_comment_schema.comment,
+            rating=user_coach_comment_schema.rating,
+            date=jdatetime.datetime.today().strftime("%Y/%m/%d %H:%M:%S")
+        )
+
+        created_user_coach_comment = self.user_repo.create_user_coach_comment(user_coach_comment_model)
+
+        response = CreateUserCoachCommentResponseSchema(
+            registered_comment_id=created_user_coach_comment.id,
+            message="User Comment For That Coach Was Successfully Created",
+        )
+
+        return response
+
+    async def user_get_verified_coach_detail(self, coach_id: int):
+        logger.info(f"[...] Getting verified coach detail with coach_id {coach_id}")
+        return self.user_repo.user_get_verified_coach_detail(coach_id)

@@ -15,9 +15,11 @@ from app.domain.models.fitplan_model import (User,
                                              UserExercise,
                                              UserRequestExercise, UserExerciseExercise, Exercise, UserMeal,
                                              UserRequestMeal, MealSupplement, UserMealMealSupplement,
-                                             WorkoutPlanExercise, WorkoutPlanMealSupplement, GymComment)
+                                             WorkoutPlanExercise, WorkoutPlanMealSupplement)
 
-from app.domain.models.fitplan_model import (Gym, CoachGym, GymPlanPrice, GymComment)
+from app.domain.models.fitplan_model import (Gym, CoachGym,
+                                             GymPlanPrice, GymComment,
+                                             UserGymRegistration, CoachComment)
 
 
 class UserRepository:
@@ -294,3 +296,76 @@ class UserRepository:
         )
 
         return verified_gym_comments
+
+    def get_user_gym_registration_all(self, user_id: int):
+        logger.info(f"Getting User Gym Registration With Id ---> {user_id}")
+
+        user_gym_registration_all = (
+            self.db.query(UserGymRegistration)
+            .filter(UserGymRegistration.user_id == user_id)
+            .filter(UserGymRegistration.is_expired == False)
+            .first()
+        )
+
+        return user_gym_registration_all
+
+    def create_user_gym_registration(self, user_gym_registration: UserGymRegistration):
+        self.db.add(user_gym_registration)
+        self.db.commit()
+        self.db.refresh(user_gym_registration)
+        logger.info(f"[+] User Gym Registration Created With Id ---> {user_gym_registration.id}")
+        return user_gym_registration
+
+    def get_user_gym_registration_info(self, user_id: int):
+        logger.info(f"Getting User Gym Registration Info With Id ---> {user_id}")
+
+        user_gym_registration_info = (
+            self.db.query(UserGymRegistration)
+            .filter(UserGymRegistration.user_id == user_id)
+            .filter(UserGymRegistration.is_expired == False)
+            .first()
+        )
+
+        return user_gym_registration_info
+
+    def create_user_gym_comment(self, user_gym_comment: GymComment):
+        self.db.add(user_gym_comment)
+        self.db.commit()
+        self.db.refresh(user_gym_comment)
+        logger.info(f"[+] User Gym Comment Created With Id ---> {user_gym_comment.id}")
+        return user_gym_comment
+
+    # ************************************************************************
+    def user_get_verified_coach_comments(self, coach_id: int):
+        logger.info(f"[+] Fetching Verified Coach Comments With Caoch Id ---> {coach_id}")
+
+        verified_gym_comments = (
+            self.db.query(CoachComment)
+            .filter(CoachComment.coach_id == coach_id)
+            .join(Coach, CoachComment.coach_id == Coach.id)
+            .filter(Coach.verification_status == "verified")
+            .all()
+        )
+
+        return verified_gym_comments
+
+    def create_user_coach_comment(self, user_coach_comment: CoachComment):
+        self.db.add(user_coach_comment)
+        self.db.commit()
+        self.db.refresh(user_coach_comment)
+        logger.info(f"[+] User Coach Comment Created With Id ---> {user_coach_comment.id}")
+        return user_coach_comment
+
+    def user_get_verified_coach_detail(self, coach_id: int):
+        logger.info(f"[+] Fetching Verified Coach Detail With Coach Id ---> {coach_id}")
+
+        verified_coach_detail = (
+            self.db.query(Coach)
+            .filter(Coach.verification_status == "verified")
+            .filter(Coach.id == coach_id)
+            .first()
+        )
+
+        return verified_coach_detail
+
+    def user

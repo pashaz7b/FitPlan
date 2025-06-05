@@ -223,3 +223,64 @@ class UserGetVerifiedGymCommentsSchema(BaseModel):
     comment: str
     rating: int
     date: str
+
+
+class CreateUserGymRegistrationSchema(BaseModel):
+    # user_id: int
+    gym_id: int
+    registered_sessions: int
+    registered_days: int
+    is_vip: bool
+    price: int
+    # remaining_sessions: int
+    # remaining_days: int
+    # is_expired: int
+    # date: str
+
+
+class CreateUserGymRegistrationResponseSchema(BaseModel):
+    registration_id: int
+    message: str
+
+
+class UserGetGymRegistrationsSchema(BaseModel):
+    gym_id: int
+    gym_name: str
+    registered_sessions: int
+    registered_days: int
+    is_vip: bool
+    remaining_sessions: int
+    remaining_days: int
+    is_expired: bool
+    date: str
+
+
+class CreateUserGymCommentSchema(BaseModel):
+    gym_id: int
+    comment: str
+    rating: int
+
+
+class CreateUserGymCommentResponseSchema(BaseModel):
+    registered_comment_id: int
+    message: str
+
+
+# *******************************************************************
+
+class UserGetVerifiedCoachCommentsSchema(BaseModel):
+    users_name: str
+    comment: str
+    rating: int
+    date: str
+
+
+class CreateUserCoachCommentSchema(BaseModel):
+    coach_id: int
+    comment: str
+    rating: int
+
+
+class CreateUserCoachCommentResponseSchema(BaseModel):
+    registered_comment_id: int
+    message: str
