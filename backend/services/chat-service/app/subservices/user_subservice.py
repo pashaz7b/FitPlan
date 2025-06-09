@@ -20,6 +20,13 @@ class UserSubService(BaseService):
         super().__init__()
         self.user_repo = user_repo
 
+    # async def create_user(self, user_id: int):
+    #     logger.info(f"[+] Creating User With Id ---> {user_id}")
+
+    #     user = User(id=user_id)
+
+    #     return await self.user_repo.create_user(user)
+        
     async def create_user_chat(self, user_id, coach_id, user_create_chat_schema: UserCreateChatSchema):
         logger.info("[+] Creating Chat For User With Coach")
 

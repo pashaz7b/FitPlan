@@ -27,6 +27,8 @@ from app.mainservices.user_register_mainservice import RegisterMainService
 # from app.infrastructure.repositories.user_repository import UserRepository
 from app.mainservices.user_login_mainservice import AuthService, get_current_user
 from app.mainservices.user_password_mainservice import PasswordManager
+from app.subservices.user_subservice import UserSubService
+from app.infrastructure.clients.rabbitmq_producer import RabbitmqProducer
 
 user_router = APIRouter()
 
@@ -41,9 +43,15 @@ async def signup(user: UserRegisterSchema,
 
 @user_router.post("/verifyOTP", response_model=VerifyOTPResponseSchema, status_code=status.HTTP_200_OK)
 async def verify_otp(verify_user_schema: VerifyOTPSchema,
-                     register_service: Annotated[RegisterMainService, Depends()], ) -> VerifyOTPResponseSchema:
+                     register_service: Annotated[RegisterMainService, Depends()],
+                     user_subservice: Annotated[UserSubService, Depends()]) -> VerifyOTPResponseSchema:
     logger.info(f"[...] Start Verifying OTP For User With Email ---> {verify_user_schema.email}")
-    return await register_service.verify_user(verify_user_schema)
+    response =  await register_service.verify_user(verify_user_schema)
+    # after user is verified, call rabbitmq_producer to send user_id to chat service
+    user = await user_subservice.get_user_by_email(verify_user_schema.email)
+    rabbitmq_producer = RabbitmqProducer()
+    await rabbitmq_producer.send_user_id(user.id)
+    return response    
 
 
 @user_router.post("/resendOTP", response_model=ResendOTPResponseSchema, status_code=status.HTTP_200_OK)

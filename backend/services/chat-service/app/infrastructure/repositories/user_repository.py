@@ -16,6 +16,13 @@ class UserRepository:
     def __init__(self, db: Annotated[AsyncSession, Depends(get_db)]):
         self.db = db
 
+    # async def create_user(self, user: User) -> User:
+    #     self.db.add(user)
+    #     await self.db.commit()
+    #     await self.db.refresh(user)
+    #     logger.info(f"[+] User Created With Id ---> {user.id}")
+    #     return user
+
     async def create_user_chat(self, user_coach_chat: UserCoachChat):
         self.db.add(user_coach_chat)
         await self.db.commit()
