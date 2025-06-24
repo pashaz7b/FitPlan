@@ -1,4 +1,5 @@
 import asyncio
+import json
 from aio_pika import connect_robust, IncomingMessage, ExchangeType
 from loguru import logger
 
@@ -7,7 +8,7 @@ class RabbitmqConsumer:
         # self.user_subservice = user_subservice
         self.rabbitmq_url = "amqp://guest:guest@localhost/"
         self.exchange_name = "iam_chat_comm"
-        self.queue_name = "user_id_queue"
+        self.queue_name = "id_queue"
         self.connection = None
         self.task = None
     
@@ -22,8 +23,10 @@ class RabbitmqConsumer:
 
     async def on_message(self, message: IncomingMessage):
         async with message.process():   # Automatically sends ack
-                user_id = int(message.body.decode())
-                logger.info(f"[x] Received User ID: {user_id}")
+                msg_data = json.loads(message.body)
+                id = msg_data["id"]
+                role = msg_data["role"]
+                logger.info(f"[x] Received {role}_id: {id}")
                 # process message: create user, coach, admin in db
                 # await self.user_subservice.create_user(user_id)
 
@@ -37,3 +40,6 @@ class RabbitmqConsumer:
         if self.connection:
             await self.connection.close()
         logger.info("RabbitMQ Consumer stopped.")    
+
+
+# asyncio.Future()        

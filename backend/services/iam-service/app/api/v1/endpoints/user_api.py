@@ -1,4 +1,4 @@
-from fastapi import Depends, status, APIRouter
+from fastapi import Depends, status, APIRouter, BackgroundTasks
 from fastapi.security import OAuth2PasswordRequestForm
 from typing import Annotated
 from loguru import logger
@@ -27,8 +27,7 @@ from app.mainservices.user_register_mainservice import RegisterMainService
 # from app.infrastructure.repositories.user_repository import UserRepository
 from app.mainservices.user_login_mainservice import AuthService, get_current_user
 from app.mainservices.user_password_mainservice import PasswordManager
-from app.subservices.user_subservice import UserSubService
-from app.infrastructure.clients.rabbitmq_producer import RabbitmqProducer
+from app.api.background_tasks.send_id_to_chat_service import SendIdToChat
 
 user_router = APIRouter()
 
@@ -44,14 +43,13 @@ async def signup(user: UserRegisterSchema,
 @user_router.post("/verifyOTP", response_model=VerifyOTPResponseSchema, status_code=status.HTTP_200_OK)
 async def verify_otp(verify_user_schema: VerifyOTPSchema,
                      register_service: Annotated[RegisterMainService, Depends()],
-                     user_subservice: Annotated[UserSubService, Depends()]) -> VerifyOTPResponseSchema:
+                     background_tasks: BackgroundTasks,
+                     rabbitmq_task: Annotated[SendIdToChat, Depends()]) -> VerifyOTPResponseSchema:
     logger.info(f"[...] Start Verifying OTP For User With Email ---> {verify_user_schema.email}")
-    response =  await register_service.verify_user(verify_user_schema)
     # after user is verified, call rabbitmq_producer to send user_id to chat service
-    user = await user_subservice.get_user_by_email(verify_user_schema.email)
-    rabbitmq_producer = RabbitmqProducer()
-    await rabbitmq_producer.send_user_id(user.id)
-    return response    
+    background_tasks.add_task(rabbitmq_task.send_user_id, verify_user_schema)
+    return await register_service.verify_user(verify_user_schema)
+     
 
 
 @user_router.post("/resendOTP", response_model=ResendOTPResponseSchema, status_code=status.HTTP_200_OK)
