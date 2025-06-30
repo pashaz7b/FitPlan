@@ -1,6 +1,7 @@
 from typing import Annotated
 from loguru import logger
 from fastapi import Depends, HTTPException, status
+from fastapi.responses import JSONResponse
 
 from app.domain.schemas.coach_schema import (
     CoachRegisterSchema,
@@ -8,7 +9,15 @@ from app.domain.schemas.coach_schema import (
     VerifyOTPSchema,
     VerifyOTPResponseSchema,
     ResendOTPSchema,
-    ResendOTPResponseSchema
+    ResendOTPResponseSchema,
+    CoachRegisterWithPhoneSchema,
+    CoachRegisterWithPhoneResponseSchema,
+    VerifyOTPPhoneSchema,
+    VerifyOTPPhoneResponseSchema,
+    ResendOTPPhoneSchema,
+    ResendOTPPhoneResponseSchema,
+    CoachRegisterWithPhoneFinalSchema,
+    CoachRegisterWithPhoneFinalResponseSchema
 )
 
 from app.subservices.coach_subservice import CoachSubService
@@ -17,18 +26,23 @@ from app.subservices.auth.otp_subservice import OTPSubservice
 from app.subservices.baseconfig import BaseService
 from app.validators.regex_checker import RegexChecker
 
+from app.mainservices.coach_otp_oken.coach_otp_token import CoachOtpToken
+
 
 class CoachRegisterMainService(BaseService):
     def __init__(self,
                  coach_subservice: Annotated[CoachSubService, Depends()],
                  otp_subservice: Annotated[OTPSubservice, Depends()],
-                 user_duplicates_subservice: Annotated[UserDuplicatesSubService, Depends()]) -> None:
+                 user_duplicates_subservice: Annotated[UserDuplicatesSubService, Depends()],
+                 coach_otp_token: Annotated[CoachOtpToken, Depends()],
+                 ) -> None:
         super().__init__()
         self.coach_subservice = coach_subservice
         self.otp_subservice = otp_subservice
         self.user_duplicates_subservice = user_duplicates_subservice
+        self.coach_otp_token = coach_otp_token
 
-    async def check_existence(self, coach: CoachRegisterSchema):
+    async def check_existence(self, coach):
         existing_email = await self.user_duplicates_subservice.get_user_by_email(coach.email)
         existing_phone_number = await self.user_duplicates_subservice.get_user_by_phone_number(coach.phone_number)
         existing_user_name = await self.user_duplicates_subservice.get_user_by_user_name(coach.user_name)
@@ -127,3 +141,119 @@ class CoachRegisterMainService(BaseService):
             email=resend_otp_schema.email,
             message="OTP Sent To Email",
         )
+
+    # ********************************************************************************************************
+
+    async def check_phone_number_existence(self, coach_phone_schema: CoachRegisterWithPhoneSchema):
+        existing_phone_number = await self.user_duplicates_subservice.get_user_by_phone_number(
+            coach_phone_schema.phone_number)
+
+        if existing_phone_number:
+            logger.error(f"[-] Coach Phone Number ---> {coach_phone_schema.phone_number} Already Exists!!")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, detail="[-] A User With This Phone Number Already Exists!!"
+            )
+
+        logger.info(f"[...] Sending OTP For Phone Number ---> {coach_phone_schema.phone_number}")
+        otp = self.otp_subservice.send_otp_to_phone(coach_phone_schema.phone_number)
+
+        response = CoachRegisterWithPhoneResponseSchema(
+            message="OTP Has Been Sent To Phone Number",
+        )
+
+        return response
+
+    async def verify_otp_phone(self, verify_otp_phone_schema: VerifyOTPPhoneSchema):
+
+        if not self.otp_subservice.verify_otp_phone(
+                verify_otp_phone_schema.phone_number, verify_otp_phone_schema.OTP
+        ):
+            logger.error(f"[-] Invalid OTP For Phone ---> {verify_otp_phone_schema.phone_number}")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid OTP"
+            )
+
+        logger.info(f"[+] Coach with Phone ---> {verify_otp_phone_schema.phone_number} Verified")
+
+        otp_token = await self.coach_otp_token.create_coach_otp_token(
+            phone_number=verify_otp_phone_schema.phone_number,
+            verified=True
+        )
+
+        response = JSONResponse(
+            content=VerifyOTPPhoneResponseSchema(
+                verified=True,
+                message="Coach Verified Successfully",
+                otp_token=otp_token
+            ).dict()
+        )
+
+        response.set_cookie(
+            key="otp_token",
+            value=otp_token,
+            httponly=True,
+            secure=True,
+            max_age=1800,
+            samesite="Strict"
+        )
+        return response
+
+        # return VerifyOTPPhoneResponseSchema(
+        #     verified=True, message="Coach Verified Successfully"
+        # )
+
+    async def resend_otp_phone(self, resend_otp_phone_schema: ResendOTPPhoneSchema):
+
+        existing_phone_number = await self.user_duplicates_subservice.get_user_by_phone_number(
+            resend_otp_phone_schema.phone_number)
+
+        if existing_phone_number:
+            logger.error(f"[-] Coach Phone Number ---> {resend_otp_phone_schema.phone_number} Already Exists!!")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, detail="[-] A User With This Phone Number Already Exists!!"
+            )
+
+        if self.otp_subservice.check_exist_phone(resend_otp_phone_schema.phone_number):
+            logger.error(f"[-] OTP For Phone ---> {resend_otp_phone_schema.phone_number} Already Exists")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, detail="OTP Already Exists"
+            )
+
+        otp = self.otp_subservice.send_otp_to_phone(resend_otp_phone_schema.phone_number)
+
+        logger.info(f"[+] OTP Resent To Phone ---> {resend_otp_phone_schema.phone_number}")
+        return ResendOTPPhoneResponseSchema(
+            phone_number=resend_otp_phone_schema.phone_number,
+            message="OTP Sent To Phone",
+        )
+
+    async def register_coach_final(self, coach: CoachRegisterWithPhoneFinalSchema, otp_token: str):
+
+        is_valid = await self.coach_otp_token.verify_coach_otp_token(
+            phone_number=coach.phone_number,
+            otp_token=otp_token
+        )
+        if not is_valid:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Invalid or unverified OTP token"
+            )
+
+        await self.check_existence(coach)
+        new_coach = await self.coach_subservice.create_coach_final(coach)
+
+        logger.info(f"[+] Coach With Email --> {coach.email} Created Successfully")
+        response = JSONResponse(
+            content=CoachRegisterWithPhoneFinalResponseSchema(
+                message="[+] Coach Created Successfully"
+            ).dict()
+        )
+
+        response.set_cookie(
+            key="otp_token",
+            value="",
+            httponly=True,
+            secure=True,
+            max_age=0
+        )
+        return response

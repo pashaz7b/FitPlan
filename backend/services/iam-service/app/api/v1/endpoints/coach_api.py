@@ -1,4 +1,4 @@
-from fastapi import Depends, HTTPException, status, APIRouter
+from fastapi import Depends, status, APIRouter
 from fastapi.security import OAuth2PasswordRequestForm
 from typing import Annotated
 from loguru import logger
@@ -19,6 +19,16 @@ from app.domain.schemas.password_schema import (ForgetPasswordSchema,
                                                 VerifyPasswordOTPResponseSchema,
                                                 ResendPasswordOTPSchema,
                                                 ResendPasswordOTPResponseSchema)
+from app.domain.schemas.coach_schema import (CoachRegisterWithPhoneSchema,
+                                             CoachRegisterWithPhoneResponseSchema,
+                                             VerifyOTPPhoneSchema,
+                                             VerifyOTPPhoneResponseSchema,
+                                             ResendOTPPhoneSchema,
+                                             ResendOTPPhoneResponseSchema,
+                                             CoachRegisterWithPhoneFinalSchema,
+                                             CoachRegisterWithPhoneFinalResponseSchema)
+from app.mainservices.coach_otp_oken.coach_otp_token import CoachOtpToken
+
 from app.domain.schemas.token_schema import TokenSchema
 from app.domain.models.coach_model import Coach
 from app.mainservices.coach_register_mainservice import CoachRegisterMainService
@@ -32,8 +42,7 @@ coach_router = APIRouter()
 async def signup(coach: CoachRegisterSchema,
                  register_mainservice: Annotated[CoachRegisterMainService, Depends()]) -> CoachRegisterResponseSchema:
     logger.info(f"[...] Start Registering Coach")
-    res = await register_mainservice.register_coach(coach)
-    return res
+    return await register_mainservice.register_coach(coach)
 
 
 @coach_router.post("/verifyOTP", response_model=VerifyOTPResponseSchema, status_code=status.HTTP_200_OK)
@@ -110,3 +119,39 @@ async def login(
 async def get_coach(current_coach: Coach = Depends(get_current_coach)):
     logger.info(f"[...] Getting Coach with Email ---> {current_coach.email}")
     return current_coach
+
+
+# ****************************************************************************************************
+
+
+@coach_router.post("/signup_with_phone", response_model=CoachRegisterWithPhoneResponseSchema,
+                   status_code=status.HTTP_200_OK)
+async def signup_with_phone(coach_phone_schema: CoachRegisterWithPhoneSchema,
+                            coach_register_mainservice: Annotated[CoachRegisterMainService, Depends()]):
+    logger.info(f"[...] Start Signing Up For Coach With Phone Number ---> {coach_phone_schema.phone_number}")
+    return await coach_register_mainservice.check_phone_number_existence(coach_phone_schema)
+
+
+@coach_router.post("/verifyOTP_phone", response_model=VerifyOTPPhoneResponseSchema, status_code=status.HTTP_200_OK)
+async def verify_otp_phone(verify_otp_phone_schema: VerifyOTPPhoneSchema,
+                           coach_register_mainservice: Annotated[CoachRegisterMainService, Depends()]):
+    logger.info(f"[...] Start Verifying OTP For Coach With Phone ---> {verify_otp_phone_schema.phone_number}")
+    return await coach_register_mainservice.verify_otp_phone(verify_otp_phone_schema)
+
+
+@coach_router.post("/resendOTP_phone", response_model=ResendOTPPhoneResponseSchema, status_code=status.HTTP_200_OK)
+async def resend_otp_phone(
+        resend_otp_phone_schema: ResendOTPPhoneSchema,
+        coach_register_mainservice: Annotated[CoachRegisterMainService, Depends()],
+):
+    logger.info(f"[...] Start Resending OTP For Coach With Phone {resend_otp_phone_schema.phone_number}")
+    return await coach_register_mainservice.resend_otp_phone(resend_otp_phone_schema)
+
+
+@coach_router.post("/signup_with_phone_final", response_model=CoachRegisterWithPhoneFinalResponseSchema,
+                   status_code=status.HTTP_201_CREATED)
+async def signup_with_phone_final(coach_schema: CoachRegisterWithPhoneFinalSchema,
+                                  coach_register_mainservice: Annotated[CoachRegisterMainService, Depends()],
+                                  otp_token: str = Depends(CoachOtpToken.get_otp_token)):
+    logger.info(f"[...] Finalizing Signing Up For Coach With Phone Number ---> {coach_schema.phone_number}")
+    return await coach_register_mainservice.register_coach_final(coach_schema, otp_token)

@@ -159,3 +159,33 @@ async def upload_coach_media(
     output = await media_service.create_media(file, coach_email)
     await coach_service.change_coach_profile(coach_email, {"image": str(output.mongo_id)})
     return output
+
+
+#*******************************************************************************
+
+@admin_media_router.get(
+    "/get_coach_coaching_card/{coach_email}", response_class=StreamingResponse, status_code=status.HTTP_200_OK
+)
+async def get_coach_coaching_card(
+        media_service: Annotated[MediaService, Depends()],
+        current_admin: Annotated[TokenDataSchema, Depends(get_current_admin)],
+        admin_service: Annotated[AdminProfile, Depends()],
+        coach_email: str
+):
+    logger.info(f"[+] Fetching Coach For Admin With Email ---> {current_admin.email}")
+
+    mongo_id = await admin_service.get_coach_coaching_card(coach_email)
+
+    media_schema, file_stream = await media_service.get_media(
+        mongo_id, coach_email
+    )
+
+    logger.info(f"Retrieving media file {media_schema.filename}")
+
+    return StreamingResponse(
+        content=file_stream(),
+        media_type=media_schema.content_type,
+        headers={
+            "Content-Disposition": f"attachment; filename={media_schema.filename}"
+        },
+    )

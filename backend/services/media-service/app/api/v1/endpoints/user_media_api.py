@@ -7,25 +7,13 @@ from fastapi.responses import StreamingResponse
 from app.domain.schemas.media_schema import MediaGetSchema, MediaSchema
 from app.domain.schemas.token_schema import TokenDataSchema
 from app.services.media_service import MediaService
-from app.services.auth_service import get_current_user
+from app.services.user_auth_service import get_current_user
 from app.services.user_mainservice import UserProfile
 from app.services.coach_main_service import CoachProfile
 from app.validators.file_validator import validate_image_file
 from bson import ObjectId
 
 user_media_router = APIRouter()
-
-
-# @media_router.post(
-#     "/UploadMedia", response_model=MediaSchema, status_code=status.HTTP_201_CREATED
-# )
-# async def upload_media(
-#     media_service: Annotated[MediaService, Depends()],
-#     file: UploadFile,
-#     current_user: Annotated[TokenDataSchema, Depends(get_current_user)],
-# ):
-#     logger.info(f"Uploading media file {file.filename}")
-#     return await media_service.create_media(file, current_user.id)
 
 
 @user_media_router.put(

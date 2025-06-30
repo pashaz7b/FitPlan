@@ -33,3 +33,9 @@ class CoachSubService():
     async def get_coach_by_email(self, email: str) -> Coach:
         logger.info(f"[+] Fetching coach with Email ---> {email}")
         return self.coach_repo.get_coach_by_email(email)
+
+    # **************************************************************
+
+    async def get_coach_metrics(self, coach_id: int):
+        logger.info(f"[+] Fetching coach metric for coach with id {coach_id}")
+        return self.coach_repo.get_coach_metrics(coach_id)

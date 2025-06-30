@@ -1,4 +1,4 @@
-FROM python:3.11-slim
+FROM docker.arvancloud.ir/python:3.11-slim
 
 # Install supervisor
 RUN apt-get -o Acquire::Check-Valid-Until=false update && apt-get install -y supervisor

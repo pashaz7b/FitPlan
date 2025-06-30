@@ -25,9 +25,9 @@ app.include_router(user_core_router, prefix="/api/v1/user", tags=["User"])
 app.include_router(coach_core_router, prefix="/api/v1/coach", tags=["Coach"])
 app.include_router(admin_core_router, prefix="/api/v1/admin", tags=["Admin"])
 
-logger.info("User-Coach Service Started")
+logger.info("Core Service Started")
 
 
 @app.get("/")
 async def root():
-    return {"Hello User-Coach Service!"}
+    return {"Hello From Core Service!"}

@@ -1,9 +1,8 @@
-from sqlalchemy import Column, Integer, String, Text, TIMESTAMP, func, Sequence, ForeignKey, Numeric, Boolean
+from sqlalchemy import Column, Integer, String, Text, TIMESTAMP, func, Sequence, ForeignKey, Numeric, Boolean, \
+    CheckConstraint
 from sqlalchemy.orm import relationship
 
-from sqlalchemy.ext.declarative import declarative_base
-
-Base = declarative_base()
+from app.domain.models.base import Base
 
 
 class Coach(Base):
@@ -22,6 +21,7 @@ class Coach(Base):
     created_at = Column(TIMESTAMP, server_default=func.now())
     updated_at = Column(TIMESTAMP, server_default=func.now())
     is_verified = Column(Boolean, default=False)
+    verification_status = Column(String(50), default="pending")
 
     metrics = relationship("CoachMetrics", back_populates="coach", uselist=False)
 
@@ -35,8 +35,17 @@ class CoachMetrics(Base):
     weight = Column(Numeric(5, 2))
     specialization = Column(String(255))
     biography = Column(Text)
+
+    rating = Column(Integer, default=0)
+    coaching_id = Column(String(100), nullable=False)
+    coaching_card_image = Column(Text)
+
     created_at = Column(TIMESTAMP, default=func.now())
     updated_at = Column(TIMESTAMP, default=func.now(), onupdate=func.now())
+
+    __table_args__ = (
+        CheckConstraint('rating BETWEEN 0 AND 5', name='check_coach_rating_range'),
+    )
 
     # Relationship with Coach
     coach = relationship("Coach", back_populates="metrics")

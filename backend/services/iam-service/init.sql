@@ -52,7 +52,8 @@ CREATE TABLE coach (
     image TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    is_verified boolean DEFAULT false
+    is_verified boolean DEFAULT false,
+    verification_status VARCHAR(50) DEFAULT 'pending'
 );
 
 
@@ -63,6 +64,9 @@ CREATE TABLE coach_metrics (
     weight DECIMAL(5, 2), -- Weight in kg
     specialization VARCHAR(255), -- E.g., fitness, strength training, etc.
     biography TEXT, -- Brief biography of the coach
+    rating INTEGER DEFAULT 0 CHECK (rating BETWEEN 0 AND 5),
+    coaching_id VARCHAR(100) NOT NULL,
+    coaching_card_image TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (coach_id) REFERENCES coach(id) ON DELETE CASCADE
@@ -454,3 +458,110 @@ FOR EACH ROW
 EXECUTE FUNCTION delete_from_user_duplicates();
 
 
+--**********************************************************************************************
+
+--not adding updated_at now
+
+
+CREATE TABLE gym (
+    id SERIAL PRIMARY KEY,
+    owner_id INTEGER NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    license_number VARCHAR(100) NOT NULL,
+    license_image TEXT,
+    location TEXT,
+    image TEXT,
+    sport_facilities TEXT,
+    welfare_facilities TEXT,
+    rating INTEGER DEFAULT 0 CHECK (rating BETWEEN 0 AND 5),
+    verification_status VARCHAR(50) DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (owner_id) REFERENCES coach (id) ON DELETE CASCADE
+);
+
+
+CREATE TABLE coach_comment (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    coach_id INTEGER NOT NULL,
+    comment TEXT,
+    rating INTEGER DEFAULT 0 CHECK (rating BETWEEN 0 AND 5),
+    date VARCHAR(100),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+    FOREIGN KEY (coach_id) REFERENCES coach (id) ON DELETE CASCADE
+);
+
+
+CREATE TABLE gym_comment (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    gym_id INTEGER NOT NULL,
+    comment TEXT,
+    rating INTEGER DEFAULT 0 CHECK (rating BETWEEN 0 AND 5),
+    date VARCHAR(100),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+    FOREIGN KEY (gym_id) REFERENCES gym (id) ON DELETE CASCADE
+);
+
+
+CREATE TABLE user_gym_registration(
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    gym_id INTEGER NOT NULL,
+    registered_sessions INTEGER DEFAULT 0,
+    registered_days INTEGER DEFAULT 0,
+    is_vip BOOLEAN DEFAULT FALSE,
+    remaining_sessions INTEGER DEFAULT 0,
+    remaining_days INTEGER DEFAULT 0,
+    is_expired BOOLEAN DEFAULT FALSE,
+    date VARCHAR(100),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+    FOREIGN KEY (gym_id) REFERENCES gym (id) ON DELETE CASCADE
+);
+
+
+CREATE TABLE coach_plan_price (
+    id SERIAL PRIMARY KEY,
+    coach_id INTEGER NOT NULL UNIQUE ,
+    exercise_price INTEGER NOT NULL CHECK (exercise_price >= 0),
+    meal_price INTEGER NOT NULL CHECK (meal_price >= 0),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (coach_id) REFERENCES coach (id)  ON DELETE CASCADE
+);
+
+
+CREATE TABLE gym_plan_price (
+    id SERIAL PRIMARY KEY,
+    gym_id INTEGER NOT NULL,
+    session_counts INTEGER NOT NULL CHECK (session_counts >= 0),
+    duration_days INTEGER NOT NULL CHECK (duration_days >= 0),
+    is_vip BOOLEAN DEFAULT FALSE,
+    price INTEGER NOT NULL CHECK (price >= 0),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (gym_id) REFERENCES gym (id) ON DELETE CASCADE
+);
+
+
+CREATE TABLE coach_gym(
+    coach_id INTEGER NOT NULL,
+    gym_id INTEGER NOT NULL,
+
+    FOREIGN KEY (coach_id) REFERENCES coach (id) ON DELETE CASCADE,
+    FOREIGN KEY (gym_id) REFERENCES gym (id) ON DELETE CASCADE,
+    PRIMARY KEY (coach_id, gym_id)
+);

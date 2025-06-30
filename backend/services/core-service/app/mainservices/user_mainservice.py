@@ -1,4 +1,5 @@
-from pyexpat.errors import messages
+# from http.client import responses
+# from pyexpat.errors import messages
 from typing import Annotated
 from loguru import logger
 from fastapi import Depends, HTTPException, status
@@ -10,10 +11,21 @@ from app.domain.schemas.user_schema import (GetUserInfoSchema,
                                             GetUserTransactionsSchema,
                                             GetUserCoachSchema,
                                             UserRequestExerciseSchema,
-                                            GetUserExerciseSchema, UserRequestMealSchema, GetUserMealSchema,
+                                            UserRequestMealSchema, GetUserMealSchema,
                                             GetUserAllCoachSchema, UserTakeWorkoutCoachSchema,
                                             UserTakeWorkoutCoachResponseSchema, GroupedExerciseSchema, ExerciseSchema,
                                             ChangeUserCoachResponse)
+
+from app.domain.schemas.user_schema import (UserGetAllVerifiedGymSchema,
+                                            UserGetVerifiedGymDetailSchema,
+                                            UserGetVerifiedGymCoachesSchema,
+                                            UserGetVerifiedGymPlanPriceSchema,
+                                            UserGetVerifiedGymCommentsSchema,
+                                            CreateUserGymRegistrationSchema,
+                                            UserGetGymRegistrationsSchema,
+                                            CreateUserGymCommentSchema,
+                                            UserGetVerifiedCoachCommentsSchema,
+                                            CreateUserCoachCommentSchema)
 
 from app.subservices.user_subservice import UserSubService
 from app.subservices.user_duplicates_subservice import UserDuplicatesSubService
@@ -105,7 +117,7 @@ class UserMainService(BaseService):
         user_metrics = await self.user_subservice.get_user_metrics(user_id)
         empty_password = ""
         return GetUserInfoSchema(
-            id=user.id,
+            # id=user.id,
             password=empty_password,
             user_name=user.user_name,
             name=user.name,
@@ -361,3 +373,234 @@ class UserMainService(BaseService):
         return ChangeUserCoachResponse(
             message="Coach Changed Successfully"
         )
+
+    async def user_get_all_verified_gyms(self):
+        logger.info("[...] Getting All Verified Gym For User")
+        verified_gyms = await self.user_subservice.user_get_all_verified_gyms()
+
+        if not verified_gyms:
+            logger.info(f"[-] There is no Verified Gym")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="There is no Verified Gym")
+
+        verified_gyms_list = []
+        for verified_gym in verified_gyms:
+            verified_gyms_list.append(UserGetAllVerifiedGymSchema(
+                gym_id=verified_gym.id,
+                gym_name=verified_gym.name,
+                gym_location=verified_gym.location
+            ))
+
+        return verified_gyms_list
+
+    async def user_get_verified_gym_detail(self, gym_id: int):
+        logger.info(f"[...] Getting Verified Gym Detail With Gym ID {gym_id}")
+
+        verified_gym_detail = await self.user_subservice.user_get_verified_gym_detail(gym_id)
+
+        if not verified_gym_detail:
+            logger.info(f"[-] There is no Verified Gym Detail For That Gym With Gym ID {gym_id}")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                                detail="There is no Verified Gym Detail For That Gym")
+
+        verified_gym_detail_response = UserGetVerifiedGymDetailSchema(
+            gym_id=verified_gym_detail.id,
+            gym_owner_id=verified_gym_detail.owner_id,
+            gym_name=verified_gym_detail.name,
+            gym_location=verified_gym_detail.location,
+            gym_sport_facilities=verified_gym_detail.sport_facilities,
+            gym_welfare_facilities=verified_gym_detail.welfare_facilities,
+            gym_rating=verified_gym_detail.rating
+        )
+
+        return verified_gym_detail_response
+
+    async def user_get_verified_gym_coaches(self, gym_id: int):
+        logger.info(f"[...] Getting All Verified Gym With Gym Id {gym_id} Coaches For User")
+
+        verified_gym_coaches = await self.user_subservice.user_get_verified_gym_coaches(gym_id)
+
+        if not verified_gym_coaches:
+            logger.info(f"[-] There is no Verified Gym Coaches For That Gym With Gym ID {gym_id}")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                                detail="There is no Verified Gym Coaches For That Gym")
+
+        verified_gym_coaches_list = []
+
+        for verified_gym_coach in verified_gym_coaches:
+            verified_gym_coach_response = UserGetVerifiedGymCoachesSchema(
+                work_out_plan_id=verified_gym_coach.present[0].workout_plan_id,
+                work_out_plan_name=verified_gym_coach.present[0].workout_plan.name,
+                work_out_plan_description=verified_gym_coach.present[0].workout_plan.description,
+                work_out_plan_duration_month=verified_gym_coach.present[0].workout_plan.duration_month,
+                coach_id=verified_gym_coach.id,
+                coach_user_name=verified_gym_coach.user_name,
+                coach_name=verified_gym_coach.name,
+                coach_email=verified_gym_coach.email,
+                coach_phone_number=verified_gym_coach.phone_number,
+                coach_gender=verified_gym_coach.gender,
+                coach_date_of_birth=verified_gym_coach.date_of_birth,
+                coach_height=verified_gym_coach.metrics.height,
+                coach_weight=verified_gym_coach.metrics.weight,
+                coach_specialization=verified_gym_coach.metrics.specialization,
+                coach_biography=verified_gym_coach.metrics.biography,
+                coach_status=verified_gym_coach.status,
+                coach_rating=verified_gym_coach.metrics.rating,
+            )
+
+            verified_gym_coaches_list.append(verified_gym_coach_response)
+
+        return verified_gym_coaches_list
+
+    async def user_get_verified_gym_plan_price(self, gym_id: int):
+        logger.info(f"[...] Getting All Verified Gym Plan Price With Gym Id {gym_id} For User")
+
+        verified_gym_plan_prices = await self.user_subservice.user_get_verified_gym_plan_price(gym_id)
+
+        if not verified_gym_plan_prices:
+            logger.info(f"[-] There is No Verified Gym Plan Price For That Gym Id {gym_id}")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                                detail="There Is No Verified Gym Plan Price For That Gym")
+
+        verified_gym_plan_prices_list = []
+
+        for verified_gym_plan_price in verified_gym_plan_prices:
+            verified_gym_plan_price_response = UserGetVerifiedGymPlanPriceSchema(
+                session_counts=verified_gym_plan_price.session_counts,
+                duration_days=verified_gym_plan_price.duration_days,
+                is_vip=verified_gym_plan_price.is_vip,
+                price=verified_gym_plan_price.price,
+            )
+
+            verified_gym_plan_prices_list.append(verified_gym_plan_price_response)
+
+        return verified_gym_plan_prices_list
+
+    async def user_get_verified_gym_comments(self, gym_id: int):
+        logger.info(f"[...] Getting All Verified Gym Comments With Gym Id {gym_id} For User")
+
+        verified_gym_comments = await self.user_subservice.user_get_verified_gym_comments(gym_id)
+
+        if not verified_gym_comments:
+            logger.info(f"[-] There is No Verified Gym Comments For That Gym Id {gym_id}")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                                detail="There Is No Verified Gym Comments For That Gym")
+
+        verified_gym_comments_list = []
+
+        for verified_gym_comment in verified_gym_comments:
+            verified_gym_comment_response = UserGetVerifiedGymCommentsSchema(
+                users_name=verified_gym_comment.user.name,
+                comment=verified_gym_comment.comment,
+                rating=verified_gym_comment.rating,
+                date=verified_gym_comment.date,
+            )
+
+            verified_gym_comments_list.append(verified_gym_comment_response)
+
+        return verified_gym_comments_list
+
+    async def create_user_gym_registration(self, user_id: int,
+                                           user_gym_registration_schema: CreateUserGymRegistrationSchema):
+        logger.info(f"[...] Creating User Gym Registration For User With User ID  {user_id}")
+
+        gym_exists = await self.user_subservice.user_get_verified_gym_detail(user_gym_registration_schema.gym_id)
+
+        if not gym_exists:
+            logger.info(f"[-] Gym Not Found With Gym Id {user_gym_registration_schema.gym_id}")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                                detail=f"Gym Not Found With Gym Id {user_gym_registration_schema.gym_id}")
+
+        user_gym_registration = await self.user_subservice.get_user_gym_registration_all(user_id)
+
+        if user_gym_registration and user_gym_registration.gym_id:
+            logger.info(f"[-] User Already Registered In Gym With Gym Id {user_gym_registration.gym_id}")
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                                detail="User Already Registered In Gym")
+
+        return await self.user_subservice.create_user_gym_registration(user_id
+                                                                       , user_gym_registration_schema)
+
+    async def get_user_gym_registration_info(self, user_id: int):
+        logger.info(f"[...] Getting User Gym Registration Info With Id ---> {user_id}")
+
+        user_gym_registration_info = await self.user_subservice.get_user_gym_registration_info(user_id)
+
+        if not user_gym_registration_info:
+            logger.info(f"[-] User's Gym Not Found For User{user_id}")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User's Gym Not Found")
+
+        response = UserGetGymRegistrationsSchema(
+            gym_id=user_gym_registration_info.gym_id,
+            gym_name=user_gym_registration_info.gym.name,
+            registered_sessions=user_gym_registration_info.registered_sessions,
+            registered_days=user_gym_registration_info.registered_days,
+            is_vip=user_gym_registration_info.is_vip,
+            remaining_sessions=user_gym_registration_info.remaining_sessions,
+            remaining_days=user_gym_registration_info.remaining_days,
+            is_expired=user_gym_registration_info.is_expired,
+            date=user_gym_registration_info.date,
+        )
+
+        return response
+
+    async def create_user_gym_comment(self, user_id: int,
+                                      user_gym_comment_schema: CreateUserGymCommentSchema):
+        logger.info(f"[...] Creating user gym comment for user with user_id {user_id}")
+
+        gym_exists = await self.user_subservice.user_get_verified_gym_detail(user_gym_comment_schema.gym_id)
+
+        if not gym_exists:
+            logger.info(f"[-] Gym Not Found With Gym Id {user_gym_comment_schema.gym_id}")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                                detail=f"Gym Not Found With Gym Id {user_gym_comment_schema.gym_id}")
+
+        if user_gym_comment_schema.rating not in {0, 1, 2, 3, 4, 5}:
+            logger.info(f"[-] Invalid rating: {user_gym_comment_schema.rating}")
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                                detail="Rating must be an integer between 0 and 5")
+
+        return await self.user_subservice.create_user_gym_comment(user_id, user_gym_comment_schema)
+
+    # ****************************************************************************************
+
+    async def user_get_verified_coach_comments(self, coach_id: int):
+        logger.info(f"[...] Getting All Verified Coach Comments With Coach Id {coach_id} For User")
+
+        verified_coach_comments = await self.user_subservice.user_get_verified_coach_comments(coach_id)
+
+        if not verified_coach_comments:
+            logger.info(f"[-] There is No Verified Coach Comments For That Coach Id {coach_id}")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                                detail="There Is No Verified Coach Comments For That Coach")
+
+        verified_coach_comments_list = []
+
+        for verified_coach_comment in verified_coach_comments:
+            verified_coach_comment_response = UserGetVerifiedCoachCommentsSchema(
+                users_name=verified_coach_comment.user.name,
+                comment=verified_coach_comment.comment,
+                rating=verified_coach_comment.rating,
+                date=verified_coach_comment.date,
+            )
+
+            verified_coach_comments_list.append(verified_coach_comment_response)
+
+        return verified_coach_comments_list
+
+    async def create_user_coach_comment(self, user_id: int,
+                                        user_coach_comment_schema: CreateUserCoachCommentSchema):
+        logger.info(f"[...] Creating user coach comment for user with user_id {user_id}")
+
+        coach_exists = await self.user_subservice.user_get_verified_coach_detail(user_coach_comment_schema.coach_id)
+
+        if not coach_exists:
+            logger.info(f"[-] Coach Not Found With Coach Id {user_coach_comment_schema.coach_id}")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                                detail=f"Coach Not Found With Coach Id {user_coach_comment_schema.coach_id}")
+
+        if user_coach_comment_schema.rating not in {0, 1, 2, 3, 4, 5}:
+            logger.info(f"[-] Invalid rating: {user_coach_comment_schema.rating}")
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                                detail="Rating must be an integer between 0 and 5")
+
+        return await self.user_subservice.create_user_coach_comment(user_id, user_coach_comment_schema)

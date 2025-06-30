@@ -1,5 +1,5 @@
 from sqlalchemy import (Column, Integer, String, Text, TIMESTAMP, func, Sequence, ForeignKey, Numeric, Boolean,
-                        DECIMAL)
+                        DECIMAL, CheckConstraint, PrimaryKeyConstraint)
 from sqlalchemy.orm import relationship
 
 from sqlalchemy.ext.declarative import declarative_base
@@ -29,6 +29,10 @@ class User(Base):
     takes = relationship('Take', back_populates='user')
     user_requests = relationship("UserRequestExercise", back_populates="user")
     user_request_meals = relationship("UserRequestMeal", back_populates="user")
+    gym_comments = relationship("GymComment", back_populates="user", cascade="all, delete-orphan")
+    gym_registrations = relationship("UserGymRegistration", back_populates="user", cascade="all, delete-orphan")
+
+    coach_comments = relationship("CoachComment", back_populates="user", cascade="all, delete-orphan")
 
 
 class UserMetrics(Base):
@@ -62,9 +66,14 @@ class Coach(Base):
     created_at = Column(TIMESTAMP, server_default=func.now())
     updated_at = Column(TIMESTAMP, server_default=func.now())
     is_verified = Column(Boolean, default=False)
+    verification_status = Column(String(50), default="pending")
 
     metrics = relationship("CoachMetrics", back_populates="coach", uselist=False)
     present = relationship('Present', back_populates='coach')
+    gyms = relationship("CoachGym", back_populates="coach")
+
+    comments = relationship("CoachComment", back_populates="coach", cascade="all, delete-orphan")
+    plan_price = relationship("CoachPlanPrice", back_populates="coach", uselist=False)
 
 
 class CoachMetrics(Base):
@@ -76,8 +85,17 @@ class CoachMetrics(Base):
     weight = Column(Numeric(5, 2))
     specialization = Column(String(255))
     biography = Column(Text)
+
+    rating = Column(Integer, default=0)
+    coaching_id = Column(String(100), nullable=False)
+    coaching_card_image = Column(Text)
+
     created_at = Column(TIMESTAMP, default=func.now())
     updated_at = Column(TIMESTAMP, default=func.now(), onupdate=func.now())
+
+    __table_args__ = (
+        CheckConstraint('rating BETWEEN 0 AND 5', name='check_coach_rating_range'),
+    )
 
     # Relationship with Coach
     coach = relationship("Coach", back_populates="metrics")
@@ -302,3 +320,159 @@ class Admin(Base):
     created_at = Column(TIMESTAMP, server_default=func.now())
     updated_at = Column(TIMESTAMP, server_default=func.now())
     is_verified = Column(Boolean, default=False)
+
+
+# ********************************************************************************
+
+class Gym(Base):
+    __tablename__ = "gym"
+
+    id = Column(Integer, primary_key=True, index=True)
+    owner_id = Column(Integer, ForeignKey("coach.id", ondelete="CASCADE"), nullable=False)
+
+    name = Column(String(255), nullable=False)
+    license_number = Column(String(100), nullable=False)
+    license_image = Column(Text, nullable=True)
+    location = Column(Text, nullable=True)
+    image = Column(Text, nullable=True)
+    sport_facilities = Column(Text, nullable=True)
+    welfare_facilities = Column(Text, nullable=True)
+
+    rating = Column(Integer, default=0)
+    verification_status = Column(String(50), default="pending")
+
+    created_at = Column(TIMESTAMP, default=func.now())
+    updated_at = Column(TIMESTAMP, default=func.now(), onupdate=func.now())
+
+    __table_args__ = (
+        CheckConstraint('rating BETWEEN 0 AND 5', name='check_rating_range'),
+    )
+
+    coaches = relationship("CoachGym", back_populates="gym")
+    plan_price = relationship("GymPlanPrice", back_populates="gym")
+    comments = relationship("GymComment", back_populates="gym", cascade="all, delete-orphan")
+    user_registrations = relationship("UserGymRegistration", back_populates="gym", cascade="all, delete-orphan")
+
+
+class CoachGym(Base):
+    __tablename__ = "coach_gym"
+
+    coach_id = Column(Integer, ForeignKey("coach.id", ondelete="CASCADE"), nullable=False)
+    gym_id = Column(Integer, ForeignKey("gym.id", ondelete="CASCADE"), nullable=False)
+
+    __table_args__ = (
+        PrimaryKeyConstraint('coach_id', 'gym_id'),
+    )
+
+    coach = relationship("Coach", back_populates="gyms")
+    gym = relationship("Gym", back_populates="coaches")
+
+
+class GymPlanPrice(Base):
+    __tablename__ = "gym_plan_price"
+
+    id = Column(Integer, primary_key=True, index=True)
+    gym_id = Column(Integer, ForeignKey("gym.id", ondelete="CASCADE"), nullable=False)
+
+    session_counts = Column(Integer, nullable=False)
+    duration_days = Column(Integer, nullable=False)
+    is_vip = Column(Boolean, default=False)
+    price = Column(Integer, nullable=False)
+
+    created_at = Column(TIMESTAMP, server_default=func.now())
+    updated_at = Column(TIMESTAMP, server_default=func.now(), onupdate=func.now())
+
+    gym = relationship("Gym", back_populates="plan_price", uselist=False)
+
+    __table_args__ = (
+        CheckConstraint('session_counts >= 0', name='check_session_counts_positive'),
+        CheckConstraint('duration_days >= 0', name='check_duration_days_positive'),
+        CheckConstraint('price >= 0', name='check_price_positive'),
+    )
+
+
+class GymComment(Base):
+    __tablename__ = "gym_comment"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    gym_id = Column(Integer, ForeignKey("gym.id", ondelete="CASCADE"), nullable=False)
+
+    comment = Column(Text, nullable=True)
+    rating = Column(Integer, default=0)
+    date = Column(String(100), nullable=True)
+
+    created_at = Column(TIMESTAMP, server_default=func.now())
+    updated_at = Column(TIMESTAMP, server_default=func.now(), onupdate=func.now())
+
+    user = relationship("User", back_populates="gym_comments")
+    gym = relationship("Gym", back_populates="comments")
+
+    __table_args__ = (
+        CheckConstraint('rating BETWEEN 0 AND 5', name='check_gym_comment_rating_range'),
+    )
+
+
+class UserGymRegistration(Base):
+    __tablename__ = "user_gym_registration"
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    gym_id = Column(Integer, ForeignKey("gym.id", ondelete="CASCADE"), nullable=False)
+
+    registered_sessions = Column(Integer, default=0)
+    registered_days = Column(Integer, default=0)
+    is_vip = Column(Boolean, default=False)
+    remaining_sessions = Column(Integer, default=0)
+    remaining_days = Column(Integer, default=0)
+    is_expired = Column(Boolean, default=False)
+    date = Column(String(100), nullable=True)
+    created_at = Column(TIMESTAMP, server_default=func.now())
+    updated_at = Column(TIMESTAMP, server_default=func.now(), onupdate=func.now())
+
+    user = relationship("User", back_populates="gym_registrations")
+    gym = relationship("Gym", back_populates="user_registrations")
+
+
+class CoachComment(Base):
+    __tablename__ = "coach_comment"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    coach_id = Column(Integer, ForeignKey("coach.id", ondelete="CASCADE"), nullable=False)
+
+    comment = Column(Text, nullable=True)
+    rating = Column(Integer, default=0)
+    date = Column(String(100), nullable=True)
+
+    created_at = Column(TIMESTAMP, server_default=func.now())
+    updated_at = Column(TIMESTAMP, server_default=func.now(), onupdate=func.now())
+
+    user = relationship("User", back_populates="coach_comments")
+    coach = relationship("Coach", back_populates="comments")
+
+    __table_args__ = (
+        CheckConstraint('rating BETWEEN 0 AND 5', name='check_gym_comment_rating_range'),
+    )
+
+
+class CoachPlanPrice(Base):
+    __tablename__ = "coach_plan_price"
+
+    id = Column(Integer, primary_key=True, index=True)
+    coach_id = Column(Integer, ForeignKey("coach.id", ondelete="CASCADE"), nullable=False, unique=True)
+
+    exercise_price = Column(Integer, nullable=False)
+    meal_price = Column(Integer, nullable=False)
+
+    created_at = Column(TIMESTAMP, server_default=func.now())
+    updated_at = Column(TIMESTAMP, server_default=func.now(), onupdate=func.now())
+
+    coach = relationship("Coach", back_populates="plan_price", uselist=False)
+
+    __table_args__ = (
+        CheckConstraint('exercise_price >= 0', name='check_exercise_price_positive'),
+        CheckConstraint('meal_price >= 0', name='check_meal_price_positive'),
+    )
