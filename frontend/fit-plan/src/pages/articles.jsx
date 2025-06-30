@@ -13,7 +13,7 @@ export default function Articles() {
 
     return (
         <>
-            <Testing_header />
+            <Testing_heder />
             <div className="z-20 pt-[200px] bg-mintCream w-full h-full">
                 <div className="w-[80%] flex justify-start mx-auto">
                 <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">

@@ -61,6 +61,7 @@ export default function Landing(){
                         <img src={fit_logo} alt="Logo" className="h-[70px]" />
                         <div className="flex justify-center gap-[26px] items-center h-[50px] pt-[15px] text-[20px] font-medium text-center">
                             <a href="./about_us" className="hover:text-superRed transition-all duration-300">فیت‌پلن</a>
+                            <a href="./gyms" className="hover:text-superRed transition-all duration-300">باشگاه‌ها</a>
                             <a href="./coaches" className="hover:text-superRed transition-all duration-300">مربی‌ها</a>
                             <a href="./podcasts" className="hover:text-superRed transition-all duration-300">پادکست</a>
                             <a href="./articles" className="hover:text-superRed transition-all duration-300">مقالات</a>
@@ -78,6 +79,7 @@ export default function Landing(){
                     <div
                       className="cursor-pointer text-2xl"
                       onClick={() => setIsOpen(!isOpen)}
+                      id="menu_button"
                     >
                         {isOpen ? "✖" : "☰"}
                     </div>
@@ -110,6 +112,11 @@ export default function Landing(){
                         </a>
                       </li>
                       <li className="my-5">
+                        <a href="./gyms" className="hover:text-superRed">
+                          باشگاه‌ها
+                        </a>
+                      </li>
+                      <li className="my-5">
                         <a href="./coaches" className="hover:text-superRed">
                           مربی‌ها
                         </a>
@@ -125,7 +132,7 @@ export default function Landing(){
                         </a>
                       </li>
                       <li className="my-5">
-                        <a href="./user_login" className="hover:text-superRed">
+                        <a href="./user_login" id="login" className="hover:text-superRed">
                           ورود
                         </a>
                       </li>
