@@ -1,8 +1,9 @@
-from fastapi import Depends, status, APIRouter
+from fastapi import Depends, status, APIRouter, BackgroundTasks
 from fastapi.security import OAuth2PasswordRequestForm
 from typing import Annotated
 from loguru import logger
 
+from app.api.background_tasks.send_id_to_chatservice import SendIdToChat
 from app.domain.schemas.admin_schema import (
     AdminRegisterSchema,
     AdminRegisterResponseSchema,
@@ -42,10 +43,14 @@ async def signup(admin: AdminRegisterSchema,
 
 @admin_router.post("/verifyOTP", response_model=VerifyOTPResponseSchema, status_code=status.HTTP_200_OK)
 async def verify_otp(verify_admin_schema: VerifyOTPSchema,
-                     register_service: Annotated[AdminRegisterMainService, Depends()]) -> VerifyOTPResponseSchema:
+                     register_service: Annotated[AdminRegisterMainService, Depends()],
+                     backgroundtasks: BackgroundTasks,
+                     send_id_task: Annotated[SendIdToChat, Depends()]) -> VerifyOTPResponseSchema:
     logger.info(f"[...] Start Verifying OTP For Admin With Email ---> {verify_admin_schema.email}")
-    return await register_service.verify_admin(verify_admin_schema)
-
+    response = await register_service.verify_admin(verify_admin_schema)
+    if response.verified:
+        backgroundtasks.add_task(send_id_task.send_admin_id, verify_admin_schema.email)
+    return response
 
 @admin_router.post("/resendOTP", response_model=ResendOTPResponseSchema, status_code=status.HTTP_200_OK)
 async def resend_otp(
