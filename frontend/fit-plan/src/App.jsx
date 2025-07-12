@@ -14,6 +14,7 @@ import Coaches from "./pages/coaches";
 import Podcasts from "./pages/podcasts";
 import User_info_edit from "./pages/user_info_edit";
 import User_coach from "./pages/user_coach";
+import User_coach_chat from "./pages/user_coach_chat";
 import User_tutorial from "./pages/user_tutorial";
 import User_mealPlan from "./pages/user_mealPlan";
 import User_transactions from "./pages/user_transactions";
@@ -29,6 +30,8 @@ import Admin_info_edit from "./pages/Admin/admin_info_edit";
 import Admin_trainees from "./pages/Admin/admin_trainees";
 import Admin_coaches from "./pages/Admin/admin_coaches";
 import Admin_transactions from "./pages/Admin/admin_transactions";
+import Gyms from "./pages/gyms";
+import GymDetails from "./pages/gym_details";
 
 function App() {
   // const [count, setCount] = useState(0);
@@ -48,6 +51,7 @@ function App() {
           <Route path="/user_panel" element={<User_panel />} />
           <Route path="/user_panel/info_edit" element={<User_info_edit />} />
           <Route path="/user_panel/user_coach" element={<User_coach />} />
+          <Route path="/user_panel/user_coach/chat" element={<User_coach_chat />} />
           <Route path="/user_panel/user_tutorial" element={<User_tutorial />} />
           <Route path="/user_panel/user_mealPlan" element={<User_mealPlan />} />
           <Route path="/user_panel/mealplan_request" element={<Mealplan_req />} />
@@ -71,6 +75,9 @@ function App() {
           <Route path="/about_us" element={<About_us />} />
           <Route path="/coaches" element={<Coaches />} />
           <Route path="/podcasts" element={<Podcasts />} />
+          <Route path="/gyms" element={<Gyms />} />
+          <Route path="/gym_details" element={<GymDetails />} />
+
         </Routes>
       </BrowserRouter>
     </>

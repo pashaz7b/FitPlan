@@ -3,7 +3,7 @@ import fit_logo from "/Images/Fit-Logo-Resized.png";
 export default function Footer_comp() {
     return(
         <>
-            <div className="bg-black text-mintCream flex gap-[12%] justify-start px-[200px] py-[50px] max-md:flex-col max-md:px-[50px] max-md:gap-[80px] max-md:max-h-full max-md:justify-center max-md:text-center max-lg:px-[50px]">
+            <div className="bg-black text-mintCream flex gap-[12%] justify-start px-[200px] py-[50px] max-md:flex-col max-md:px-[50px] max-md:gap-[80px] max-md:max-h-full max-md:justify-center max-md:text-center max-lg:px-[50px] font-iranyekan">
                 {/* logo and contact info */}
                 <div className="flex flex-col gap-4 text-right max-md:text-center max-md:justify-center max-md:mx-auto">
                     <div className="h-[70px]">

@@ -121,7 +121,7 @@ export default function Login_component({ role }) {
         لطفا فیلدهای الزامی را پر کنید
       </p>
       <div className="my-3 w-[90%] mx-auto flex flex-col justify-start text-right">
-        <label className="text-[15px] mb-2" htmlFor="phoneOrMail">
+        <label className="text-[15px] mb-2" htmlFor="email_input_box">
           شماره تماس یا آدرس ایمیل
         </label>
         <p
@@ -134,8 +134,10 @@ export default function Login_component({ role }) {
         <input
           type="text"
           value={phoneOrMail}
+          name="email"
+          id={`${role == "user"? "email_input_box" : "coach_email_input_box"}`}
           onChange={(e) => setPhoneOrMail(e.target.value)}
-          className={`text-center text-[15px] py-2 bg-coal border rounded-[10px] ${
+          className={`email text-center text-[15px] py-2 bg-coal border rounded-[10px] ${
             showError && !phoneOrMail ? "border-superRed" : "border-white"
           }`}
           // pattern="([a-z0-9._%+-]+@(gmail\.com|yahoo\.com))"
@@ -150,6 +152,7 @@ export default function Login_component({ role }) {
         <input
           type="text"
           value={password}
+          id={`${role == "user" ? "password_input_box" : "coach_password_input_box"}`}
           onChange={(e) => setPassword(e.target.value)}
           className={`text-center text-[15px] py-2 bg-coal border rounded-[10px] ${
             showError && !password ? "border-superRed" : "border-white"
@@ -174,6 +177,7 @@ export default function Login_component({ role }) {
 
       <button
         type="submit"
+        id="submit_button"
         className="text-mintCream bg-superRed hover:bg-crimsonRed h-[40px] text-[20px] font-medium max-sm:w-[80%] w-[50%] rounded-[10px] mx-auto transition-all duration-300"
       >
         {/* <a href={`/otp_page/${role}`}>ورود</a> */}

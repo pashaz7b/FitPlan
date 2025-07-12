@@ -17,12 +17,13 @@ const Testing_header = () => {
       {/* Top Navbar */}
       <div className="flex items-center justify-between px-4 py-3 bg-black text-white md:hidden">
         <a href="/" className="h-[30px]">
-            <img src={fit_logo} alt="fit_logo" className="h-full object-contain"/>
-        </a >
-        <button
-          onClick={toggleMenu}
-          className="focus:outline-none text-white"
-        >
+          <img
+            src={fit_logo}
+            alt="fit_logo"
+            className="h-full object-contain"
+          />
+        </a>
+        <button onClick={toggleMenu} className="focus:outline-none text-white">
           <svg
             className="w-6 h-6"
             fill="none"
@@ -49,9 +50,16 @@ const Testing_header = () => {
         <div className="flex flex-col h-full">
           <div className="flex items-center justify-between px-4 py-3 h-[60px] border-b border-superRed">
             <a href="/" className="h-[50px]">
-                <img src={fit_logo} alt="fot_logo" className="object-contain object-center h-full"/>
+              <img
+                src={fit_logo}
+                alt="fot_logo"
+                className="object-contain object-center h-full"
+              />
             </a>
-            <button onClick={toggleMenu} className="focus:outline-none text-white">
+            <button
+              onClick={toggleMenu}
+              className="focus:outline-none text-white"
+            >
               <svg
                 className="w-6 h-6"
                 fill="none"
@@ -75,6 +83,13 @@ const Testing_header = () => {
               onClick={closeMenu}
             >
               فیت‌پلن
+            </a>
+            <a
+              href="./about_us"
+              className="block py-2 px-3 rounded hover:bg-superRed transition-all duration-300"
+              onClick={closeMenu}
+            >
+              باشگاه‌ها
             </a>
             <a
               href="./coaches"
@@ -117,27 +132,54 @@ const Testing_header = () => {
       )}
 
       {/* Desktop Navbar */}
-      <div className="absolute right-[200px] hidden md:flex items-center w-[75%] h-[80px] rounded-b-[30px] mx-auto justify-between px-8 py-3 bg-black text-white">
-        <a href="/" className="h-[60px]">
-            <img src={fit_logo} alt="fit_logo" className="h-full object-contain"/>
-        </a>
-        <nav className="flex justify-center gap-10 font-medium">
-          <a href="./about_us" className="hover:text-superRed transition-all duration-300">
-            فیت‌پلن
+      <div className="bg-mintCream">
+        <div className="hidden md:flex items-center w-[80%] h-[80px] rounded-b-[30px] mx-auto justify-between px-8 py-3 bg-black text-white">
+          <a href="/" className="h-[60px]">
+            <img
+              src={fit_logo}
+              alt="fit_logo"
+              className="h-full object-contain"
+            />
           </a>
-          <a href="./coaches" className="hover:text-superRed transition-all duration-300">
-            مربی‌ها
-          </a>
-          <a href="./podcasts" className="hover:text-superRed transition-all duration-300">
-            پادکست
-          </a>
-          <a href="./articles" className="hover:text-superRed transition-all duration-300">
-            مقالات
-          </a>
-          <a href="./user_login" className="bg-superRed px-4 py-1 rounded-[10px] hover:bg-crimsonRed transition-all duration-300">
-            ورود
-          </a>
-        </nav>
+          <nav className="flex justify-start max-lg:gap-5 gap-10 font-medium">
+            <a
+              href="./about_us"
+              className="hover:text-superRed transition-all duration-300"
+            >
+              فیت‌پلن
+            </a>
+            <a
+              href="./gyms"
+              className="hover:text-superRed transition-all duration-300"
+            >
+              باشگاه‌ها
+            </a>
+            <a
+              href="./coaches"
+              className="hover:text-superRed transition-all duration-300"
+            >
+              مربی‌ها
+            </a>
+            <a
+              href="./podcasts"
+              className="hover:text-superRed transition-all duration-300"
+            >
+              پادکست
+            </a>
+            <a
+              href="./articles"
+              className="hover:text-superRed transition-all duration-300"
+            >
+              مقالات
+            </a>
+            <a
+              href="./user_login"
+              className="bg-superRed px-4 py-1 rounded-[10px] hover:bg-crimsonRed transition-all duration-300"
+            >
+              ورود
+            </a>
+          </nav>
+        </div>
       </div>
     </div>
   );

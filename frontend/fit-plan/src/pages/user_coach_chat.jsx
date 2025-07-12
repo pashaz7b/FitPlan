@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import fit_logo from "/Images/Fit-Logo-Resized.png";
 import axios from "axios";
 
-export default function User_coach() {
+export default function User_coach_chat() {
   const [userInfo, setUserInfo] = useState({
     nameSurname: "آونگ روزبه",
     username: "AAAvng",
@@ -34,10 +34,10 @@ export default function User_coach() {
   });
 
   useEffect(() => {
-      userSet();
-      coachSet();
-      console.log("sss");
-    }, []);
+    userSet();
+    coachSet();
+    console.log("sss");
+  }, []);
 
   const value = localStorage.getItem("token").toString();
 
@@ -89,13 +89,50 @@ export default function User_coach() {
       height: data.height,
       weight: data.weight,
       about: data.biography,
-      speciality: data.specialization
+      speciality: data.specialization,
     }));
   }
 
   const [tempInfo, setTempInfo] = useState(userInfo);
   const [profilePhoto, setProfilePhoto] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
+
+  const [number, setNum] = useState(0);
+  const [messages, setMessages] = useState([]);
+  const [message, setMessage] = useState("");
+  const [isSender, setIsSender] = useState(true);
+
+  // loading previuos messages
+  useEffect(() => {
+    const stringifiedMessages = localStorage.getItem("chatMessages");
+    const storedMessages = JSON.parse(stringifiedMessages) || [];
+    console.log(storedMessages);
+
+    if (storedMessages) {
+      setMessages(storedMessages);
+    }
+  }, []);
+
+  new WebSocket().onmessage()
+  
+
+  // Saving new messages to LocalStorage when they are changed
+  useEffect(() => {
+    if (messages.length > 0)
+      localStorage.setItem("chatMessages", JSON.stringify(messages));
+  }, [messages]);
+
+  const sendMessage = () => {
+    if (message.trim() === "") return;
+
+    const newMessage = {
+      text: message,
+      sender: isSender ? "me" : "them",
+    };
+
+    setMessages((pervMessages) => [...pervMessages, newMessage]);
+    setMessage("");
+  };
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -110,9 +147,7 @@ export default function User_coach() {
     navigate("./user_login");
   };
 
-  const navToChat = () => {
-    navigate("./chat");
-  };
+  const randomMessage = () => {};
 
   return (
     <div className="max-lg:pr-0 max-lg:justify-center max-lg:text-center max-lg:mx-auto bg-black w-full h-full flex justify-start pr-[400px] gap-[35px] mx-auto font-iranyekan">
@@ -273,7 +308,9 @@ export default function User_coach() {
       </div>
       <div className="flex flex-col gap-5 justify-start w-[95%] py-[40px]">
         <div className="flex justify-between">
-          <h1 className="text-[45px] font-bold text-mintCream">اطلاعات مربی</h1>
+          <h1 className="text-[45px] font-bold text-mintCream">
+            گفتگو با مربی
+          </h1>
           <div className=" text-white font-iranyekan">
             {/* Navbar */}
             <nav className="flex lg:hidden items-center justify-between p-4 bg-black">
@@ -430,23 +467,23 @@ export default function User_coach() {
                     </svg>
                   </a>
                   <a
-              href="/"
-              className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
-            >
-              <p>خانه</p>
-              <svg
-                width="25"
-                height="24"
-                viewBox="0 0 25 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M4.1 21.9017H8.78475V14.8537C8.78475 14.4956 8.90597 14.1953 9.1484 13.9529C9.39107 13.7106 9.6916 13.5895 10.05 13.5895H14.95C15.3084 13.5895 15.6089 13.7106 15.8516 13.9529C16.094 14.1953 16.2153 14.4956 16.2153 14.8537V21.9017H20.9V9.5273C20.9 9.45573 20.8843 9.3908 20.8528 9.33251C20.8215 9.27423 20.7789 9.22259 20.725 9.17759L12.7558 3.19232C12.684 3.12961 12.5987 3.09825 12.5 3.09825C12.4013 3.09825 12.316 3.12961 12.2442 3.19232L4.275 9.17759C4.2211 9.22259 4.17852 9.27423 4.14725 9.33251C4.11575 9.3908 4.1 9.45573 4.1 9.5273V21.9017ZM2 21.9017V9.5273C2 9.127 2.0896 8.7478 2.2688 8.3897C2.44823 8.03136 2.69603 7.73632 3.0122 7.50458L10.9817 1.50568C11.4239 1.16856 11.9293 1 12.4979 1C13.0665 1 13.5733 1.16856 14.0183 1.50568L21.9878 7.50458C22.304 7.73632 22.5518 8.03136 22.7312 8.3897C22.9104 8.7478 23 9.127 23 9.5273V21.9017C23 22.4739 22.7931 22.9666 22.3794 23.38C21.9658 23.7933 21.4726 24 20.9 24H15.3808C15.0222 24 14.7217 23.8788 14.4792 23.6363C14.2366 23.3941 14.1153 23.0938 14.1153 22.7355V15.6878H10.8848V22.7355C10.8848 23.0938 10.7634 23.3941 10.5208 23.6363C10.2783 23.8788 9.97778 24 9.61915 24H4.1C3.5274 24 3.03425 23.7933 2.62055 23.38C2.20685 22.9666 2 22.4739 2 21.9017Z"
-                  fill="#E8EAED"
-                />
-              </svg>
-            </a>
+                    href="/"
+                    className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
+                  >
+                    <p>خانه</p>
+                    <svg
+                      width="25"
+                      height="24"
+                      viewBox="0 0 25 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M4.1 21.9017H8.78475V14.8537C8.78475 14.4956 8.90597 14.1953 9.1484 13.9529C9.39107 13.7106 9.6916 13.5895 10.05 13.5895H14.95C15.3084 13.5895 15.6089 13.7106 15.8516 13.9529C16.094 14.1953 16.2153 14.4956 16.2153 14.8537V21.9017H20.9V9.5273C20.9 9.45573 20.8843 9.3908 20.8528 9.33251C20.8215 9.27423 20.7789 9.22259 20.725 9.17759L12.7558 3.19232C12.684 3.12961 12.5987 3.09825 12.5 3.09825C12.4013 3.09825 12.316 3.12961 12.2442 3.19232L4.275 9.17759C4.2211 9.22259 4.17852 9.27423 4.14725 9.33251C4.11575 9.3908 4.1 9.45573 4.1 9.5273V21.9017ZM2 21.9017V9.5273C2 9.127 2.0896 8.7478 2.2688 8.3897C2.44823 8.03136 2.69603 7.73632 3.0122 7.50458L10.9817 1.50568C11.4239 1.16856 11.9293 1 12.4979 1C13.0665 1 13.5733 1.16856 14.0183 1.50568L21.9878 7.50458C22.304 7.73632 22.5518 8.03136 22.7312 8.3897C22.9104 8.7478 23 9.127 23 9.5273V21.9017C23 22.4739 22.7931 22.9666 22.3794 23.38C21.9658 23.7933 21.4726 24 20.9 24H15.3808C15.0222 24 14.7217 23.8788 14.4792 23.6363C14.2366 23.3941 14.1153 23.0938 14.1153 22.7355V15.6878H10.8848V22.7355C10.8848 23.0938 10.7634 23.3941 10.5208 23.6363C10.2783 23.8788 9.97778 24 9.61915 24H4.1C3.5274 24 3.03425 23.7933 2.62055 23.38C2.20685 22.9666 2 22.4739 2 21.9017Z"
+                        fill="#E8EAED"
+                      />
+                    </svg>
+                  </a>
                 </div>
               </div>
               <a
@@ -458,65 +495,58 @@ export default function User_coach() {
             </div>
           </div>
         </div>
-        <div className="max-md:flex-col max-md:justify-start max-md:gap-3 max-md:text-center max-md:overflow-y-auto border mb-[22px] rounded-[10px] h-[618px] overflow-hidden flex justify-start gap-5 text-mintCream">
-          <div className="max-md:text-center max-md:justify-center max-md:h-[25%] max-md:w-full max-md:mx-auto relative h-full w-[25%] overflow-hidden">
-            <img
-              src={coachInfo.image}
-              alt="user_image"
-              className="max-md:text-center max-md:justify-center max-md:w-full max-md:object-cover object-cover h-full scale-[100%]"
-            />
+        <div className="max-md:flex-col max-md:justify-start max-md:gap-3 max-md:text-center max-md:overflow-y-auto border mb-[22px] rounded-[10px] h-[618px] overflow-hidden flex-col text-mintCream relative">
+          <div dir="ltr" className="w-full h-full pt-4 px-3">
+            <div className="flex-1 overflow-y-auto mb-4 space-y-3 px-3 pt-4">
+              {messages.map((msg) => (
+                <div
+                  key={msg.id}
+                  className={`chat ${
+                    msg.sender === "me" ? "chat-end" : "chat-start"
+                  }`}
+                >
+                  <div className="chat-header">
+                    {msg.sender === "me" ? "You" : "Obi-Wan Kenobi"}
+                    <time className="text-xs opacity-50 ml-2">
+                      {msg.timestamp}
+                    </time>
+                  </div>
+                  <div
+                    className={`chat-bubble ${
+                      msg.sender === "me"
+                        ? "chat-bubble-primary"
+                        : "chat-bubble-secondary"
+                    }`}
+                  >
+                    {msg.text}
+                  </div>
+                  <div className="chat-footer opacity-50">
+                    {msg.sender === "me" ? "Seen" : "Delivered"}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="max-md:w-[95%] max-md:gap-4 max-md:overflow-y-auto max-md:scrollbar-thin max-md:scrollbar-thumb-superRed max-md:scrollbar-track-coal max-md:mx-auto w-[70%] py-5 px-2 flex flex-col gap-8">
-            <div className="max-md:flex-col flex justify-between">
-              <h1 className="text-[45px] font-medium">{coachInfo.nameSurname}</h1>
-              <button onClick={() => navToChat()} className="max-md:py-3 max-md:my-3 text-superRed border border-superRed rounded-[15px] px-5 py-0 font-medium text-[20px] hover:bg-superRed hover:text-black translate-all duration-300">شروع گفتگو</button>
-            </div>
-            <div className="max-md:flex-col max-md:gap-4 w-full flex justify-between gap-11">
-              <div className="w-full flex justify-between">
-                <p className="font-medium text-[20px]">نام کاربری:</p>
-                <p className="text-[20px] font-light">{coachInfo.username}</p>
-              </div>
-              <div className="w-full flex justify-between">
-                <p className="font-medium text-[20px]">تاریخ تولد:</p>
-                <p className="text-[20px] font-light">{coachInfo.birthDate}</p>
-              </div>
-            </div>
-            <div className="max-md:flex-col max-md:gap-4 w-full flex justify-between gap-11">
-              <div className="w-full flex justify-between">
-                <p className="font-medium text-[20px]">شماره تماس:</p>
-                <p className="text-[20px] font-light">
-                  {coachInfo.phoneNumber}
-                </p>
-              </div>
-              <div className="w-full flex justify-between">
-                <p className="font-medium text-[20px]">آدرس ایمیل:</p>
-                <p className="text-[15px] font-light">{coachInfo.email}</p>
-              </div>
-            </div>
-            <div className="max-md:flex-col max-md:gap-4 w-full flex justify-between gap-11">
-              <div className="w-full flex justify-between">
-                <p className="font-medium text-[20px]">جنسیت:</p>
-                <p className="text-[20px] font-light">{coachInfo.gender}</p>
-              </div>
-              <div className="w-full flex justify-between">
-                <p className="font-medium text-[20px]">وضعیت:</p>
-                <p className="text-[20px] font-light">{coachInfo.status}</p>
-              </div>
-            </div>
-            <div className="max-md:flex-col max-md:gap-4 w-full flex justify-between gap-11">
-              <div className="w-full flex justify-between">
-                <p className="font-medium text-[20px]">قد(سانتی متر):</p>
-                <p className="text-[20px] font-light">{coachInfo.height}</p>
-              </div>
-              <div className="w-full flex justify-between">
-                <p className="font-medium text-[20px]">وزن(کیلوگرم):</p>
-                <p className="text-[20px] font-light">{coachInfo.weight}</p>
-              </div>
-            </div>
-            <div className="w-full flex justify-between gap-5">
-              <p className="font-medium text-[20px] w-[50%]">درباره مربی:</p>
-              <p className="text-[20px] font-light">{coachInfo.about}</p>
-            </div>
+          <div className="absolute bottom-8 z-10 flex justify-normal gap-3 px-3 w-full">
+            <button
+              onClick={sendMessage}
+              className="bg-irishGreen hover:bg-[#01651b] text-white rounded-[15px] px-4 py-2 transition-all duration-300"
+            >
+              ارسال
+            </button>
+            <textarea
+              id="message"
+              cols="30"
+              rows="1"
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              onInput={(e) => {
+                e.target.style.height = "auto";
+                e.target.style.height = `${e.target.scrollHeight}px`;
+              }}
+              className="border rounded-[15px] bg-coal p-3 w-full resize-none"
+              placeholder="پیام خود را اینجا بنویسید..."
+            ></textarea>
           </div>
         </div>
       </div>

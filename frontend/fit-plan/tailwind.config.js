@@ -15,6 +15,7 @@ export default {
         irishGreen: '#018625',
         midtoneGray: '#7F7F7F',
         tableBrightGray: '#414141',
+        cardOrnge: '#FFA83F'
       },
       fontFamily: {
         iranyekan: ['IranYekan', 'sans-serif'],
@@ -26,6 +27,6 @@ export default {
     require('daisyui'),
   ],
   daisyui: {
-    themes: false, // Disable DaisyUI's themes
+    themes: true, // Disable DaisyUI's themes
   },
 };
