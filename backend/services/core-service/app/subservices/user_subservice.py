@@ -343,3 +343,7 @@ class UserSubService(BaseService):
     async def user_get_verified_coach_detail(self, coach_id: int):
         logger.info(f"[...] Getting verified coach detail with coach_id {coach_id}")
         return self.user_repo.user_get_verified_coach_detail(coach_id)
+
+    async def user_get_coach_plan_price(self, coach_id: int):
+        logger.info(f"[...] Getting Coach Plan Price Association With Coach --> {coach_id}")
+        return self.user_repo.user_get_coach_plan_price(coach_id)
