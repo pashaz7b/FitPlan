@@ -2,9 +2,11 @@ from aio_pika import ExchangeType, DeliveryMode, connect_robust, Message
 from loguru import logger
 import json
 
+from app.core.configs.config import get_settings
+
 class RabbitmqProducer:
     def __init__(self,):
-        self.rabbitmq_url = "amqp://guest:guest@localhost/"
+        self.rabbitmq_url = get_settings().RABBITMQ_URL
         self.exchange_name = "iam_chat_comm"
         self.queue_name = "id_queue"
 
@@ -24,5 +26,5 @@ class RabbitmqProducer:
                 Message(body=message.encode(), delivery_mode=DeliveryMode.PERSISTENT), 
                 routing_key=self.queue_name,
             )
-            logger.info(f"[.] {role}_id: {id} sent to chat service")
+            logger.info(f"[.] {role}_id: {id} sent to chat-service")
         return     

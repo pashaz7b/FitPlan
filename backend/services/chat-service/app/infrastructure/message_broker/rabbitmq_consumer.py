@@ -3,13 +3,15 @@ import json
 from aio_pika import connect_robust, IncomingMessage, ExchangeType
 from loguru import logger
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from app.core.postgres_db.postgres_database import get_db
 from app.domain.models.fitplan_chat_model import Admin, User, Coach
 from app.infrastructure.repositories.rabbitmq import rabbitmq_repo
+from app.core.config.config import get_settings
 
 class RabbitmqConsumer:
     def __init__(self,):
-        self.rabbitmq_url = "amqp://guest:guest@localhost/"
+        self.rabbitmq_url = get_settings().RABBITMQ_URL
         self.exchange_name = "iam_chat_comm"
         self.queue_name = "id_queue"
         self.connection = None
@@ -29,7 +31,7 @@ class RabbitmqConsumer:
                 msg_data = json.loads(message.body)
                 id = msg_data["id"]
                 role = msg_data["role"]
-                logger.info(f"[x] Received {role}_id: {id}")
+                logger.info(f"[x] Received {role}_id: {id} from iam-service")
                 db_generator = get_db()
                 session: AsyncSession = await anext(db_generator)
                 try:

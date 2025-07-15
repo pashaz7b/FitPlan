@@ -3,7 +3,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from typing import Annotated
 from loguru import logger
 
-from app.api.background_tasks.send_id_to_chatservice import SendIdToChat
+from app.tasks.send_id_to_chatservice import SendIdToChat
 from app.domain.schemas.admin_schema import (
     AdminRegisterSchema,
     AdminRegisterResponseSchema,

@@ -1,9 +1,10 @@
 from typing import Annotated
 from fastapi import Depends
+
 from app.subservices.user_subservice import UserSubService
 from app.subservices.coach_subservice import CoachSubService
 from app.subservices.admin_subservice import AdminSubService
-from app.infrastructure.clients.rabbitmq_producer import RabbitmqProducer
+from app.infrastructure.message_broker.rabbitmq_producer import RabbitmqProducer
 
 
 class SendIdToChat:

@@ -7,7 +7,7 @@ from loguru import logger
 from app.api.v1.endpoints.coach_api import coach_chat_router
 from app.api.v1.endpoints.user_api import user_chat_router
 from app.logging_service.logging_config import configure_logger
-from app.infrastructure.clients.rabbitmq_consumer import RabbitmqConsumer
+from app.infrastructure.message_broker.rabbitmq_consumer import RabbitmqConsumer
 
 configure_logger()
 rabbitmq_consumer = RabbitmqConsumer()
