@@ -33,6 +33,7 @@ import Admin_transactions from "./pages/Admin/admin_transactions";
 import Gyms from "./pages/gyms";
 import GymDetails from "./pages/gym_details";
 import Coach_signup from "./pages/coach_signup";
+import New_gym_init from "./pages/new_gym_init";
 
 function App() {
   // const [count, setCount] = useState(0);
@@ -79,6 +80,7 @@ function App() {
           <Route path="/podcasts" element={<Podcasts />} />
           <Route path="/gyms" element={<Gyms />} />
           <Route path="/gym_details" element={<GymDetails />} />
+          <Route path="/new_gym" element={<New_gym_init />} />
 
         </Routes>
       </BrowserRouter>

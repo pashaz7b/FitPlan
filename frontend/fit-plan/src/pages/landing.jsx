@@ -355,7 +355,7 @@ export default function Landing() {
             </div>
             <div className="text-left">
               <a
-                href=""
+                href="/new_gym"
                 className="text-mintCream bg-superRed text-center py-3 px-5 w-1/3 text-[18px] max-md:text-center rounded-[10px] hover:bg-crimsonRed transition-all duration-300"
               >
               شروع همکاری با فیت‌پلن
