@@ -9,12 +9,37 @@ export default function GymDetails() {
   //   const [gymDetails, setGymDetails] = useState(null);
   const [loading, setLoading] = useState(null);
   const [error, setError] = useState(null);
-  const [isCommentOpen, setIsMenuOpen] = useState(false);
+  const [isFormVisible, setIsFormVisible] = useState(false);
+  const [rating, setRating] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
+  const [comment, setComment] = useState("");
+  const [comments, setComments] = useState([]);
 
   const toggleComment = () => {
-    setIsMenuOpen(!isCommentOpen);
-    console.log(isCommentOpen);
-    
+    setIsFormVisible(!isFormVisible);
+  };
+
+  const handleRating = (newRating) => {
+    setRating(newRating);
+  };
+
+  const handleSubmit = () => {
+    if (comment.trim() === "" || rating === 0) {
+      alert("لطفا نظر و امتیاز خود را وارد کنید!");
+      return;
+    }
+
+    const newComment = {
+      writer: "کاربر ناشناس",
+      commentDate: new Date().toLocaleDateString("fa-IR"),
+      rate: rating,
+      commentText: comment,
+    };
+
+    setComments([newComment, ...comments]);
+    setComment("");
+    setRating(0);
+    setIsFormVisible(false);
   };
 
   //   useEffect(() => {
@@ -120,7 +145,8 @@ export default function GymDetails() {
           writer: "عباس بوعذار",
           commentDate: "3 خرداد 1403",
           rate: 4.5,
-          commentText: "من با استاد آرش یک ساله کار میکنم و واقعا راضی‌ام. حتما کار کردن باهاشون رو پیشنهاد میکنم.",
+          commentText:
+            "من با استاد آرش یک ساله کار میکنم و واقعا راضی‌ام. حتما کار کردن باهاشون رو پیشنهاد میکنم.",
         },
         {
           writer: "جاسم‌ابن‌عقیل",
@@ -139,7 +165,8 @@ export default function GymDetails() {
           writer: "عباس بوعذار",
           commentDate: "3 خرداد 1403",
           rate: 4.5,
-          commentText: "من با استاد آرش یک ساله کار میکنم و واقعا راضی‌ام. حتما کار کردن باهاشون رو پیشنهاد میکنم.",
+          commentText:
+            "من با استاد آرش یک ساله کار میکنم و واقعا راضی‌ام. حتما کار کردن باهاشون رو پیشنهاد میکنم.",
         },
         {
           writer: "جاسم‌ابن‌عقیل",
@@ -158,7 +185,8 @@ export default function GymDetails() {
           writer: "عباس بوعذار",
           commentDate: "3 خرداد 1403",
           rate: 4.5,
-          commentText: "من با استاد آرش یک ساله کار میکنم و واقعا راضی‌ام. حتما کار کردن باهاشون رو پیشنهاد میکنم.",
+          commentText:
+            "من با استاد آرش یک ساله کار میکنم و واقعا راضی‌ام. حتما کار کردن باهاشون رو پیشنهاد میکنم.",
         },
         {
           writer: "جاسم‌ابن‌عقیل",
@@ -177,7 +205,8 @@ export default function GymDetails() {
           writer: "عباس بوعذار",
           commentDate: "3 خرداد 1403",
           rate: 4.5,
-          commentText: "من با استاد آرش یک ساله کار میکنم و واقعا راضی‌ام. حتما کار کردن باهاشون رو پیشنهاد میکنم.",
+          commentText:
+            "من با استاد آرش یک ساله کار میکنم و واقعا راضی‌ام. حتما کار کردن باهاشون رو پیشنهاد میکنم.",
         },
         {
           writer: "جاسم‌ابن‌عقیل",
@@ -395,20 +424,75 @@ export default function GymDetails() {
                   <p className="text-coal text-[15px] mt-3">
                     شما هم دیدگاهتان را ثبت کنید
                   </p>
-                  <button
-                  onClick={() => toggleComment()}
-                  className="w-full text-superRed border border-superRed text-[18px] py-3 rounded-[10px] hover:bg-superRed hover:text-mintCream transition-all transform duration-300">
-                    ثبت دیدگاه
-                  </button>
-                </div>
-                <div 
-                onClick={() => toggleComment()}
-                className="w-3/4 max-md:w-full h-[600px] overflow-y-scroll mb-[70px]">
-                  {gymDetails[0].comments.map((comments, index) => (
-                    <div
-                      key={index}
-                      className="flex-col mt-4"
+                  <div className="p-4 max-w-md mx-auto bg-gray-100 rounded-lg shadow-md">
+                    <button
+                      onClick={() => setIsFormVisible(!isFormVisible)}
+                      className="w-full py-2 px-4 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
                     >
+                      ثبت دیدگاه
+                    </button>
+
+                    {isFormVisible && (
+                      <div className="mt-4">
+                        <textarea
+                          value={comment}
+                          onChange={(e) => setComment(e.target.value)}
+                          placeholder="از اینجا نظرتان را با دیگر کاربران به اشتراک بگذارید..."
+                          className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-300 resize-none mb-4"
+                          rows="4"
+                        />
+                        <p className="text-center text-gray-700 mb-2">
+                          از 1 تا 5 چند ستاره میدهید؟
+                        </p>
+                        <div className="flex justify-center items-center gap-1 mb-4">
+                          <StarRating
+                            rating={rating}
+                            onRatingChange={handleRating}
+                          />
+                        </div>
+                        <button
+                          onClick={handleSubmit}
+                          className="w-full py-2 px-4 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+                        >
+                          ارسال نظر
+                        </button>
+                      </div>
+                    )}
+
+                    {comments.length > 0 && (
+                      <div className="mt-6">
+                        <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                          نظرات کاربران:
+                        </h3>
+                        {comments.map((comment, index) => (
+                          <div
+                            key={index}
+                            className="mb-4 p-4 bg-white rounded-lg shadow"
+                          >
+                            <div className="flex items-center justify-between mb-2">
+                              <p className="text-sm text-gray-600">
+                                {comment.writer}
+                              </p>
+                              <p className="text-sm text-gray-600">
+                                {comment.commentDate}
+                              </p>
+                            </div>
+                            <StarRating rating={comment.rate} />
+                            <p className="mt-2 text-gray-800">
+                              {comment.commentText}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div
+                  onClick={() => toggleComment()}
+                  className="w-3/4 max-md:w-full h-[600px] overflow-y-scroll mb-[70px]"
+                >
+                  {gymDetails[0].comments.map((comments, index) => (
+                    <div key={index} className="flex-col mt-4">
                       <div className="flex items-center gap-2">
                         <p className="text-midtoneGray text-[12px]">
                           {comments.writer}
@@ -420,7 +504,9 @@ export default function GymDetails() {
                       </div>
                       <StarRating rating={comments.rate || 0} />
 
-                      <p className="mt-5 text-coal text-[15px]">{comments.commentText}</p>
+                      <p className="mt-5 text-coal text-[15px]">
+                        {comments.commentText}
+                      </p>
                       <div className="bg-midtoneGray h-[1px] w-full"></div>
                     </div>
                   ))}

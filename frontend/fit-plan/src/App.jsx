@@ -32,6 +32,7 @@ import Admin_coaches from "./pages/Admin/admin_coaches";
 import Admin_transactions from "./pages/Admin/admin_transactions";
 import Gyms from "./pages/gyms";
 import GymDetails from "./pages/gym_details";
+import Coach_signup from "./pages/coach_signup";
 
 function App() {
   // const [count, setCount] = useState(0);
@@ -48,6 +49,7 @@ function App() {
           <Route path="/forgot_password" element={<Forgot_Password />} />
           <Route path="/forgot_password/:role" element={<Forgot_Password />} />
           <Route path="/user_signup" element={<User_signup />} />
+          <Route path="/coach_signup" element={<Coach_signup />} />
           <Route path="/user_panel" element={<User_panel />} />
           <Route path="/user_panel/info_edit" element={<User_info_edit />} />
           <Route path="/user_panel/user_coach" element={<User_coach />} />
