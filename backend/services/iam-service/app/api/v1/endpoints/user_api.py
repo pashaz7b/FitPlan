@@ -27,7 +27,7 @@ from app.mainservices.user_register_mainservice import RegisterMainService
 # from app.infrastructure.repositories.user_repository import UserRepository
 from app.mainservices.user_login_mainservice import AuthService, get_current_user
 from app.mainservices.user_password_mainservice import PasswordManager
-from app.tasks.send_id_to_chatservice import SendIdToChat
+from app.subservices.background_tasks.send_id_to_chatservice import SendIdToChat
 
 user_router = APIRouter()
 
