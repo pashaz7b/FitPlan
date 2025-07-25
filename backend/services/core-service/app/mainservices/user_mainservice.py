@@ -25,7 +25,8 @@ from app.domain.schemas.user_schema import (UserGetAllVerifiedGymSchema,
                                             UserGetGymRegistrationsSchema,
                                             CreateUserGymCommentSchema,
                                             UserGetVerifiedCoachCommentsSchema,
-                                            CreateUserCoachCommentSchema)
+                                            CreateUserCoachCommentSchema,
+                                            UserGetCoachPlanPriceSchema)
 
 from app.subservices.user_subservice import UserSubService
 from app.subservices.user_duplicates_subservice import UserDuplicatesSubService
@@ -604,3 +605,27 @@ class UserMainService(BaseService):
                                 detail="Rating must be an integer between 0 and 5")
 
         return await self.user_subservice.create_user_coach_comment(user_id, user_coach_comment_schema)
+
+    async def user_get_coach_plan_price(self, user_id: int):
+        logger.info(f"[...] Getting Coach Plan Price Associated With Coach For User --> {user_id}")
+
+        users_coach = await self.user_subservice.get_user_coach(user_id)
+
+        if not users_coach:
+            logger.info(f"[-] No Coach Found For User --> {user_id}")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"No Coach Found For User --> {user_id}")
+
+        coach_id = users_coach.id
+        coach_plan_price = await self.user_subservice.user_get_coach_plan_price(coach_id)
+
+        if not coach_plan_price:
+            logger.info(f"[-] No Plan Price Found For Couch --> {coach_id}")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                                detail=f"No Plan Price Found For Couch --> {coach_id}")
+
+        coach_plan_price_response = UserGetCoachPlanPriceSchema(
+            exercise_price=coach_plan_price.exercise_price,
+            meal_price=coach_plan_price.meal_price,
+        )
+
+        return coach_plan_price_response

@@ -14,6 +14,9 @@ from app.domain.models.fitplan_model import (Coach,
                                              UserRequestExercise, UserExercise, UserExerciseExercise, Exercise,
                                              WorkoutPlanExercise)
 
+from app.domain.models.fitplan_model import (CoachPlanPrice, GymPlanPrice,
+                                             Gym)
+
 
 class CoachRepository:
     def __init__(self, db: Annotated[Session, Depends(get_db)]):
@@ -241,3 +244,96 @@ class CoachRepository:
     def check_if_workout_plan_exists(self, coach_id: int):
         logger.info(f"[+] Checking If Workout Plan Exists for Coach With Id ---> {coach_id}")
         return self.db.query(Present).filter(Present.coach_id == coach_id).first()
+
+    def coach_get_coach_plan_price(self, coach_id: int):
+        logger.info(f"[+] Fetching Coach Plan Price Associated With Coach ---> {coach_id}")
+
+        coach_plan_price = (
+            self.db.query(CoachPlanPrice)
+            .filter(CoachPlanPrice.coach_id == coach_id)
+            .first()
+        )
+
+        return coach_plan_price
+
+    def coach_create_coach_plan_price(self, coach_plan_price_model: CoachPlanPrice):
+        self.db.add(coach_plan_price_model)
+        self.db.commit()
+        self.db.refresh(coach_plan_price_model)
+        logger.info(f"[+] Coach Plan Price Created")
+        return coach_plan_price_model
+
+    def coach_update_coach_plan_price(self, coach_id: int, updated_coach_plan_price: Dict):
+        coach_plan_price_query = self.db.query(CoachPlanPrice).filter(CoachPlanPrice.coach_id == coach_id)
+        db_coach_plan_price = coach_plan_price_query.first()
+        coach_plan_price_query.filter(CoachPlanPrice.coach_id == coach_id).update(
+            updated_coach_plan_price, synchronize_session=False
+        )
+        self.db.commit()
+        self.db.refresh(db_coach_plan_price)
+        logger.info(f"[+] Coach Plan Price For Coach With Id ---> {coach_id} Updated")
+        return db_coach_plan_price
+
+    def coach_get_verified_gym_plan_price(self, coach_id: int, gym_id: int):
+        logger.info(f"[+] Fetching Verified Gym Plan Price For Coach With Id ---> {coach_id}")
+
+        verified_gym_plan_price = (
+            self.db.query(GymPlanPrice)
+            .join(Gym, GymPlanPrice.gym_id == Gym.id)
+            .filter(Gym.owner_id == coach_id)
+            .filter(Gym.id == gym_id)
+            .filter(Gym.verification_status == "verified")
+            .all()
+        )
+
+        return verified_gym_plan_price
+
+    def coach_get_his_gym_info(self, coach_id: int):
+        logger.info(f"[+] Fetching Verified Gym For Coach With Id ---> {coach_id}")
+
+        verified_gym_info = (
+            self.db.query(Gym)
+            .filter(Gym.owner_id == coach_id)
+            .filter(Gym.verification_status == "verified")
+            .all()
+        )
+
+        return verified_gym_info
+
+    def get_gym_info(self, gym_id: int):
+        logger.info("[+] Fetching Gym Owner For Gym With Id ---> {gym_id}")
+        gym_info = (
+            self.db.query(Gym)
+            .filter(Gym.id == gym_id)
+            .filter(Gym.verification_status == "verified")
+            .first()
+        )
+        return gym_info
+
+    def coach_create_verified_gym_plan_price(self, verified_gym_plan_price: GymPlanPrice):
+        logger.info(f"[+] Creating New Gym Plan Price for gym")
+        self.db.add(verified_gym_plan_price)
+        self.db.commit()
+        self.db.refresh(verified_gym_plan_price)
+        logger.info(f"[+] Gym Plan Price Created")
+        return verified_gym_plan_price
+
+    def check_plan_price_exists_and_valid(self, plan_price_id: int):
+        logger.info("[+] Checking If Gym Plan Price Exists And Is Valid")
+
+        plan_price = (
+            self.db.query(GymPlanPrice)
+            .filter(GymPlanPrice.id == plan_price_id)
+            .first()
+        )
+
+        return plan_price
+
+    def coach_delete_gym_plan_price(self, plan_price_id: int):
+        logger.info(f"[+] Deleting Gym Plan Price With Id ---> {plan_price_id}")
+        gym_plan_price_query = self.db.query(GymPlanPrice).filter(GymPlanPrice.id == plan_price_id)
+        db_gym_plan_price = gym_plan_price_query.first()
+        gym_plan_price_query.delete(synchronize_session=False)
+        self.db.commit()
+        logger.info(f"[+] Gym Plan Price Deleted With Id ---> {plan_price_id}")
+        return db_gym_plan_price

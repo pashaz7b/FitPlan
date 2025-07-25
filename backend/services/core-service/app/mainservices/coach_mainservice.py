@@ -4,8 +4,13 @@ from fastapi import Depends, HTTPException, status
 
 from app.domain.schemas.coach_schema import (GetCoachUserSchema, SetCoachUserMealSchema, GetCoachUserMealRequestSchema,
                                              GetCoachUserExerciseRequestSchema, SetCoachUserExerciseSchema,
-                                             GetCoachInfoSchema, SetCoachWorkOutPlanSchema, SetCoachInfoSchema
-                                             )
+                                             GetCoachInfoSchema, SetCoachWorkOutPlanSchema, SetCoachInfoSchema,
+                                             CoachChangeCoachPlanPriceSchema)
+
+from app.domain.schemas.coach_schema import (CoachGetCoachPlanPriceSchema, CoachCreateCoachPlanPriceSchema,
+                                             CoachGetGymPlanPriceSchema,
+                                             CoachGetHisGymInfoSchema,
+                                             CoachCreateGymPlanPriceSchema, CoachDeleteGymPlanPriceSchema)
 
 from app.subservices.coach_subservice import CoachSubService
 from app.subservices.user_duplicates_subservice import UserDuplicatesSubService
@@ -230,3 +235,140 @@ class CoachMainService(BaseService):
             )
 
         return await self.coach_subservice.create_workout_plan(coach_id, workout_plan)
+
+    # *******************************************************************************
+
+    async def coach_get_coach_plan_price(self, coach_id: int):
+        logger.info(f"[...] Getting Coach Plan Price Associated With Coach For Coach --> {coach_id}")
+
+        coach_plan_price = await self.coach_subservice.coach_get_coach_plan_price(coach_id)
+
+        if not coach_plan_price:
+            logger.info(f"[-] No Plan Price Found For Couch --> {coach_id}")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                                detail=f"No Plan Price Found For Couch --> {coach_id}")
+
+        coach_plan_price_response = CoachGetCoachPlanPriceSchema(
+            exercise_price=coach_plan_price.exercise_price,
+            meal_price=coach_plan_price.meal_price,
+        )
+
+        return coach_plan_price_response
+
+    async def coach_create_coach_plan_price(self, coach_id: int,
+                                            coach_plan_price_schema: CoachCreateCoachPlanPriceSchema):
+        logger.info(f"[...] Creating Coach Plan Price For Coach With Id ---> {coach_id}")
+
+        coach_plan_price_exists = await self.coach_subservice.coach_get_coach_plan_price(coach_id)
+
+        if coach_plan_price_exists:
+            logger.info("Coach Plan Price Already Exists")
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Coach Plan Price Already Exists")
+
+        return await self.coach_subservice.coach_create_coach_plan_price(coach_id, coach_plan_price_schema)
+
+    async def coach_change_coach_plan_price(self, coach_id: int,
+                                            coach_plan_price_schema: CoachChangeCoachPlanPriceSchema):
+        current_coach_plan_price_response = await self.coach_subservice.coach_get_coach_plan_price(coach_id)
+
+        if not current_coach_plan_price_response:
+            logger.info(f"No Coach Plan Price Found For Couch --> {coach_id}")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No Coach Plan Price Found")
+
+        coach_plan_price_schema_dict = {"exercise_price": coach_plan_price_schema.exercise_price,
+                                        "meal_price": coach_plan_price_schema.meal_price}
+
+        return await self.coach_subservice.coach_change_coach_plan_price(coach_id, coach_plan_price_schema_dict)
+
+    async def coach_get_gym_plan_price(self, coach_id: int, gym_id: int):
+        logger.info(f"[...] Getting Verified Gym Plan Prices For Coach With Id {coach_id}")
+
+        verified_gym_plan_prices = await self.coach_subservice.coach_get_gym_plan_price(coach_id, gym_id)
+
+        if not verified_gym_plan_prices:
+            logger.info(f"[-] There is No Gym Plan Price")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                                detail="There Is No Verified Gym Plan Price")
+
+        verified_gym_plan_prices_list = []
+
+        for verified_gym_plan_price in verified_gym_plan_prices:
+            verified_gym_plan_price_response = CoachGetGymPlanPriceSchema(
+                plan_price_id=verified_gym_plan_price.id,
+                session_counts=verified_gym_plan_price.session_counts,
+                duration_days=verified_gym_plan_price.duration_days,
+                is_vip=verified_gym_plan_price.is_vip,
+                price=verified_gym_plan_price.price,
+            )
+
+            verified_gym_plan_prices_list.append(verified_gym_plan_price_response)
+
+        return verified_gym_plan_prices_list
+
+    async def coach_get_his_gym_info(self, coach_id: int):
+        logger.info(f"[...] Getting gym info for Coach With Id {coach_id}")
+
+        gyms_for_coach = await self.coach_subservice.coach_get_his_gym_info(coach_id)
+
+        if not gyms_for_coach:
+            logger.info(f"No Gym Info Found For Coach With Id {coach_id}")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No Gym Info Found")
+
+        gym_list = []
+
+        for gym in gyms_for_coach:
+            gym_info = CoachGetHisGymInfoSchema(
+                gym_id=gym.id,
+                gym_name=gym.name
+            )
+            gym_list.append(gym_info)
+
+        return gym_list
+
+    async def coach_create_gym_plan_price(self, coach_id: int, gym_id: int,
+                                          verified_gym_plan_price_schema: CoachCreateGymPlanPriceSchema):
+        logger.info(f"[...] Creating Gym Plan Price For Gym With Id ---> {gym_id}")
+
+        gym_info = await self.coach_subservice.get_gym_info(gym_id)
+
+        if not gym_info:
+            logger.error(f"[-] No Gym Found With Id {gym_id}")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No Gym Found")
+
+        gym_owner_id = gym_info.owner_id
+
+        if gym_owner_id != coach_id:
+            logger.error(f"[-] Coach With Id {coach_id} Is Not The Owner Of Gym With Id {gym_id}")
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN, detail="You Are Not Authorized To Create Gym Plan Price"
+            )
+
+        return await self.coach_subservice.coach_create_gym_plan_price(gym_id, verified_gym_plan_price_schema)
+
+    async def coach_delete_gym_plan_price(self, coach_id: int, plan_price_schema: CoachDeleteGymPlanPriceSchema):
+        plan_price_id = plan_price_schema.plan_price_id
+        logger.info(f"[...] Deleting Gym Plan Price With Id ---> {plan_price_id}")
+
+        gym_plan_price = await self.coach_subservice.check_plan_price_exists_and_valid(plan_price_id)
+
+        if not gym_plan_price:
+            logger.error(f"[-] No Gym Plan Price Found With Id {plan_price_id}")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No Gym Plan Price Found")
+
+        gym_plan_price_gym_id = gym_plan_price.gym_id
+
+        gym_info = await self.coach_subservice.get_gym_info(gym_plan_price_gym_id)
+
+        if not gym_info:
+            logger.error(f"[-] No Gym Found With Id {gym_plan_price_gym_id}")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No Gym Found")
+
+        gym_owner_id = gym_info.owner_id
+
+        if gym_owner_id != coach_id:
+            logger.error(f"[-] Coach With Id {coach_id} Is Not The Owner Of Gym Plan Price With Id {plan_price_id}")
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN, detail="You Are Not Authorized To Delete This Gym Plan Price"
+            )
+
+        return await self.coach_subservice.coach_delete_gym_plan_price(plan_price_schema)

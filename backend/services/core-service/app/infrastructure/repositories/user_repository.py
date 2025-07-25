@@ -15,7 +15,7 @@ from app.domain.models.fitplan_model import (User,
                                              UserExercise,
                                              UserRequestExercise, UserExerciseExercise, Exercise, UserMeal,
                                              UserRequestMeal, MealSupplement, UserMealMealSupplement,
-                                             WorkoutPlanExercise, WorkoutPlanMealSupplement)
+                                             WorkoutPlanExercise, WorkoutPlanMealSupplement, CoachPlanPrice)
 
 from app.domain.models.fitplan_model import (Gym, CoachGym,
                                              GymPlanPrice, GymComment,
@@ -368,4 +368,13 @@ class UserRepository:
 
         return verified_coach_detail
 
-    def user
+    def user_get_coach_plan_price(self, coach_id: int):
+        logger.info(f"[+] Fetching Coach Plan Price Associated With Coach ---> {coach_id}")
+
+        coach_plan_price = (
+            self.db.query(CoachPlanPrice)
+            .filter(CoachPlanPrice.coach_id == coach_id)
+            .first()
+        )
+
+        return coach_plan_price

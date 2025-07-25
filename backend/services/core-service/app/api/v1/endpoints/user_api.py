@@ -26,7 +26,7 @@ from app.domain.schemas.user_schema import (UserGetAllVerifiedGymSchema,
                                             UserGetGymRegistrationsSchema,
                                             CreateUserGymCommentSchema,
                                             CreateUserGymCommentResponseSchema,
-                                            UserGetVerifiedCoachCommentsSchema,
+                                            UserGetVerifiedCoachCommentsSchema, UserGetCoachPlanPriceSchema,
                                             CreateUserCoachCommentSchema, CreateUserCoachCommentResponseSchema)
 
 from app.mainservices.user_mainservice import UserMainService
@@ -340,3 +340,15 @@ async def user_coach_comment(
     return await user_service.create_user_coach_comment(current_user.id, user_coach_comment_schema)
 
 
+
+@user_core_router.get(
+    "/get_coach_plan_price",
+    status_code=status.HTTP_200_OK,
+    response_model=UserGetCoachPlanPriceSchema
+)
+async def user_get_coach_plan_price(
+        user_service: Annotated[UserMainService, Depends()],
+        current_user: Annotated[TokenDataSchema, Depends(get_current_user)],
+):
+    logger.info(f"[...] Getting Coach Plan Price for User {current_user.id}")
+    return await user_service.user_get_coach_plan_price(current_user.id)

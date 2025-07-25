@@ -112,3 +112,74 @@ class SetCoachWorkOutPlanSchema(BaseModel):
 class SetCoachWorkOutPlanResponseSchema(BaseModel):
     workout_plan_id: int
     message: str
+
+
+# ********************************************************************
+
+class CoachGetCoachPlanPriceSchema(BaseModel):
+    exercise_price: int
+    meal_price: int
+
+
+class CoachCreateCoachPlanPriceSchema(BaseModel):
+    exercise_price: int
+    meal_price: int
+
+
+class CoachCreateCoachPlanPriceResponseSchema(BaseModel):
+    created_coach_plan_price_id: int
+    message: str
+
+
+class CoachChangeCoachPlanPriceSchema(BaseModel):
+    exercise_price: int
+    meal_price: int
+
+
+class CoachChangeCoachPlanPriceResponseSchema(BaseModel):
+    message: str
+
+
+class CoachGetHisGymInfoSchema(BaseModel):
+    gym_id: int
+    gym_name: str
+
+
+class CoachGetGymPlanPriceSchema(BaseModel):
+    plan_price_id: int
+    session_counts: int
+    duration_days: int
+    is_vip: bool
+    price: int
+
+
+class CoachCreateGymPlanPriceSchema(BaseModel):
+    session_counts: int
+    duration_days: int
+    is_vip: bool
+    price: int
+
+
+class CoachCreateGymPlanPriceResponseSchema(BaseModel):
+    plan_price_id: int
+    message: str
+
+
+class CoachDeleteGymPlanPriceSchema(BaseModel):
+    plan_price_id: int
+
+
+class CoachDeleteGymPlanPriceResponseSchema(BaseModel):
+    message: str
+
+
+class CoachChangeGymPlanPriceSchema(BaseModel):
+    plan_price_id: int
+    session_counts: int
+    duration_days: int
+    is_vip: bool
+    price: int
+
+
+class CoachChangeGymPlanPriceResponseSchema(BaseModel):
+    message: str

@@ -284,3 +284,8 @@ class CreateUserCoachCommentSchema(BaseModel):
 class CreateUserCoachCommentResponseSchema(BaseModel):
     registered_comment_id: int
     message: str
+
+
+class UserGetCoachPlanPriceSchema(BaseModel):
+    exercise_price: int
+    meal_price: int

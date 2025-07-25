@@ -5,10 +5,18 @@ from fastapi import Depends
 from app.domain.models.fitplan_model import (Coach,
                                              CoachMetrics, MealSupplement, UserMealMealSupplement,
                                              WorkoutPlanMealSupplement, Exercise, UserExerciseExercise,
-                                             WorkoutPlanExercise, WorkoutPlan, Present)
-from app.domain.schemas.coach_schema import SetCoachUserMealSchema, SetCoachUserMealResponseSchema, \
-    SetCoachUserExerciseSchema, SetCoachUserExerciseResponseSchema, SetCoachWorkOutPlanSchema, \
-    SetCoachWorkOutPlanResponseSchema
+                                             WorkoutPlanExercise, WorkoutPlan, Present, CoachPlanPrice, GymPlanPrice)
+
+from app.domain.schemas.coach_schema import (SetCoachUserMealSchema, SetCoachUserMealResponseSchema,
+                                             SetCoachUserExerciseSchema, SetCoachUserExerciseResponseSchema,
+                                             SetCoachWorkOutPlanSchema,
+                                             SetCoachWorkOutPlanResponseSchema, CoachCreateCoachPlanPriceSchema,
+                                             CoachCreateCoachPlanPriceResponseSchema,
+                                             CoachChangeCoachPlanPriceResponseSchema,
+                                             CoachCreateGymPlanPriceSchema,
+                                             CoachCreateGymPlanPriceResponseSchema,
+                                             CoachDeleteGymPlanPriceSchema, CoachDeleteGymPlanPriceResponseSchema)
+
 from app.infrastructure.repositories.coach_repository import CoachRepository
 from app.subservices.auth.hash_subservice import HashService
 from app.subservices.baseconfig import BaseService
@@ -218,3 +226,82 @@ class CoachSubService(BaseService):
     async def check_if_workout_plan_exists(self, coach_id: int):
         logger.info(f"[+] Checking If Workout Plan Exists for Coach With Id ---> {coach_id}")
         return self.coach_repo.check_if_workout_plan_exists(coach_id)
+
+    async def coach_get_coach_plan_price(self, coach_id: int):
+        logger.info(f"[...] Getting Coach Plan Price Association With Coach --> {coach_id}")
+        return self.coach_repo.coach_get_coach_plan_price(coach_id)
+
+    async def coach_create_coach_plan_price(self, coach_id: int,
+                                            coach_plan_price_schema: CoachCreateCoachPlanPriceSchema):
+        logger.info(f"Creating Coach Plan Price For Coach With Id ---> {coach_id}")
+
+        coach_plan_price_model = CoachPlanPrice(
+            coach_id=coach_id,
+            exercise_price=coach_plan_price_schema.exercise_price,
+            meal_price=coach_plan_price_schema.meal_price,
+        )
+
+        created_coach_plan_price = self.coach_repo.coach_create_coach_plan_price(coach_plan_price_model)
+
+        response = CoachCreateCoachPlanPriceResponseSchema(
+            created_coach_plan_price_id=created_coach_plan_price.id,
+            message="Coach Plan Price Created Successfully"
+        )
+
+        return response
+
+    async def coach_change_coach_plan_price(self, coach_id: int, coach_plan_price_schema_dict: Dict):
+        logger.info(f"Updating Coach Plan Price For Coach With Id ---> {coach_id}")
+        self.coach_repo.coach_update_coach_plan_price(coach_id, coach_plan_price_schema_dict)
+        response = CoachChangeCoachPlanPriceResponseSchema(
+            message="Coach Plan Price Updated Successfully"
+        )
+
+        return response
+
+    async def coach_get_gym_plan_price(self, coach_id: int, gym_id: int):
+        logger.info(f"Getting Gym Plan for Coach With Id ---> {coach_id}")
+        return self.coach_repo.coach_get_verified_gym_plan_price(coach_id, gym_id)
+
+    async def coach_get_his_gym_info(self, coach_id: int):
+        logger.info(f"Getting gym info for Coach With Id ---> {coach_id}")
+        return self.coach_repo.coach_get_his_gym_info(coach_id)
+
+    async def get_gym_info(self, gym_id: int):
+        logger.info(f"Getting gym info for Gym With Id ---> {gym_id}")
+        return self.coach_repo.get_gym_info(gym_id)
+
+    async def coach_create_gym_plan_price(self, gym_id: int,
+                                          verified_gym_plan_price_schema: CoachCreateGymPlanPriceSchema):
+        logger.info(f"Creating Gym Plan Price For Gym With Id ---> {gym_id}")
+
+        gym_plan_price_model = GymPlanPrice(
+            gym_id=gym_id,
+            session_counts=verified_gym_plan_price_schema.session_counts,
+            duration_days=verified_gym_plan_price_schema.duration_days,
+            is_vip=verified_gym_plan_price_schema.is_vip,
+            price=verified_gym_plan_price_schema.price
+        )
+
+        created_plan_price = self.coach_repo.coach_create_verified_gym_plan_price(gym_plan_price_model)
+
+        response = CoachCreateGymPlanPriceResponseSchema(
+            plan_price_id=created_plan_price.id,
+            message="Gym Plan Price Created Successfully"
+        )
+
+        return response
+
+    async def check_plan_price_exists_and_valid(self, plan_price_id: int):
+        logger.info(f"Checking if Gym Plan Price Exists and Valid With Id ---> {plan_price_id}")
+        return self.coach_repo.check_plan_price_exists_and_valid(plan_price_id)
+
+    async def coach_delete_gym_plan_price(self, plan_price_schema: CoachDeleteGymPlanPriceSchema):
+        logger.info(f"Deleting Gym Plan Price With Plan Price Id ---> {plan_price_schema.plan_price_id}")
+        self.coach_repo.coach_delete_gym_plan_price(plan_price_schema.plan_price_id)
+
+        response = CoachDeleteGymPlanPriceResponseSchema(
+            message="Gym Plan Price Deleted Successfully"
+        )
+
+        return response
