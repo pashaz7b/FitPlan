@@ -2,11 +2,13 @@
 REM Deploy services using Docker Compose
 
 REM Combine Docker Compose files and build the services
-docker compose -f docker-compose.yml ^
+docker compose -p fitplan_deploy ^
+               -f docker-compose.yml ^
                -f ..\infra\api-gateway\docker-compose.yml ^
                -f ..\services\iam-service\docker-compose.yml ^
                -f ..\services\media-service\docker-compose.yml ^
                -f ..\services\core-service\docker-compose.yml ^
+               -f ..\services\chat-service\docker-compose.yml ^
                up -d --build
 
 REM Check the exit code of the last command and print result

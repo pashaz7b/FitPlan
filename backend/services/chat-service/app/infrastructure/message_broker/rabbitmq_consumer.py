@@ -17,6 +17,10 @@ class RabbitmqConsumer:
         self.connection = None
         self.task = None
     
+    # async def start_consume(self):
+        # self.setup()
+        # await queue.consume(on_message)
+
     async def consume(self,):
         self.connection = await connect_robust(self.rabbitmq_url)
         channel = await self.connection.channel()
@@ -50,16 +54,10 @@ class RabbitmqConsumer:
                 finally:
                     await db_generator.aclose()
 
-    # async def start_consume(self):
-        # self.setup()
-        # await queue.consume(on_message)
-
     async def stop_consume(self):
         if self.task:
             self.task.cancel()
         if self.connection:
             await self.connection.close()
         logger.info("RabbitMQ Consumer stopped.")    
-
-
-# asyncio.Future()        
+       

@@ -1,11 +1,32 @@
 version: '3.8'
 
 services:
+  rabbitmq:
+    image: rabbitmq:4-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672" # rabbitmq server
+      - "15672:15672" # management UI
+    networks:
+      - app-network
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"] # Command to check RabbitMQ health
+      interval: 30s # How often to run the check
+      timeout: 10s # Maximum time allowed for the command to complete
+      retries: 5 # Number of consecutive failures before marking as unhealthy
+      start_period: 8s # Time to wait before starting health checks  
+    restart: unless-stopped
+
   chat:
     build:
       context: ../services/chat-service
       dockerfile: Dockerfile
     container_name: chat-service
+    ports:
+      - "8001:80"
     networks:
       - app-network
     labels:
@@ -13,6 +34,9 @@ services:
       - "traefik.http.routers.chat.rule=Host(`chat.localhost`)"
       - "traefik.http.services.chat.loadbalancer.server.port=80"
     restart: unless-stopped
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
 
 networks:
   app-network:

@@ -87,7 +87,8 @@ version: "3.8"
 
 services:
   traefik:
-    image: docker.arvancloud.ir/traefik:v2.5
+    # image: docker.arvancloud.ir/traefik:v2.5
+    image: traefik:v2.5
     container_name: traefik
     command:
       - "--api.insecure=true" # Enable Traefik dashboard
@@ -106,7 +107,8 @@ services:
 
   postgres:
     container_name: postgres_container
-    image: docker.arvancloud.ir/postgres:17
+    # image: docker.arvancloud.ir/postgres:17
+    image: postgres:17
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-admin}
@@ -124,7 +126,8 @@ services:
 
   pgadmin:
     container_name: pgadmin_container
-    image: docker.arvancloud.ir/dpage/pgadmin4
+    # image: docker.arvancloud.ir/dpage/pgadmin4
+    image: dpage/pgadmin4
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
@@ -150,13 +153,26 @@ services:
       - app-network
     restart: unless-stopped
 
+  rabbitmq:
+    image: rabbitmq:4-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672" # rabbitmq server
+      - "15672:15672" # management UI
+    networks:
+      - app-network
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest    
+    restart: unless-stopped
+      
   iam:
     build:
       context: ../services/iam-service
       dockerfile: Dockerfile
     container_name: iam_service
-    #    ports:
-    #      - "8020:8020"
+    ports:
+      - "8000:80"
     networks:
       - app-network
     labels:
@@ -168,6 +184,7 @@ services:
     depends_on:
       - postgres
       - redis
+      - rabbitmq
 
 networks:
   app-network:

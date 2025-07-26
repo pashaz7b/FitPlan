@@ -9,7 +9,8 @@ class Settings(BaseSettings):
     # ****************************************************
     REDIS_URL: str = "localhost"
     REDIS_URL: str = "redis"
-    RABBITMQ_URL: str = "amqp://guest:guest@localhost/" #local
+    # RABBITMQ_URL: str = "amqp://guest:guest@localhost/" #local
+    RABBITMQ_URL: str = "amqp://guest:guest@rabbitmq/"  # docker
     JWT_SECRET_KEY: str = "1807372bcbf0963ebe30a1df3669690b8f0e4f83a1b52e7579cfee9ff08db230"
     JWT_ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
