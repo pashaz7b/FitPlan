@@ -10,7 +10,7 @@ from app.domain.schemas.user_schema import (UserCreateChatSchema,
 
 from app.mainservices.user_mainservice import UserMainService
 from fastapi import FastAPI, WebSocket, Depends
-
+from app.core.config.config import get_settings
 user_chat_router = APIRouter()
 
 
@@ -26,8 +26,9 @@ async def user_chat_websocket_endpoint(
 
     try:
         async with httpx.AsyncClient() as client:
+            iam_url = get_settings().IAM_URL
             response = await client.get(
-                "http://iam.localhost/api/v1/users/panel",
+                f"{iam_url}/api/v1/users/panel",
                 headers={"Authorization": f"Bearer {token}"}
             )
         response.raise_for_status()

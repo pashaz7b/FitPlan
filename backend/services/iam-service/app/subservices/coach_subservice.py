@@ -75,7 +75,7 @@ class CoachSubService(BaseService):
             phone_number=coach_struct.phone_number,
             gender=coach_struct.gender,
             date_of_birth=coach_struct.date_of_birth,
-            is_verified=coach_struct.is_verified,
+            is_verified=True, #changed
         )
 
         created_coach = self.coach_repo.create_coach(new_coach)

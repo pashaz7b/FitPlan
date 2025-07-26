@@ -337,3 +337,15 @@ class CoachRepository:
         self.db.commit()
         logger.info(f"[+] Gym Plan Price Deleted With Id ---> {plan_price_id}")
         return db_gym_plan_price
+
+    def coach_update_gym_plan_price(self, plan_price_id: int, updated_gym_plan_price: Dict):
+        logger.info("[+] Updating Gym Plan Price With Id ---> {plan_price_id}")
+        gym_plan_price_query = self.db.query(GymPlanPrice).filter(GymPlanPrice.id == plan_price_id)
+        db_gym_plan_price = gym_plan_price_query.first()
+        gym_plan_price_query.filter(GymPlanPrice.id == plan_price_id).update(
+            updated_gym_plan_price, synchronize_session=False
+        )
+        self.db.commit()
+        self.db.refresh(db_gym_plan_price)
+        logger.info(f"[+] Gym Plan Price Updated With Id ---> {plan_price_id}")
+        return db_gym_plan_price

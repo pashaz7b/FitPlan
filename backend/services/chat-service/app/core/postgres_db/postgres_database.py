@@ -5,10 +5,9 @@ from loguru import logger
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 
 
-#DATABASE_URL = "postgresql://postgres:admin@localhost/fitplan_chat_db"
-#DATABASE_URL = "postgresql://postgres:admin@postgres_container:5432/fitplan_db"
-
 DATABASE_URL = "postgresql+asyncpg://postgres:admin@localhost/fitplan_chat"
+#DATABASE_URL = "postgresql+asyncpg://postgres:admin@postgres_container:5432/fitplan_chat"
+#DATABASE_URL = "postgresql+asyncpg://postgres:admin@localhost/fitplan_chat"
 
 
 engine = create_async_engine(DATABASE_URL, echo=True)

@@ -4,7 +4,9 @@ from fastapi import Depends
 
 from app.domain.models.fitplan_model import Admin
 from app.domain.schemas.admin_schema import (GetAdminInfoSchema,
-                                             SetAdminInfoSchema)
+                                             SetAdminInfoSchema,
+                                             AdminUpdateCoachVerificationResponseSchema,
+                                             AdminUpdateGymVerificationResponseSchema)
 from app.infrastructure.repositories.admin_repository import AdminRepository
 from app.subservices.auth.hash_subservice import HashService
 from app.subservices.baseconfig import BaseService
@@ -84,3 +86,29 @@ class AdminSubService(BaseService):
     async def get_all_transaction(self, admin_id: int):
         logger.info(f"[+] Fetching All Transactions Of fitplan for admin With Id ---> {admin_id}")
         return self.admin_repo.get_all_transaction(admin_id)
+
+    async def admin_get_coach_to_verify(self, admin_id: int):
+        logger.info(f"[+] Fetching All Coaches To Verify for admin With Id ---> {admin_id}")
+        return self.admin_repo.admin_get_coach_to_verify(admin_id)
+
+    async def admin_update_coach_verification(self, coach_id: int, verification_status: str):
+        logger.info(f"[+] Updating Coach Status for Coach With Id ---> {coach_id} to {verification_status}")
+        self.admin_repo.admin_update_coach_verification(coach_id, verification_status)
+        return AdminUpdateCoachVerificationResponseSchema(
+            message=f"Coach with ID {coach_id} verification status updated to {verification_status}"
+        )
+
+    async def check_gym_exits(self, gym_id: int):
+        logger.info(f"[+] Checking if Gym Exists with ID ---> {gym_id}")
+        return self.admin_repo.check_gym_exits(gym_id)
+
+    async def admin_get_gym_to_verify(self, admin_id: int):
+        logger.info(f"[+] Fetching All Gyms To Verify for admin With Id ---> {admin_id}")
+        return self.admin_repo.admin_get_gym_to_verify(admin_id)
+
+    async def admin_update_gym_verification(self, gym_id: int, verification_status: str):
+        logger.info(f"[+] Updating Gym Status for Gym With Id ---> {gym_id} to {verification_status}")
+        self.admin_repo.admin_update_gym_verification(gym_id, verification_status)
+        return AdminUpdateGymVerificationResponseSchema(
+            message=f"Gym with ID {gym_id} verification status updated to {verification_status}"
+        )

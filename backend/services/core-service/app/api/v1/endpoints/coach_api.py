@@ -16,7 +16,9 @@ from app.domain.schemas.coach_schema import (CoachGetCoachPlanPriceSchema, Coach
                                              CoachChangeCoachPlanPriceResponseSchema,
                                              CoachGetGymPlanPriceSchema, CoachGetHisGymInfoSchema,
                                              CoachCreateGymPlanPriceSchema, CoachCreateGymPlanPriceResponseSchema,
-                                             CoachDeleteGymPlanPriceSchema)
+                                             CoachDeleteGymPlanPriceSchema,
+                                             CoachChangeGymPlanPriceSchema,
+                                             CoachChangeGymPlanPriceResponseSchema)
 
 from app.mainservices.coach_mainservice import CoachMainService
 
@@ -234,3 +236,18 @@ async def coach_delete_gym_plan_price(
 ):
     logger.info(f"Delete gym plan price for coach {current_coach.id}")
     return await coach_service.coach_delete_gym_plan_price(current_coach.id, plan_price_schema)
+
+
+
+@coach_core_router.put(
+    "/coach_change_gym_plan_price",
+    response_model=CoachChangeGymPlanPriceResponseSchema,
+    status_code=status.HTTP_200_OK
+)
+async def coach_change_gym_plan_price(
+        current_coach: Annotated[TokenDataSchema, Depends(get_current_coach)],
+        coach_service: Annotated[CoachMainService, Depends()],
+        coach_change_gym_plan_price_schema: CoachChangeGymPlanPriceSchema,
+):
+    logger.info(f"Change gym plan price for coach {current_coach.id}")
+    return await coach_service.coach_change_gym_plan_price(current_coach.id, coach_change_gym_plan_price_schema)

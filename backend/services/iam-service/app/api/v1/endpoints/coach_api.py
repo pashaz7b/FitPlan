@@ -1,4 +1,4 @@
-from fastapi import Depends, status, APIRouter
+from fastapi import Depends, status, APIRouter, BackgroundTasks
 from fastapi.security import OAuth2PasswordRequestForm
 from typing import Annotated
 from loguru import logger
@@ -34,6 +34,7 @@ from app.domain.models.coach_model import Coach
 from app.mainservices.coach_register_mainservice import CoachRegisterMainService
 from app.mainservices.coach_login_mainservice import AuthService, get_current_coach
 from app.mainservices.coach_password_mainservice import PasswordManager
+from app.tasks.send_id_to_chatservice import SendIdToChat
 
 coach_router = APIRouter()
 
@@ -47,9 +48,16 @@ async def signup(coach: CoachRegisterSchema,
 
 @coach_router.post("/verifyOTP", response_model=VerifyOTPResponseSchema, status_code=status.HTTP_200_OK)
 async def verify_otp(verify_coach_schema: VerifyOTPSchema,
-                     register_service: Annotated[CoachRegisterMainService, Depends()]) -> VerifyOTPResponseSchema:
+                     register_service: Annotated[CoachRegisterMainService, Depends()],
+                     background_tasks: BackgroundTasks,
+                     send_id_task: Annotated[SendIdToChat, Depends()]
+                     ) -> VerifyOTPResponseSchema:
     logger.info(f"[...] Start Verifying OTP For Coach With Email ---> {verify_coach_schema.email}")
-    return await register_service.verify_coach(verify_coach_schema)
+    # return await register_service.verify_coach(verify_coach_schema)
+    response = await register_service.verify_coach(verify_coach_schema)
+    if response.verified:
+        background_tasks.add_task(send_id_task.send_coach_id, verify_coach_schema.email)
+    return response
 
 
 @coach_router.post("/resendOTP", response_model=ResendOTPResponseSchema, status_code=status.HTTP_200_OK)
@@ -152,6 +160,13 @@ async def resend_otp_phone(
                    status_code=status.HTTP_201_CREATED)
 async def signup_with_phone_final(coach_schema: CoachRegisterWithPhoneFinalSchema,
                                   coach_register_mainservice: Annotated[CoachRegisterMainService, Depends()],
-                                  otp_token: str = Depends(CoachOtpToken.get_otp_token)):
+                                  background_tasks: BackgroundTasks,
+                                  send_id_task: Annotated[SendIdToChat, Depends()],
+                                  otp_token: str = Depends(CoachOtpToken.get_otp_token),
+                                  ):
     logger.info(f"[...] Finalizing Signing Up For Coach With Phone Number ---> {coach_schema.phone_number}")
-    return await coach_register_mainservice.register_coach_final(coach_schema, otp_token)
+    # return await coach_register_mainservice.register_coach_final(coach_schema, otp_token)
+    response = await coach_register_mainservice.register_coach_final(coach_schema, otp_token)
+    if response:
+        background_tasks.add_task(send_id_task.send_coach_id, coach_schema.email)
+    return response

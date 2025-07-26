@@ -23,3 +23,10 @@ passlib[bcrypt]
 uvicorn
 httpx-socks
 jdatetime
+aio-pika
+aiormq
+exceptiongroup
+multidict
+pamqp
+propcache
+yarl

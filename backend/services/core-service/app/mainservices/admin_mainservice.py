@@ -4,7 +4,9 @@ from fastapi import Depends, HTTPException, status
 
 from app.domain.schemas.admin_schema import (GetAdminInfoSchema,
                                              SetAdminInfoSchema, GetAdminAllUsersSchema, GetAdminAllCoachSchema,
-                                             UserSchema, TransactionSchema, GetAdminAllTransactionSchema)
+                                             UserSchema, TransactionSchema, GetAdminAllTransactionSchema,
+                                             AdminGetCoachToVerifySchema, AdminUpdateCoachVerificationSchema,
+                                             AdminGetGymToVerifySchema, AdminUpdateGymVerificationSchema)
 
 from app.subservices.admin_subservice import AdminSubService
 from app.subservices.coach_subservice import CoachSubService
@@ -304,3 +306,91 @@ class AdminMainService(BaseService):
                 status_code=status.HTTP_404_NOT_FOUND, detail="User Not Found"
             )
         return user
+
+    async def admin_get_coach_to_verify(self, admin_id: int):
+        logger.info(f"[+] Fetching All Coaches To Verify for admin With Id ---> {admin_id}")
+
+        coaches = await self.admin_subservice.admin_get_coach_to_verify(admin_id)
+
+        if not coaches:
+            logger.error(f"[-] No Coach Found In Fitplan")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="No Coach Found In Fitplan"
+            )
+
+        result = []
+
+        for coach in coaches:
+            metrics = coach.metrics
+
+            result.append(AdminGetCoachToVerifySchema(
+                coach_id=coach.id,
+                coaching_id=metrics.coaching_id if metrics else None,
+                coach_user_name=coach.user_name,
+                coach_name=coach.name,
+                coach_email=coach.email,
+                coach_phone_number=coach.phone_number,
+                coach_gender=coach.gender,
+                coach_status=coach.status,
+                coach_date_of_birth=coach.date_of_birth,
+                coach_height=metrics.height if metrics else None,
+                coach_weight=metrics.weight if metrics else None,
+                coach_specialization=metrics.specialization if metrics else None,
+                coach_biography=metrics.biography if metrics else None,
+            ))
+
+        return result
+
+    async def admin_update_coach_verification(self, coach_verification_schema: AdminUpdateCoachVerificationSchema):
+        coach_id = coach_verification_schema.coach_id
+        coach_verification_status = coach_verification_schema.verification_status
+        coach = await self.coach_subservice.get_coach(coach_id)
+        if not coach:
+            logger.error(f"[-] Coach With Id ---> {coach_id} Not Found")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Coach Not Found"
+            )
+
+        verification_status = "verified" if coach_verification_status else "rejected"
+        logger.info(f"[+] Updating Coach Status for Coach With Id ---> {coach_id} to {verification_status}")
+        return await self.admin_subservice.admin_update_coach_verification(coach_id, verification_status)
+
+    async def admin_get_gym_to_verify(self, admin_id: int):
+        logger.info(f"[+] Fetching All Gyms To Verify by admin With Id ---> {admin_id}")
+        gyms = await self.admin_subservice.admin_get_gym_to_verify(admin_id)
+
+        if not gyms:
+            logger.error(f"[-] No Gym Found In FitPlan")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="No Gym Found In FitPlan"
+            )
+
+        result = []
+
+        for gym in gyms:
+            result.append(AdminGetGymToVerifySchema(
+                gym_id=gym.id,
+                gym_owner_id=gym.owner_id,
+                gym_name=gym.name,
+                gym_license_number=gym.license_number,
+                gym_location=gym.location,
+                gym_sport_facilities=gym.sport_facilities,
+                gym_welfare_facilities=gym.welfare_facilities,
+                gym_rating=gym.rating
+            ))
+
+        return result
+
+    async def admin_update_gym_verification(self, gym_verification_schema: AdminUpdateGymVerificationSchema):
+        gym_id = gym_verification_schema.gym_id
+        gym_verification_status = gym_verification_schema.verification_status
+        gym = await self.admin_subservice.check_gym_exits(gym_id)
+        if not gym:
+            logger.error(f"[-] Gym With Id ---> {gym_id} Not Found")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Gym Not Found"
+            )
+
+        verification_status = "verified" if gym_verification_status else "rejected"
+        logger.info(f"[+] Updating Gym Status for Gym With Id ---> {gym_id} to {verification_status}")
+        return await self.admin_subservice.admin_update_gym_verification(gym_id, verification_status)

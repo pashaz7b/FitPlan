@@ -8,7 +8,10 @@ from app.domain.schemas.user_schema import SetUserInfoSchema, SetUserInfoRespons
 from app.mainservices.admin_auth_service import get_current_admin
 from app.domain.schemas.admin_schema import (GetAdminInfoSchema,
                                              SetAdminInfoSchema, GetAdminAllUsersSchema, GetAdminAllCoachSchema,
-                                             GetAdminAllTransactionSchema)
+                                             GetAdminAllTransactionSchema, AdminGetCoachToVerifySchema,
+                                             AdminUpdateCoachVerificationSchema,
+                                             AdminUpdateCoachVerificationResponseSchema, AdminGetGymToVerifySchema,
+                                             AdminUpdateGymVerificationResponseSchema, AdminUpdateGymVerificationSchema)
 
 from app.mainservices.admin_mainservice import AdminMainService
 from app.mainservices.coach_mainservice import CoachMainService
@@ -115,3 +118,59 @@ async def change_coach_info(
     logger.info(f'Change coach info for coach {coach_id}')
     await admin_service.check_coach_exits(coach_id)
     return await coach_service.change_coach_info(coach_id, set_coach_info)
+
+#***********************************************************************************
+
+@admin_core_router.get(
+    "/get_coach_to_verify",
+    response_model=list[AdminGetCoachToVerifySchema],
+    status_code=status.HTTP_200_OK
+)
+async def admin_get_coach_to_verify(
+        current_admin: Annotated[TokenDataSchema, Depends(get_current_admin)],
+        admin_service: Annotated[AdminMainService, Depends()]
+):
+    logger.info(f'Get coach to verify for admin {current_admin.id}')
+    return await admin_service.admin_get_coach_to_verify(current_admin.id)
+
+
+@admin_core_router.put(
+    "/update_coach_verification",
+    status_code=status.HTTP_200_OK,
+    response_model=AdminUpdateCoachVerificationResponseSchema
+)
+async def admin_update_coach_verification(
+        current_admin: Annotated[TokenDataSchema, Depends(get_current_admin)],
+        coach_verification_schema: AdminUpdateCoachVerificationSchema,
+        admin_service: Annotated[AdminMainService, Depends()]
+):
+    logger.info(f'Update coach verification for coach {coach_verification_schema.coach_id} by admin {current_admin.id}')
+    return await admin_service.admin_update_coach_verification(coach_verification_schema)
+
+
+
+@admin_core_router.get(
+    "/get_gym_to_verify",
+    response_model=list[AdminGetGymToVerifySchema],
+    status_code=status.HTTP_200_OK
+)
+async def admin_get_gym_to_verify(
+        current_admin: Annotated[TokenDataSchema, Depends(get_current_admin)],
+        admin_service: Annotated[AdminMainService, Depends()]
+):
+    logger.info(f'Get gym to verify by admin {current_admin.id}')
+    return await admin_service.admin_get_gym_to_verify(current_admin.id)
+
+
+@admin_core_router.put(
+    "/update_gym_verification",
+    status_code=status.HTTP_200_OK,
+    response_model=AdminUpdateGymVerificationResponseSchema
+)
+async def admin_update_gym_verification(
+        current_admin: Annotated[TokenDataSchema, Depends(get_current_admin)],
+        gym_verification_schema: AdminUpdateGymVerificationSchema,
+        admin_service: Annotated[AdminMainService, Depends()]
+):
+    logger.info(f'Update gym verification for gym {gym_verification_schema.gym_id} by admin {current_admin.id}')
+    return await admin_service.admin_update_gym_verification(gym_verification_schema)

@@ -101,3 +101,50 @@ class GetAdminAllTransactionSchema(BaseModel):
     user_height: Optional[float] = None
     user_weight: Optional[float] = None
     transactions: Optional[list[TransactionSchema]] = []
+
+
+# **********************************************************
+
+class AdminGetCoachToVerifySchema(BaseModel):
+    coach_id: int
+    coaching_id: Optional[int] = None
+    coach_user_name: Optional[str] = None
+    coach_name: Optional[str] = None
+    coach_email: Optional[str] = None
+    coach_phone_number: str
+    coach_gender: Optional[str] = None
+    coach_status: Optional[bool] = None
+    coach_date_of_birth: Optional[str] = None
+    coach_height: Optional[float] = None
+    coach_weight: Optional[float] = None
+    coach_specialization: Optional[str] = None
+    coach_biography: Optional[str] = None
+
+
+class AdminUpdateCoachVerificationSchema(BaseModel):
+    coach_id: int
+    verification_status: bool
+
+
+class AdminUpdateCoachVerificationResponseSchema(BaseModel):
+    message: str
+
+
+class AdminGetGymToVerifySchema(BaseModel):
+    gym_id: int
+    gym_owner_id: Optional[int] = None
+    gym_name: Optional[str] = None
+    gym_license_number: Optional[str] = None
+    gym_location: Optional[str] = None
+    gym_sport_facilities: Optional[str] = None
+    gym_welfare_facilities: Optional[str] = None
+    gym_rating: Optional[int] = None
+
+
+class AdminUpdateGymVerificationSchema(BaseModel):
+    gym_id: int
+    verification_status: bool
+
+
+class AdminUpdateGymVerificationResponseSchema(BaseModel):
+    message: str

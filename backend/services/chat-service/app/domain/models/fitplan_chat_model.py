@@ -24,6 +24,15 @@ class Coach(Base):
     user_coach_with = relationship("UserCoachWith", back_populates="coach")
 
 
+class Admin(Base):
+    __tablename__ = "admin"
+
+    id = Column(Integer, primary_key=True, nullable=False)
+    created_at = Column(TIMESTAMP, server_default=func.now())
+
+    # add this part...
+
+
 class UserCoachChat(Base):
     __tablename__ = "user_coach_chat"
 

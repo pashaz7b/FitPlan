@@ -15,7 +15,8 @@ from app.domain.schemas.coach_schema import (SetCoachUserMealSchema, SetCoachUse
                                              CoachChangeCoachPlanPriceResponseSchema,
                                              CoachCreateGymPlanPriceSchema,
                                              CoachCreateGymPlanPriceResponseSchema,
-                                             CoachDeleteGymPlanPriceSchema, CoachDeleteGymPlanPriceResponseSchema)
+                                             CoachDeleteGymPlanPriceSchema, CoachDeleteGymPlanPriceResponseSchema,
+                                             CoachChangeGymPlanPriceResponseSchema)
 
 from app.infrastructure.repositories.coach_repository import CoachRepository
 from app.subservices.auth.hash_subservice import HashService
@@ -304,4 +305,13 @@ class CoachSubService(BaseService):
             message="Gym Plan Price Deleted Successfully"
         )
 
+        return response
+
+    async def coach_update_gym_plan_price(self, plan_price_id: int,
+                                          verified_gym_plan_price_schema_dict: Dict):
+        logger.info(f"Updating Gym Plan Price with gym_plan_price_id ---> {plan_price_id}")
+        self.coach_repo.coach_update_gym_plan_price(plan_price_id, verified_gym_plan_price_schema_dict)
+        response = CoachChangeGymPlanPriceResponseSchema(
+            message="Gym Plan Price Updated Successfully"
+        )
         return response

@@ -19,5 +19,10 @@ python-multipart
 pytest
 pytest-asyncio
 httpx
-
-
+aio-pika
+aiormq
+exceptiongroup
+multidict
+pamqp
+propcache
+yarl

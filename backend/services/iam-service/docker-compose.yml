@@ -87,7 +87,7 @@ version: "3.8"
 
 services:
   traefik:
-    image: docker.arvancloud.ir/traefik:v2.5
+    image: traefik:v2.5
     container_name: traefik
     command:
       - "--api.insecure=true" # Enable Traefik dashboard
@@ -106,7 +106,7 @@ services:
 
   postgres:
     container_name: postgres_container
-    image: docker.arvancloud.ir/postgres:17
+    image: postgres:17
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-admin}
@@ -124,7 +124,7 @@ services:
 
   pgadmin:
     container_name: pgadmin_container
-    image: docker.arvancloud.ir/dpage/pgadmin4
+    image: dpage/pgadmin4
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
@@ -138,7 +138,7 @@ services:
     restart: unless-stopped
 
   redis:
-    image: docker.arvancloud.ir/redis
+    image: redis
     container_name: redis
     command: redis-server /usr/local/etc/redis/redis.conf
     ports:
@@ -168,6 +168,8 @@ services:
     depends_on:
       - postgres
       - redis
+    environment:
+      - ENVIRONMENT=docker
 
 networks:
   app-network:

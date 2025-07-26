@@ -1,12 +1,14 @@
-from databases import DatabaseURL
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy_utils import database_exists, create_database
 from loguru import logger
+from app.core.configs.config import get_settings
 
+
+DATABASE_URL = get_settings().DATABASE_URL
 #DATABASE_URL = "postgresql://postgres:admin@localhost/fitplan_db"
-DATABASE_URL = "postgresql://postgres:admin@postgres_container:5432/fitplan_db"
+# DATABASE_URL = "postgresql://postgres:admin@postgres_container:5432/fitplan_db"
 engine = create_engine(DATABASE_URL, future=True)
 session_local = sessionmaker(autoflush=False, autocommit=False, bind=engine)
 

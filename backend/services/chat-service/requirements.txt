@@ -21,3 +21,11 @@ httpx-socks
 jdatetime
 asyncpg
 websockets
+aio-pika
+aiormq
+exceptiongroup
+multidict
+pamqp
+propcache
+yarl
+tenacity

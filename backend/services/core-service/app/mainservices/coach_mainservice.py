@@ -10,7 +10,8 @@ from app.domain.schemas.coach_schema import (GetCoachUserSchema, SetCoachUserMea
 from app.domain.schemas.coach_schema import (CoachGetCoachPlanPriceSchema, CoachCreateCoachPlanPriceSchema,
                                              CoachGetGymPlanPriceSchema,
                                              CoachGetHisGymInfoSchema,
-                                             CoachCreateGymPlanPriceSchema, CoachDeleteGymPlanPriceSchema)
+                                             CoachCreateGymPlanPriceSchema, CoachDeleteGymPlanPriceSchema,
+                                             CoachChangeGymPlanPriceSchema)
 
 from app.subservices.coach_subservice import CoachSubService
 from app.subservices.user_duplicates_subservice import UserDuplicatesSubService
@@ -372,3 +373,38 @@ class CoachMainService(BaseService):
             )
 
         return await self.coach_subservice.coach_delete_gym_plan_price(plan_price_schema)
+
+    async def coach_change_gym_plan_price(self, coach_id: int, plan_price_schema: CoachChangeGymPlanPriceSchema):
+        plan_price_id = plan_price_schema.plan_price_id
+        logger.info(f"[...] Changing Gym Plan Price With Id ---> {plan_price_id}")
+
+        gym_plan_price = await self.coach_subservice.check_plan_price_exists_and_valid(plan_price_id)
+
+        if not gym_plan_price:
+            logger.error(f"[-] No Gym Plan Price Found With Id {plan_price_id}")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No Gym Plan Price Found")
+
+        gym_plan_price_gym_id = gym_plan_price.gym_id
+
+        gym_info = await self.coach_subservice.get_gym_info(gym_plan_price_gym_id)
+
+        if not gym_info:
+            logger.error(f"[-] No Gym Found With Id {gym_plan_price_gym_id}")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No Gym Found")
+
+        gym_owner_id = gym_info.owner_id
+
+        if gym_owner_id != coach_id:
+            logger.error(f"[-] Coach With Id {coach_id} Is Not The Owner Of Gym Plan Price With Id {plan_price_id}")
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN, detail="You Are Not Authorized To Change This Gym Plan Price"
+            )
+
+        gym_plan_price_schema_dict = {
+            "session_counts": plan_price_schema.session_counts,
+            "duration_days": plan_price_schema.duration_days,
+            "is_vip": plan_price_schema.is_vip,
+            "price": plan_price_schema.price
+        }
+
+        return await self.coach_subservice.coach_update_gym_plan_price(plan_price_id, gym_plan_price_schema_dict)

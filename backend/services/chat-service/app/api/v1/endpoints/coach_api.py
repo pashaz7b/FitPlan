@@ -10,7 +10,7 @@ from app.domain.schemas.coach_schema import (CoachCreateChatSchema,
 
 from app.mainservices.coach_mainservice import CoachMainService
 from fastapi import WebSocket, Depends
-
+from app.core.config.config import get_settings
 coach_chat_router = APIRouter()
 
 
@@ -27,8 +27,9 @@ async def coach_chat_websocket_endpoint(
 
     try:
         async with httpx.AsyncClient() as client:
+            iam_url = get_settings().IAM_URL
             response = await client.get(
-                "http://iam.localhost/api/v1/coach/panel",
+                f"{iam_url}/api/v1/coach/panel",
                 headers={"Authorization": f"Bearer {token}"}
             )
         response.raise_for_status()

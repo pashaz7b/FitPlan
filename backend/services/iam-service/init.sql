@@ -65,7 +65,7 @@ CREATE TABLE coach_metrics (
     specialization VARCHAR(255), -- E.g., fitness, strength training, etc.
     biography TEXT, -- Brief biography of the coach
     rating INTEGER DEFAULT 0 CHECK (rating BETWEEN 0 AND 5),
-    coaching_id VARCHAR(100) NOT NULL,
+    coaching_id VARCHAR(100),
     coaching_card_image TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

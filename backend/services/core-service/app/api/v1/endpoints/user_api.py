@@ -1,6 +1,5 @@
-# from select import select
 from typing import Annotated
-from fastapi import APIRouter, Depends, status, Request
+from fastapi import APIRouter, Depends, status, Request, BackgroundTasks
 from loguru import logger
 
 from app.domain.schemas.token_schema import TokenDataSchema
@@ -30,6 +29,7 @@ from app.domain.schemas.user_schema import (UserGetAllVerifiedGymSchema,
                                             CreateUserCoachCommentSchema, CreateUserCoachCommentResponseSchema)
 
 from app.mainservices.user_mainservice import UserMainService
+from app.tasks.send_id_to_chatservice import SendIdToChat
 
 user_core_router = APIRouter()
 
@@ -80,10 +80,17 @@ async def get_user_all_coach(
 async def set_user_workout_coach(
         current_user: Annotated[TokenDataSchema, Depends(get_current_user)],
         user_schema: UserTakeWorkoutCoachSchema,
-        user_service: Annotated[UserMainService, Depends()]
+        user_service: Annotated[UserMainService, Depends()],
+        background_tasks: BackgroundTasks,
+        send_id_task: Annotated[SendIdToChat, Depends()]
 ):
     logger.info(f'[...] Setting workout coach for user {current_user.id}')
-    return await user_service.create_user_take_workout_coach(current_user.id, user_schema)
+    result = await user_service.create_user_take_workout_coach(current_user.id, user_schema)
+    # find user's coach in order to send it to chat microservice
+    coach_id = await user_service.get_user_coach_for_rabbitmq(current_user.id)
+    if coach_id:
+        background_tasks.add_task(send_id_task.send_user_coach_create_id, current_user.id, coach_id)
+    return result
 
 
 @user_core_router.get(
@@ -174,11 +181,18 @@ async def user_get_meal(
 async def change_user_coach(
         current_user: Annotated[TokenDataSchema, Depends(get_current_user)],
         new_workout_coach: ChangeUserCoach,
-        user_service: Annotated[UserMainService, Depends()]
+        user_service: Annotated[UserMainService, Depends()],
+        background_tasks: BackgroundTasks,
+        send_id_task: Annotated[SendIdToChat, Depends()]
 ):
     logger.info(f"[+] Updating Coach For User With ID {current_user.id}")
-    return await user_service.update_user_coach(current_user.id,
-                                                {"workout_plan_id": new_workout_coach.new_workout_plan_id})
+    result = await user_service.update_user_coach(current_user.id,
+                                                  {"workout_plan_id": new_workout_coach.new_workout_plan_id})
+    # find user's coach in order to send it to chat microservice
+    coach_id = await user_service.get_user_coach_for_rabbitmq(current_user.id)
+    if coach_id:
+        background_tasks.add_task(send_id_task.send_user_coach_change_id, current_user.id, coach_id)
+    return result
 
 
 @user_core_router.get(
@@ -338,7 +352,6 @@ async def user_coach_comment(
 ):
     logger.info(f'[...] Creating User Coach Comment for User {current_user.id}')
     return await user_service.create_user_coach_comment(current_user.id, user_coach_comment_schema)
-
 
 
 @user_core_router.get(

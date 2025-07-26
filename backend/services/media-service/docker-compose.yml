@@ -3,7 +3,7 @@ version: '3.8'
 services:
 
   mongo:
-    image: docker.arvancloud.ir/mongo:latest
+    image: mongo:latest
     container_name: mongo_container
     ports:
       - "27017:27017"

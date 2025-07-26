@@ -629,3 +629,13 @@ class UserMainService(BaseService):
         )
 
         return coach_plan_price_response
+
+    async def get_user_coach_for_rabbitmq(self, user_id: int):
+        logger.info(f"[...] Fetching Coach For User With Id ---> {user_id}")
+        coach = await self.user_subservice.get_user_coach(user_id)
+
+        if not coach:
+            logger.info(f"[-] No coach found for user with id ---> {user_id}")
+            raise HTTPException(status_code=404, detail="No coach found for this user")
+
+        return coach.id

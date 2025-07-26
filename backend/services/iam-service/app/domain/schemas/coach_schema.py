@@ -115,9 +115,9 @@ class CoachRegisterWithPhoneFinalSchema(BaseModel):
     weight: Optional[float]
     specialization: Optional[str]
     biography: Optional[str]
-    is_verified: bool
+    # is_verified: bool
     coaching_id: str
-    coaching_card_image: str
+    coaching_card_image: str = ""
 
 
 class CoachRegisterWithPhoneFinalResponseSchema(BaseModel):

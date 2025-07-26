@@ -1,3 +1,23 @@
+#version: '3.8'
+#
+#services:
+#  chat:
+#    build:
+#      context: ../services/chat-service
+#      dockerfile: Dockerfile
+#    container_name: chat-service
+#    networks:
+#      - app-network
+#    labels:
+#      - "traefik.enable=true"
+#      - "traefik.http.routers.chat.rule=Host(`chat.localhost`)"
+#      - "traefik.http.services.chat.loadbalancer.server.port=80"
+#    restart: unless-stopped
+#
+#networks:
+#  app-network:
+#    driver: bridge
+
 version: '3.8'
 
 services:
@@ -13,7 +33,27 @@ services:
       - "traefik.http.routers.chat.rule=Host(`chat.localhost`)"
       - "traefik.http.services.chat.loadbalancer.server.port=80"
     restart: unless-stopped
+    depends_on:
+      - rabbitmq
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"    # برای ارتباط برنامه‌ها (مثل aio_pika)
+      - "15672:15672"  # برای پنل مدیریتی تحت وب
+    networks:
+      - app-network
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.rabbitmq.rule=Host(`rabbitmq.localhost`)"
+      - "traefik.http.services.rabbitmq.loadbalancer.server.port=15672"
 
 networks:
   app-network:
     driver: bridge
+
