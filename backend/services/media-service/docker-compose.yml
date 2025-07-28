@@ -26,6 +26,8 @@ services:
       - "50051:50051" # grpc port
     depends_on:
       - mongo
+    environment:
+      - ENVIRONMENT=docker
 
 networks:
   app-network:

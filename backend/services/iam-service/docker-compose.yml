@@ -114,6 +114,7 @@ services:
     volumes:
       - postgres:/data/postgres
       - ../services/iam-service/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ../services/chat-service/chat.sql:/docker-entrypoint-initdb.d/chat.sql
     ports:
       - "5432:5432"
     networks:

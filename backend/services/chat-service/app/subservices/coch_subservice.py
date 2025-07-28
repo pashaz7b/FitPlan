@@ -21,7 +21,7 @@ class CoachSubService(BaseService):
         super().__init__()
         self.coach_repo = coach_repo
 
-    async def create_coach_chat(self, user_id, coach_id, coach_create_chat_schema: CoachCreateChatSchema):
+    async def create_coach_chat(self, coach_id, user_id,coach_create_chat_schema: CoachCreateChatSchema):
         logger.info("[+] Creating Chat For Coach With User")
 
         coach_user_chat = UserCoachChat(

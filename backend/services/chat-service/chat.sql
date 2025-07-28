@@ -1,3 +1,11 @@
+-- Create the database
+CREATE DATABASE fitplan_chat;
+
+-- Connect to the new database
+\c fitplan_chat;
+
+--**********************************************************************************************
+
 CREATE TABLE IF NOT EXISTS users
 (
     id         INT PRIMARY KEY NOT NULL,

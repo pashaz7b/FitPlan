@@ -11,8 +11,6 @@ class AdminRegisterSchema(BaseModel):
     phone_number: constr(max_length=20)
     gender: constr(max_length=10)
     date_of_birth: str
-    height: Optional[float]
-    weight: Optional[float]
 
 
 class AdminRegisterResponseSchema(BaseModel):

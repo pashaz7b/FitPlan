@@ -2,11 +2,22 @@ from functools import lru_cache
 from pathlib import Path
 from loguru import logger
 from pydantic_settings import BaseSettings, SettingsConfigDict
+import os
 
 
 class Settings(BaseSettings):
-    # IAM_URL: str = "http://iam"
-    IAM_URL: str = "http://iam.localhost"
+    ENVIRONMENT: str = os.getenv("ENVIRONMENT", "local")
+
+    if ENVIRONMENT == "local":
+        RABBITMQ_URL: str = "amqp://guest:guest@localhost/"  # local
+        DATABASE_URL: str = "postgresql://postgres:admin@localhost/fitplan_db"  # local
+        IAM_URL: str = "http://iam.localhost"  # local
+
+    elif ENVIRONMENT == "docker":
+        RABBITMQ_URL: str = "amqp://guest:guest@rabbitmq/"  # docker
+        DATABASE_URL: str = "postgresql://postgres:admin@postgres_container:5432/fitplan_db"  # docker
+        IAM_URL: str = "http://iam"  # docker
+
     # *************************
     # # DATABASE_URL: str = "mongodb://mongo:27017"
     # DATABASE_URL: str = "mongodb://localhost:27017"
@@ -28,9 +39,6 @@ class Settings(BaseSettings):
     # model_config = SettingsConfigDict(env_file=str(Path(__file__).resolve().parent / ".env"))
     # *****************************************************
     FitPlAN_PRICE: int = 1000000
-    RABBITMQ_URL: str = "amqp://guest:guest@localhost/"  # local
-    # RABBITMQ_URL: str = "amqp://guest:guest@rabbitmq/" #docker
-
 
 
 @lru_cache

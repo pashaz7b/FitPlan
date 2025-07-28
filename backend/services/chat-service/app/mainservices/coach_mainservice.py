@@ -1,5 +1,6 @@
 # import json
 # from typing import Annotated
+
 from loguru import logger
 # from fastapi import Depends, HTTPException, status
 from app.mainservices.singletons import get_coach_connection_manager, get_user_connection_manager
@@ -9,7 +10,7 @@ from app.subservices.coch_subservice import CoachSubService
 # from app.subservices.baseconfig import BaseService
 from fastapi import WebSocket, Depends
 # from json.decoder import JSONDecodeError
-from fastapi import WebSocketDisconnect
+from fastapi import WebSocketDisconnect, HTTPException
 # from collections import defaultdict
 import json
 from typing import Annotated
@@ -136,4 +137,7 @@ class CoachMainService:
 
     async def get_coach_chat_history(self, user_id: int, coach_id, limit: int = 50, offset: int = 0):
         messages = await self.coach_subservice.get_coach_chat_messages(user_id, coach_id, limit, offset)
+        if not messages:
+            logger.info("No messages found")
+            raise HTTPException(status_code=404, detail="No messages found")
         return [CoachCreateChatResponseSchema.from_orm(msg) for msg in messages]

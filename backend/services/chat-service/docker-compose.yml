@@ -35,6 +35,8 @@ services:
     restart: unless-stopped
     depends_on:
       - rabbitmq
+    environment:
+      - ENVIRONMENT=docker
 
   rabbitmq:
     image: rabbitmq:3-management

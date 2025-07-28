@@ -4,7 +4,7 @@ from app.core.config.config import get_settings
 
 try:
     config = get_settings()
-    client = AsyncIOMotorClient(config.DATABASE_URL)
+    client = AsyncIOMotorClient(config.MONGO_DATABASE_URL)
     db = client[config.DATABASE_NAME]
     logger.info("[+] Connected To Mongo Database")
 except Exception as e:
