@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import Testing_header from "../components/testing_header";
 import Footer_comp from "../components/footer_comp";
+import peoson_svg from "/SVGs/person_24dp_E8EAED_FILL0_wght300_GRAD0_opsz24.svg";
 import fit_logo from "/Images/Fit-Logo-Resized.png";
 
 export default function New_gym_init() {
@@ -9,15 +10,27 @@ export default function New_gym_init() {
   const [otp, setOtp] = useState("");
   const [gymName, setGymName] = useState("");
   const [bussinessLis, setBussinessLis] = useState("");
+  const [imagePreview, setImagePreview] = useState(null);
+  const [location, setLocation] = useState("");
   const [sportFacility, setSportFacility] = useState("");
   const [facilities, setFacilities] = useState("");
   const [formNum, setFormNum] = useState(1);
 
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   async function handleSubmit_1(e) {
     e.preventDefault();
-    handleMail();
 
-    if (!mail) {
+    if (!gymName) {
       setShowError(true);
       console.log(showError);
 
@@ -30,9 +43,10 @@ export default function New_gym_init() {
   async function handleSubmit_2(e) {
     e.preventDefault();
 
-    if (!otp || !/^[0-9]{5}/.test(otp)) {
+    if (!bussinessLis) {
       setShowError(true);
       console.log(showError);
+
       return;
     }
     setShowError(false);
@@ -42,61 +56,39 @@ export default function New_gym_init() {
   async function handleSubmit_3(e) {
     e.preventDefault();
 
-    if (!coachingCardId || !nationalID) {
+    if (!bussinessLis) {
       setShowError(true);
       console.log(showError);
+
       return;
     }
     setShowError(false);
     setFormNum(4);
   }
+
   async function handleSubmit_4(e) {
     e.preventDefault();
 
-    if (!userID || !password || !passwordConf) {
+    if (!location) {
       setShowError(true);
       console.log(showError);
-      return;
-    }
 
-    if (password != passwordConf) {
-      setShowPassError(true);
-      console.log(showPassError);
       return;
     }
     setShowError(false);
-    setShowPassError(false);
     setFormNum(5);
   }
+
   async function handleSubmit_5(e) {
     e.preventDefault();
-
-    if (!birthDate || !height || !weight) {
-      setShowError(true);
-      console.log(showError);
-      return;
-    }
-    setShowError(false);
     setFormNum(6);
   }
+
   async function handleSubmit_6(e) {
     e.preventDefault();
-
     setFormNum(7);
   }
 
-  async function backToLanding() {
-    useNavigate("/");
-  }
-
-  const handleMail = (e) => {
-    if (!/^[a-zA-Z0-9._%+-]+@(gmail\.com|yahoo\.com)$/.test(mail)) {
-      setShowError(true);
-      console.log(mail);
-    } else {
-      setShowError(false);
-    }
-  };
   return (
     <div className="h-screen w-full bg-mintCream font-iranyekan text-coal">
       <Testing_header />
@@ -123,22 +115,22 @@ export default function New_gym_init() {
                 className="text-[20px] max-md:text-[15px] font-bold mb-2"
                 htmlFor="email_input_box"
               >
-                شماره تماس یا آدرس ایمیل
+                نام باشگاه
               </label>
               <p className="text-[15px] text-midtoneGray mb-5">
-                لطفا آدرس ایمیل یاهو یا جیمیل وارد کند
+                اول از همه اسم باشگاه شما چیه؟
               </p>
               <input
                 type="text"
-                value={mail}
-                name="email"
-                id={mail}
-                onChange={(e) => setMail(e.target.value)}
+                value={gymName}
+                name="gym_name"
+                id={gymName}
+                onChange={(e) => setGymName(e.target.value)}
                 className={`email text-center text-[15px] py-2 bg-mintCream border rounded-[10px] ${
-                  showError && !mail ? "border-superRed" : "border-coal"
+                  showError && !gymName ? "border-superRed" : "border-coal"
                 }`}
                 // pattern="([a-z0-9._%+-]+@(gmail\.com|yahoo\.com))"
-                placeholder="آدرس ایمیل یاهو یا جیمیل"
+                placeholder="باشگاه اندام‌پروران"
               />
             </div>
             <button
@@ -174,36 +166,69 @@ export default function New_gym_init() {
                 className="text-[20px] max-md:text-[15px] font-bold mb-2"
                 htmlFor="email_input_box"
               >
-                تائید آدرس ایمیل
+                پروانه کسب
               </label>
               <p className="text-[15px] text-midtoneGray mb-5">
-                لطفا کد 5 رقمی‌ای که پیامک شد را اینجا وارد کنید
+                لطفا شماره پروانه کسب خود را وارد کنید
               </p>
               <input
                 type="text"
-                value={otp}
-                name="otp"
-                id={otp}
-                onChange={(e) => setOtp(e.target.value)}
+                value={bussinessLis}
+                name="bussinessLis"
+                id={bussinessLis}
+                onChange={(e) => setBussinessLis(e.target.value)}
                 className={`email text-center text-[15px] py-2 bg-mintCream border rounded-[10px] ${
-                  showError && !otp ? "border-superRed" : "border-coal"
+                  showError && !bussinessLis ? "border-superRed" : "border-coal"
                 }`}
                 // pattern="([a-z0-9._%+-]+@(gmail\.com|yahoo\.com))"
-                placeholder="1 5 9 7 5"
+                placeholder="شماره پروانه کسب"
               />
+              <p className="text-[15px] text-midtoneGray mt-5">
+                لطفا تصویر پروانه کسب خود را آپلود کنید
+              </p>
+              <div className="max-sm:flex max-sm:flex-col-reverse max-sm:text-center max-sm:mx-auto max-sm:items-center flex justify-between gap-5 align-bottom items-end mt-auto">
+                <label
+                  htmlFor="upload"
+                  className="h-[35px] w-auto px-5 text-black bg-mintCream rounded-lg cursor-pointer hover:bg-irishGreen hover:text-mintCream transition"
+                >
+                  افزودن تصویر
+                </label>
+                <input
+                  type="file"
+                  id="upload"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+                <div className="w-32 h-32 border-[2px] border-white rounded-[15px] flex items-center justify-center">
+                  {imagePreview ? (
+                    <img
+                      src={imagePreview}
+                      alt="Preview"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <img
+                      src={peoson_svg}
+                      alt="Person Icon"
+                      className="w-28 h-28 text-gray-400"
+                    />
+                  )}
+                </div>
+              </div>
             </div>
             <button
               type="submit"
               id="submit_button"
-              className="text-mintCream bg-irishGreen hover:bg-green-800 h-[40px] text-[15px] font-medium max-md:w-[80%] w-[50%] rounded-[10px] mx-auto transition-all duration-300"
+              className="text-mintCream bg-irishGreen hover:bg-green-800 h-[40px] text-[20px] font-medium max-sm:w-[80%] w-[50%] rounded-[10px] mx-auto transition-all duration-300"
             >
               {/* <a href={`/otp_page/${role}`}>ورود</a> */}
-              تائید آدرس ایمیل
+              تائید
             </button>
           </div>
         </form>
 
-        {/* third form */}
+        {/* Third form */}
         <form
           onSubmit={handleSubmit_3}
           className={`w-[25%] max-md:w-[75%] text-center pt-6 mb-[122px] mx-auto border border-coal rounded-[10px] ${
@@ -225,46 +250,39 @@ export default function New_gym_init() {
                 className="text-[20px] max-md:text-[15px] font-bold mb-2"
                 htmlFor="email_input_box"
               >
-                کد ملی
+                تصاویر باشگاه
               </label>
-              <p className="text-[15px] text-midtoneGray mb-2">
-                لطفا کد ملی خود را وارد کنید
+              <p className="text-[15px] text-midtoneGray mb-5">
+                با گذاشتن عکس از باشگاهتون ورزشکارای بیشتری رو به باشگاهتون جذب
+                کنین
               </p>
-              <input
-                type="text"
-                value={nationalID}
-                name="nationalID"
-                id={nationalID}
-                onChange={(e) => setNationalID(e.target.value)}
+              {/* <input
+                type="number"
+                value={bussinessLis}
+                name="bussinessLis"
+                id={bussinessLis}
+                onChange={(e) => setBussinessLis(e.target.value)}
                 className={`email text-center text-[15px] py-2 bg-mintCream border rounded-[10px] ${
-                  showError && !nationalID ? "border-superRed" : "border-coal"
+                  showError && !bussinessLis ? "border-superRed" : "border-coal"
                 }`}
                 // pattern="([a-z0-9._%+-]+@(gmail\.com|yahoo\.com))"
-                placeholder="2051234567"
-              />
-              <label
-                className="text-[20px] max-md:text-[15px] font-bold mb-2 mt-6"
-                htmlFor="email_input_box"
-              >
-                شناسه مربی‌گری
-              </label>
-              <p className="text-[15px] text-midtoneGray mb-2">
-                لطفا شناسه‌ی کارت مربی‌گری خود را وارد کنید
-              </p>
-              <input
-                type="text"
-                value={coachingCardId}
-                name="coachingCardId"
-                id={coachingCardId}
-                onChange={(e) => setCoachingCardId(e.target.value)}
-                className={`email text-center text-[15px] py-2 bg-mintCream border rounded-[10px] ${
-                  showError && !coachingCardId
-                    ? "border-superRed"
-                    : "border-coal"
-                }`}
-                // pattern="([a-z0-9._%+-]+@(gmail\.com|yahoo\.com))"
-                placeholder="110/12345"
-              />
+                placeholder="َشماره پروانه کسب"
+              /> */}
+              <div className="max-sm:flex max-sm:flex-col-reverse max-sm:text-center max-sm:mx-auto max-sm:items-center flex justify-between gap-5 align-bottom items-end mt-auto">
+                <label
+                  htmlFor="upload"
+                  className="h-[35px] w-auto text-center mx-auto px-5 text-black bg-mintCream border border-irishGreen rounded-lg cursor-pointer hover:bg-irishGreen hover:text-mintCream transition"
+                >
+                  افزودن تصویر
+                </label>
+                <input
+                  type="file"
+                  id="upload"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+              </div>
             </div>
             <button
               type="submit"
@@ -277,7 +295,7 @@ export default function New_gym_init() {
           </div>
         </form>
 
-        {/* fourth form */}
+        {/* Fourth form */}
         <form
           onSubmit={handleSubmit_4}
           className={`w-[25%] max-md:w-[75%] text-center pt-6 mb-[122px] mx-auto border border-coal rounded-[10px] ${
@@ -293,71 +311,27 @@ export default function New_gym_init() {
             >
               لطفا فیلدهای الزامی را پر کنید
             </p>
-            <p
-              className={`pt-5 text-superRed text-[15px] ${
-                showPassError ? "block" : "hidden"
-              }`}
-            >
-              گذرواژه تکرار شده صحیح نیست
-            </p>
 
             <div className="my-6 w-[80%] max-sm:w-[90%] mx-auto flex flex-col justify-start text-right">
               <label
                 className="text-[20px] max-md:text-[15px] font-bold mb-2"
-                htmlFor="username"
-              >
-                نام کاربری
-              </label>
-              <p className="text-[15px] text-midtoneGray mb-1">
-                لطفا نام‌کاربری منحصر به فردی بسازید
-              </p>
-              <input
-                type="text"
-                value={userID}
-                name="userID"
-                id={userID}
-                onChange={(e) => setUserID(e.target.value)}
-                className={`email text-center text-[15px] py-2 bg-mintCream border rounded-[10px] ${
-                  showError && !userID ? "border-superRed" : "border-coal"
-                }`}
-                // pattern="([a-z0-9._%+-]+@(gmail\.com|yahoo\.com))"
-                placeholder="MyUserName"
-              />
-              <label
-                className="text-[20px] max-md:text-[15px] font-bold mt-6  mb-1"
                 htmlFor="email_input_box"
               >
-                گذرواژه
+                مکان باشگاه
               </label>
-              <p className="text-[15px] text-midtoneGray mb-1">
-                لطفا یک گذرواژه برای خود تعیین کنید
+              <p className="text-[15px] text-midtoneGray mb-5">
+                باشگاه شما رو کجا میشه پیدا کرد؟
               </p>
               <input
                 type="text"
-                value={password}
-                name="password"
-                id={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className={`email text-center text-[15px] my-1 py-2 bg-mintCream border rounded-[10px] ${
-                  showError && !password ? "border-superRed" : "border-coal"
+                value={location}
+                name="location"
+                id={location}
+                onChange={(e) => setLocation(e.target.value)}
+                className={`email text-center text-[15px] py-2 bg-mintCream border rounded-[10px] ${
+                  showError && !location ? "border-superRed" : "border-coal"
                 }`}
-                // pattern="([a-z0-9._%+-]+@(gmail\.com|yahoo\.com))"
-                placeholder="********"
-              />
-              <p className="text-[15px] text-midtoneGray mb-1">
-                لطفا گذرواژه خود را تکرار کنید
-              </p>
-              <input
-                type="text"
-                value={passwordConf}
-                name="passwordConf"
-                id={passwordConf}
-                onChange={(e) => setPasswordConf(e.target.value)}
-                className={`email text-center text-[15px] my-1 py-2 bg-mintCream border rounded-[10px] ${
-                  showError && !passwordConf ? "border-superRed" : "border-coal"
-                }`}
-                // pattern="([a-z0-9._%+-]+@(gmail\.com|yahoo\.com))"
-                placeholder="********"
+                placeholder="تهران، میدان تجریش..."
               />
             </div>
             <button
@@ -389,81 +363,24 @@ export default function New_gym_init() {
             </p>
 
             <div className="my-6 w-[80%] max-sm:w-[90%] mx-auto flex flex-col justify-start text-right">
-              <div className="max-sm:flex max-sm:flex-col max-sm:text-center max-sm:mx-auto flex flex-col text-right">
-                <label
-                  className="text-[20px] max-md:text-[15px] font-bold mb-2"
-                  htmlFor="username"
-                >
-                  اطلاعات حرفه‌ای
-                </label>
-                <div className="flex gap-1 max-md:flex-col">
-                  <div className="w-[60%] max-md:w-full">
-                    <label htmlFor="birthDate" className="mb-3">
-                      تاریخ تولد
-                    </label>
-                    <input
-                      type="text"
-                      value={birthDate}
-                      onChange={(e) => setBirthDate(e.target.value)}
-                      className={`text-center text-[15px] px-[30px] w-[100%] py-2 bg-mintCream border rounded-[10px] ${
-                        showError && !birthDate
-                          ? "border-superRed"
-                          : "border-coal"
-                      }`}
-                      placeholder="1380/8/22"
-                    />
-                  </div>
-                  <div className="w-[40%] max-md:w-full">
-                    <label htmlFor="gender" className="mb-3">
-                      جنسیت
-                    </label>
-                    <select
-                      name="gender"
-                      id="gender"
-                      value={gender}
-                      onChange={(e) => setGender(e.target.value)}
-                      className={`text-right text-[15px] w-[100%] py-2 bg-mintCream border rounded-[10px] ${
-                        showError ? "border-superRed" : "border-coal"
-                      }`}
-                    >
-                      <option value="آقا">آقا</option>
-                      <option value="خانم">خانم</option>
-                    </select>
-                  </div>
-                </div>
-                <div className="flex mt-3 gap-1  max-md:flex-col">
-                  <div className="w-[50%] max-md:w-full">
-                    <label htmlFor="height" className="mb-3">
-                      قد(سانتی‌متر)
-                    </label>
-                    <input
-                      type="number"
-                      value={height}
-                      step="0.01"
-                      min="0.00"
-                      onChange={(e) => setHeight(e.target.value)}
-                      className={`text-center text-[15px] px-[30px] w-[100%] py-2 bg-mintCream border rounded-[10px] ${
-                        showError && !height ? "border-superRed" : "border-coal"
-                      }`}
-                    />
-                  </div>
-                  <div className="w-[50%] max-md:w-full">
-                    <label htmlFor="weight" className="mb-3">
-                      وزن(کیلوگرم)
-                    </label>
-                    <input
-                      type="number"
-                      step="0.01"
-                      min="30"
-                      value={weight}
-                      onChange={(e) => setWeight(e.target.value)}
-                      className={`text-center text-[15px] px-[30px] w-[100%] py-2 bg-mintCream border rounded-[10px] ${
-                        showError && !weight ? "border-superRed" : "border-coal"
-                      }`}
-                    />
-                  </div>
-                </div>
-              </div>
+              <label
+                className="text-[20px] max-md:text-[15px] font-bold mb-2"
+                htmlFor="email_input_box"
+              >
+                امکانات ورزشی
+              </label>
+              <p className="text-[15px] text-midtoneGray mb-5">
+              از امکانات ورزشی باشگاهتون بگین
+              تا معلوم بشه چقدر از رقباتون جلوتر هستین!
+              </p>
+              <textarea
+                id="sport_fclt"
+                cols="30"
+                rows="5"
+                onChange={(e) => setSportFacility(e.target.value)}
+                className="border rounded-[15px] bg-gray-300 p-3 w-full resize-none"
+                placeholder="دستگاه پرواز - پرس تخت دستگاه -  دستگاه پشت پا ایستاده - دستگاه ساق پا نشسته - دستگاه لت بالا - ..."
+              ></textarea>
             </div>
             <button
               type="submit"
@@ -498,19 +415,19 @@ export default function New_gym_init() {
                 className="text-[20px] max-md:text-[15px] font-bold mb-2"
                 htmlFor="email_input_box"
               >
-                افتخارات
+                امکانات رفاهی
               </label>
               <p className="text-[15px] text-midtoneGray mb-5">
-                لطفا به عنوان یک مربی از افتخارات و قهرمانی‌ها در مسابقاتی که
-                شرکت کرده‌اید بنویسید
+              اینجا بنویسین که با چه امکانات رفاهی‌ای‌
+              میتونین تجربه‌ی بهتری به ورزشکارا ارائه کنین
               </p>
               <textarea
                 id="breakfast"
                 cols="30"
-                rows="10"
+                rows="5"
                 onChange={(e) => setAchievement(e.target.value)}
                 className="border rounded-[15px] bg-gray-300 p-3 w-full resize-none"
-                placeholder="قهرمانی در مسابقات..."
+                placeholder="بوفه - حمام - سرویس بهداشتی - سیستم خنک کننده سراسری - سیستم تهویه مطبوع قوی - ..."
               ></textarea>
             </div>
             <button
@@ -553,7 +470,7 @@ export default function New_gym_init() {
             formNum < 7 ? "block" : "hidden"
           } mb-3 text-midtoneGray`}
         >
-          <p>{`مرحله ${formNum} از 5`}</p>
+          <p>{`مرحله ${formNum} از 6`}</p>
         </div>
       </div>
       <Footer_comp />

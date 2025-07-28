@@ -24,7 +24,7 @@ export default function GymDetails() {
   };
 
   const handleSubmit = () => {
-    if (comment.trim() === "" || rating === 0) {
+    if (comment.trim() === "") {
       alert("لطفا نظر و امتیاز خود را وارد کنید!");
       return;
     }
@@ -441,7 +441,7 @@ export default function GymDetails() {
                           className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-300 resize-none mb-4"
                           rows="4"
                         />
-                        <p className="text-center text-gray-700 mb-2">
+                        {/* <p className="text-center text-gray-700 mb-2">
                           از 1 تا 5 چند ستاره میدهید؟
                         </p>
                         <div className="flex justify-center items-center gap-1 mb-4">
@@ -449,7 +449,7 @@ export default function GymDetails() {
                             rating={rating}
                             onRatingChange={handleRating}
                           />
-                        </div>
+                        </div> */}
                         <button
                           onClick={handleSubmit}
                           className="w-full py-2 px-4 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
