@@ -17,8 +17,32 @@ services:
       interval: 30s # How often to run the check
       timeout: 10s # Maximum time allowed for the command to complete
       retries: 5 # Number of consecutive failures before marking as unhealthy
-      start_period: 8s # Time to wait before starting health checks  
+      start_period: 10s # Time to wait before starting health checks  
     restart: unless-stopped
+
+  postgres:
+    container_name: postgres_container
+    # image: docker.arvancloud.ir/postgres:17
+    image: postgres:17
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-admin}
+      PGDATA: /data/postgres
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "sh -c 'pg_isready -U ${POSTGRES_USER:-postgres}'"]
+      interval: 30s
+      timeout: 10s
+      start_period: 5s
+      retries: 5  
+    networks:
+      - app-network
+    restart: unless-stopped
+    expose:
+      - 5432
 
   chat:
     build:
@@ -36,6 +60,8 @@ services:
     restart: unless-stopped
     depends_on:
       rabbitmq:
+        condition: service_healthy
+      postgres:
         condition: service_healthy
 
 networks:

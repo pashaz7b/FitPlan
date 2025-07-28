@@ -118,6 +118,12 @@ services:
       - ../services/iam-service/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "sh -c 'pg_isready -U ${POSTGRES_USER:-postgres}'"]
+      interval: 30s
+      timeout: 10s
+      start_period: 5s
+      retries: 5  
     networks:
       - app-network
     restart: unless-stopped
@@ -151,6 +157,12 @@ services:
       - ./redis.conf:/usr/local/etc/redis/redis.conf
     networks:
       - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 10s # Time to wait before starting health checks  
     restart: unless-stopped
 
   rabbitmq:
@@ -182,9 +194,12 @@ services:
       - "traefik.http.services.iam.loadbalancer.server.port=80"
     restart: unless-stopped
     depends_on:
-      - postgres
-      - redis
-      - rabbitmq
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_started
 
 networks:
   app-network:
