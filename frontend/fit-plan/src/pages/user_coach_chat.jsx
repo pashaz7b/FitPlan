@@ -33,65 +33,65 @@ export default function User_coach_chat() {
       "آرش از جوانی به ورزش علاقه‌مند بود و بعد از ورود به دانشگاه رشته تربیت بدنی، به طور جدی وارد دنیای بدنسازی شد. او بیش از ۱۰ سال است که به عنوان مربی حرفه‌ای فعالیت می‌کند و با تمرکز بر روی تمرینات قدرتی و استقامتی، به ویژه برای ورزشکاران رشته‌های دو و میدانی و فوتبال شناخته شده است. آرش به توانمندسازی شاگردان خود در بهبود عملکرد ورزشی‌شان افتخار می‌کند.",
   });
 
-  useEffect(() => {
-    userSet();
-    coachSet();
-    console.log("sss");
-  }, []);
+  // useEffect(() => {
+  //   userSet();
+  //   coachSet();
+  //   console.log("sss");
+  // }, []);
 
-  const value = localStorage.getItem("token").toString();
+  // const value = localStorage.getItem("token").toString();
 
-  async function userSet() {
-    console.log("salam");
-    const res = await axios.get(
-      "http://fitplan.localhost/api/v1/user/get_user_info",
-      {
-        headers: {
-          Authorization: `Bearer ${JSON.parse(value)}`,
-        },
-      }
-    );
-    const data = res.data;
-    setUserInfo((prevState) => ({
-      ...prevState,
-      nameSurname: data.name,
-      username: data.user_name,
-      password: data.password,
-      phoneNumber: data.phone_number,
-      email: data.email,
-      birthDate: data.date_of_birth,
-      gender: data.gender,
-      height: data.height,
-      weight: data.weight,
-    }));
-  }
+  // async function userSet() {
+  //   console.log("salam");
+  //   const res = await axios.get(
+  //     "http://fitplan.localhost/api/v1/user/get_user_info",
+  //     {
+  //       headers: {
+  //         Authorization: `Bearer ${JSON.parse(value)}`,
+  //       },
+  //     }
+  //   );
+  //   const data = res.data;
+  //   setUserInfo((prevState) => ({
+  //     ...prevState,
+  //     nameSurname: data.name,
+  //     username: data.user_name,
+  //     password: data.password,
+  //     phoneNumber: data.phone_number,
+  //     email: data.email,
+  //     birthDate: data.date_of_birth,
+  //     gender: data.gender,
+  //     height: data.height,
+  //     weight: data.weight,
+  //   }));
+  // }
 
-  async function coachSet() {
-    console.log("salam");
-    const res = await axios.get(
-      "http://fitplan.localhost/api/v1/user/get_user_coach",
-      {
-        headers: {
-          Authorization: `Bearer ${JSON.parse(value)}`,
-        },
-      }
-    );
-    const data = res.data;
-    setCoachInfo((prevState) => ({
-      ...prevState,
-      nameSurname: data.name,
-      username: data.user_name,
-      password: data.password,
-      phoneNumber: data.phone_number,
-      email: data.email,
-      birthDate: data.date_of_birth,
-      gender: data.gender,
-      height: data.height,
-      weight: data.weight,
-      about: data.biography,
-      speciality: data.specialization,
-    }));
-  }
+  // async function coachSet() {
+  //   console.log("salam");
+  //   const res = await axios.get(
+  //     "http://fitplan.localhost/api/v1/user/get_user_coach",
+  //     {
+  //       headers: {
+  //         Authorization: `Bearer ${JSON.parse(value)}`,
+  //       },
+  //     }
+  //   );
+  //   const data = res.data;
+  //   setCoachInfo((prevState) => ({
+  //     ...prevState,
+  //     nameSurname: data.name,
+  //     username: data.user_name,
+  //     password: data.password,
+  //     phoneNumber: data.phone_number,
+  //     email: data.email,
+  //     birthDate: data.date_of_birth,
+  //     gender: data.gender,
+  //     height: data.height,
+  //     weight: data.weight,
+  //     about: data.biography,
+  //     speciality: data.specialization,
+  //   }));
+  // }
 
   const [tempInfo, setTempInfo] = useState(userInfo);
   const [profilePhoto, setProfilePhoto] = useState(null);
@@ -115,18 +115,34 @@ export default function User_coach_chat() {
 
   // new WebSocket().onmessage()
 
+  const socket = new WebSocket("ws://yourserver.com/socket"); // replace with the actual URL
   useEffect(() => {
-    const socket = new WebSocket("wss://example.com/chat");
+  
+    socket.onopen = () => {
+      console.log("WebSocket connection established");
+    };
   
     socket.onmessage = (event) => {
-      const data = JSON.parse(event.data);
+      const data = JSON.parse(event.data); // assuming your server sends JSON
+      console.log("Received:", data);
       setMessages((prev) => [...prev, data]);
     };
   
+    socket.onerror = (err) => {
+      console.error("WebSocket error:", err);
+    };
+  
+    socket.onclose = () => {
+      console.log("WebSocket connection closed");
+    };
+  
+    // Clean up on component unmount
     return () => {
       socket.close();
     };
   }, []);
+
+
   
 
   // Saving new messages to LocalStorage when they are changed
@@ -135,16 +151,33 @@ export default function User_coach_chat() {
       localStorage.setItem("chatMessages", JSON.stringify(messages));
   }, [messages]);
 
+  // const sendMessage = () => {
+  //   if (message.trim() === "") return;
+
+  //   const newMessage = {
+  //     text: message,
+  //     sender: isSender ? "me" : "them",
+  //   };
+  //   console.log(newMessage);
+    
+  //   setMessages((pervMessages) => [...pervMessages, newMessage]);
+  //   setMessage("");
+  // };
+
   const sendMessage = () => {
     if (message.trim() === "") return;
-
+  
     const newMessage = {
       text: message,
       sender: isSender ? "me" : "them",
     };
-    console.log(newMessage);
-    
-    setMessages((pervMessages) => [...pervMessages, newMessage]);
+  
+    // Send the message through WebSocket
+    if (socket.readyState === WebSocket.OPEN) {
+      socket.send(JSON.stringify(newMessage));
+    }
+  
+    setMessages((prevMessages) => [...prevMessages, newMessage]);
     setMessage("");
   };
 
@@ -510,8 +543,8 @@ export default function User_coach_chat() {
           </div>
         </div>
         <div className="max-md:flex-col max-md:justify-start max-md:gap-3 max-md:text-center max-md:overflow-y-auto border mb-[22px] rounded-[10px] h-[618px] overflow-hidden flex-col text-mintCream relative">
-          <div dir="ltr" className="w-full h-full pt-4 px-3">
-            <div className="flex-1 overflow-y-auto mb-4 space-y-3 px-3 pt-4">
+          <div dir="ltr" className="w-full h-full overflow-y-scroll pb-32 pt-4 px-3">
+            <div className="flex-1 mb-4 space-y-3 px-3 pt-4">
               {messages.map((msg) => (
                 <div
                   key={msg.id}
