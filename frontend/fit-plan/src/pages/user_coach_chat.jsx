@@ -113,7 +113,20 @@ export default function User_coach_chat() {
     }
   }, []);
 
-  new WebSocket().onmessage()
+  // new WebSocket().onmessage()
+
+  useEffect(() => {
+    const socket = new WebSocket("wss://example.com/chat");
+  
+    socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      setMessages((prev) => [...prev, data]);
+    };
+  
+    return () => {
+      socket.close();
+    };
+  }, []);
   
 
   // Saving new messages to LocalStorage when they are changed
@@ -129,7 +142,8 @@ export default function User_coach_chat() {
       text: message,
       sender: isSender ? "me" : "them",
     };
-
+    console.log(newMessage);
+    
     setMessages((pervMessages) => [...pervMessages, newMessage]);
     setMessage("");
   };
