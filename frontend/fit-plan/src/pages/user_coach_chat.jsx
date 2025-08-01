@@ -115,7 +115,7 @@ export default function User_coach_chat() {
 
   // new WebSocket().onmessage()
 
-  const socket = new WebSocket("ws://yourserver.com/socket"); // replace with the actual URL
+  const socket = new WebSocket("ws://chat.localhost/api/v1/user/ws/chat?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMSIsImV4cCI6MTc1NjQyMDQwMX0.f2e3CO_sxN6T4MDfnRESETgOIH5hgNFjgt4vdcvXRkU"); // replace with the actual URL
   useEffect(() => {
   
     socket.onopen = () => {
