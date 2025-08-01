@@ -2,6 +2,7 @@ import random
 from typing import Annotated
 from loguru import logger
 from fastapi import Depends
+from passlib.handlers.django import django_disabled
 from redis import Redis
 
 from app.core.redis.redis_database import get_redis_client
@@ -44,7 +45,10 @@ class OTPSubservice(BaseService):
     def send_otp(self, email: str):
         otp = self.__generate_otp()
         self.redis_client.setex(email, self.config.OTP_EXPIRE_TIME, otp)
-        # self.send_email(email, otp) #-------
+        try:
+            self.send_email(email, otp)
+        except Exception as e:
+            logger.error(f"Failed Sending OTP To email: {e}")
         logger.info(f"OTP {otp} sent to email {email}")
         return otp
 

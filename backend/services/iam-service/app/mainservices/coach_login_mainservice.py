@@ -54,6 +54,12 @@ class AuthService(BaseService):
                 status_code=status.HTTP_400_BAD_REQUEST, detail="Coach Is Not Verified"
             )
 
+        if existing_coach.verification_status != "verified":
+            logger.error(f"[-] Coach with Email {coach.email} Is Not Verified by admin")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, detail="Coach Is Not Verified by admin"
+            )
+
         if not self.hash_service.verify_password(
                 coach.password, existing_coach.password
         ):

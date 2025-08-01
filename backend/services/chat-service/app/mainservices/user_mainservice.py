@@ -160,4 +160,7 @@ class UserMainService:
             raise HTTPException(status_code=404, detail="No coach found for this user")
 
         messages = await self.user_subservice.get_user_chat_messages(user_id, coach.id, limit, offset)
+        if not messages:
+            logger.info("No messages found")
+            raise HTTPException(status_code=404, detail="No messages found")
         return [UserCreateChatResponseSchema.from_orm(msg) for msg in messages]

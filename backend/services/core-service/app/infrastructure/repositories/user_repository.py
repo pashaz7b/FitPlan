@@ -2,6 +2,7 @@ from typing import Annotated, Dict
 from loguru import logger
 from fastapi import Depends
 from sqlalchemy.orm import Session, joinedload
+from sqlalchemy import func
 
 from app.core.postgres_db.postgres_database import get_db
 from app.domain.models.fitplan_model import (User,
@@ -19,7 +20,8 @@ from app.domain.models.fitplan_model import (User,
 
 from app.domain.models.fitplan_model import (Gym, CoachGym,
                                              GymPlanPrice, GymComment,
-                                             UserGymRegistration, CoachComment)
+                                             UserGymRegistration, CoachComment,
+                                             CoachMetrics)
 
 
 class UserRepository:
@@ -204,6 +206,7 @@ class UserRepository:
             self.db.query(Coach)
             .options(joinedload(Coach.present).joinedload(Present.workout_plan))
             .filter(Coach.status == True)
+            .filter(Coach.verification_status == "verified")
             .all()
         )
 
@@ -378,3 +381,31 @@ class UserRepository:
         )
 
         return coach_plan_price
+
+    def update_coach_rating(self, coach_id: int):
+        avg_rating = self.db.query(func.avg(CoachComment.rating)) \
+            .filter(CoachComment.coach_id == coach_id).scalar()
+
+        if avg_rating is None:
+            avg_rating = 0
+
+        coach_metrics = self.db.query(CoachMetrics).filter(CoachMetrics.coach_id == coach_id).first()
+        if coach_metrics:
+            coach_metrics.rating = round(avg_rating)
+            self.db.commit()
+
+        logger.info(f"[+] Coach {coach_id} rating updated to {round(avg_rating)}")
+
+    def update_gym_rating(self, gym_id: int):
+        avg_rating = self.db.query(func.avg(GymComment.rating)) \
+            .filter(GymComment.gym_id == gym_id).scalar()
+
+        if avg_rating is None:
+            avg_rating = 0
+
+        gym = self.db.query(Gym).filter(Gym.id == gym_id).first()
+        if gym:
+            gym.rating = round(avg_rating)
+            self.db.commit()
+
+        logger.info(f"[+] Gym {gym_id} rating updated to {round(avg_rating)}")

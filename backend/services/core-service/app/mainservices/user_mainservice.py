@@ -327,7 +327,8 @@ class UserMainService(BaseService):
                     coach_weight=coach.metrics.weight,
                     coach_specialization=coach.metrics.specialization,
                     coach_biography=coach.metrics.biography,
-                    coach_status=coach.status
+                    coach_status=coach.status,
+                    coach_rating=coach.metrics.rating,
                 ))
 
         return result

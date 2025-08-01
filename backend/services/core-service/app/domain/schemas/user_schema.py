@@ -154,6 +154,7 @@ class GetUserAllCoachSchema(BaseModel):
     coach_specialization: str
     coach_biography: str
     coach_status: bool
+    coach_rating: int
 
 
 class UserTakeWorkoutCoachSchema(BaseModel):

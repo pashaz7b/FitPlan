@@ -305,6 +305,7 @@ class UserSubService(BaseService):
         )
 
         created_user_gym_comment = self.user_repo.create_user_gym_comment(user_gym_comment_model)
+        self.user_repo.update_gym_rating(user_gym_comment_schema.gym_id)
 
         response = CreateUserGymCommentResponseSchema(
             registered_comment_id=created_user_gym_comment.id,
@@ -332,6 +333,7 @@ class UserSubService(BaseService):
         )
 
         created_user_coach_comment = self.user_repo.create_user_coach_comment(user_coach_comment_model)
+        self.user_repo.update_coach_rating(user_coach_comment_schema.coach_id)
 
         response = CreateUserCoachCommentResponseSchema(
             registered_comment_id=created_user_coach_comment.id,
