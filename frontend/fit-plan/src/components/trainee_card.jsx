@@ -13,9 +13,13 @@ export default function Trainee_card({
   weight,
   image,
   onClick,
+  userId, // Added a new prop to hold the trainee's ID
 }) {
+  const navigate = useNavigate();
+
+  // Updated function to use the userId for navigation
   const navToChat = () => {
-    navigate("coach_panel/coach_trainees/chat");
+    navigate(`chat/${userId}`);
   };
 
   return (
@@ -48,12 +52,11 @@ export default function Trainee_card({
               نام کاربری: {username}
             </p>
           </div>
-          {/* <button onClick={() => navToChat()} className="max-md:py-3 max-md:my-3 text-superRed border border-superRed rounded-[15px] px-5 py-0 max-h-[40%] font-medium text-[20px] hover:bg-superRed hover:text-black translate-all duration-300">شروع گفتگو</button> */}
         </div>
       </div>
       <div className="collapse-content max-h-[1200px] bg-coal rounded-[10px] flex flex-col gap-10 text-mintCream text-center px-4 pt-6">
         <button
-          onClick={() => navToChat()}
+          onClick={navToChat} // Updated to call the new function
           className="max-md:py-3 max-md:my-3 text-superRed border border-superRed rounded-[15px] px-5 py-0 max-h-[40%] font-medium text-[20px] hover:bg-superRed hover:text-black translate-all duration-300"
         >
           شروع گفتگو
@@ -100,12 +103,6 @@ export default function Trainee_card({
               <p className="text-[20px] font-light">{weight}</p>
             </div>
           </div>
-          {/* <div className="max-md:flex-col max-md:gap-4 w-[35%] flex justify-between mx-auto gap-11">
-            <div className="w-full flex justify-between">
-              <p className="font-medium text-[20px]">مربی:</p>
-              <p className="text-[20px] font-light">{coach}</p>
-            </div>
-          </div> */}
         </div>
       </div>
     </div>

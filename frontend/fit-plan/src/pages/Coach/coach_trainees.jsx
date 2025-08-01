@@ -107,12 +107,12 @@ export default function Coach_trainees() {
       height: data.height,
       weight: data.weight,
       about: data.biography,
-      speciality: data.specialization
+      speciality: data.specialization,
     }));
   }
 
   async function takeTrainees() {
-    try{
+    try {
       const res = await axios.get(
         "http://fitplan.localhost/api/v1/coach/get_coach_user",
         {
@@ -123,12 +123,10 @@ export default function Coach_trainees() {
       );
       setTrainees(res.data);
       console.log(res.data);
-      
     } catch (e) {
       console.log(e);
-      
     }
-  };
+  }
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -504,6 +502,7 @@ export default function Coach_trainees() {
               height={trainee.height}
               weight={trainee.weight}
               onClick={() => handleCardClick(trainee)}
+              userId={trainee.id}
             />
           ))}
         </div>

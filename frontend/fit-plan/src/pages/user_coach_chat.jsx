@@ -116,7 +116,6 @@ export default function User_coach_chat() {
     }
 
 
-<<<<<<< HEAD
     // 1. Fetch previous messages from the backend API
     const fetchPreviousMessages = async () => {
       try {
@@ -139,13 +138,6 @@ export default function User_coach_chat() {
       } catch (error) {
         console.error("Failed to fetch previous messages:", error);
       }
-=======
-  const socket = new WebSocket("ws://chat.localhost/api/v1/user/ws/chat?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMSIsImV4cCI6MTc1NjQyMDQwMX0.f2e3CO_sxN6T4MDfnRESETgOIH5hgNFjgt4vdcvXRkU"); // replace with the actual URL
-  useEffect(() => {
-  
-    socket.onopen = () => {
-      console.log("WebSocket connection established");
->>>>>>> c5b23a9b5f23f7959ecfdd5154b9fd960bfa920a
     };
 
     fetchPreviousMessages();
@@ -583,7 +575,7 @@ export default function User_coach_chat() {
                   }`}
                 >
                   <div className="chat-header">
-                    {msg.sender === "me" ? "You" : "Obi-Wan Kenobi"}
+                    {msg.sender === "me" ? "You" : `${coachInfo.nameSurname}`}
                     <time className="text-xs opacity-50 ml-2">
                       {msg.timestamp}
                     </time>

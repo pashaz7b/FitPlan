@@ -66,7 +66,7 @@ function App() {
           <Route path="/coach_panel" element={<Coach_panel />} />
           <Route path="/coach_panel/info_edit" element={<Coach_info_edit />} />
           <Route path="/coach_panel/coach_trainees" element={<Coach_trainees />} />
-          <Route path="coach_panel/coach_trainees/chat" element={<Coach_trainee_chat/>}/>
+          <Route path="coach_panel/coach_trainees/chat/:traineeID" element={<Coach_trainee_chat/>}/>
           <Route path="/coach_panel/coach_mealPlan" element={<Coach_mealplan />} />
           <Route path="/coach_panel/coach_exePlan" element={<Coach_exeplan />} />
           <Route path="/coach_panel/coach_transactions" element={<Coach_transactions />} />

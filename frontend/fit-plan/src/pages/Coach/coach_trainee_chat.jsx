@@ -1,76 +1,37 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import fit_logo from "/Images/Fit-Logo-Resized.png";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
 export default function Coach_trainee_chat() {
-  const [userInfo, setUserInfo] = useState({
-    nameSurname: "آونگ روزبه",
-    username: "AAAvng",
-    password: "********",
-    phoneNumber: "989123456789+",
-    email: "avng.rzbh@gmail.com",
-    birthDate: "1365/7/18",
-    gender: "آقا",
-    height: "175",
-    weight: "65",
-    image: "/Images/payton-tuttle-RFFR1JjkJx8-unsplash.jpg",
-  });
-
-  const [coachInfo, setCoachInfo] = useState({
-    nameSurname: "آرش فانی",
-    username: "Arash.Funny",
-    password: "********",
-    phoneNumber: "989123456789+",
-    email: "Arash.fun@gmail.com",
-    birthDate: "1365/7/18",
-    gender: "آقا",
-    height: "178",
-    weight: "70",
-    image: "/Images/Coach-Arash-Faani.jpg",
-    status: "در دسترس",
-    about:
-      "آرش از جوانی به ورزش علاقه‌مند بود و بعد از ورود به دانشگاه رشته تربیت بدنی، به طور جدی وارد دنیای بدنسازی شد. او بیش از ۱۰ سال است که به عنوان مربی حرفه‌ای فعالیت می‌کند و با تمرکز بر روی تمرینات قدرتی و استقامتی، به ویژه برای ورزشکاران رشته‌های دو و میدانی و فوتبال شناخته شده است. آرش به توانمندسازی شاگردان خود در بهبود عملکرد ورزشی‌شان افتخار می‌کند.",
-  });
-
   useEffect(() => {
-    userSet();
     coachSet();
     console.log("sss");
   }, []);
 
-  const value = localStorage.getItem("token").toString();
-  // const value = localStorage.getItem("token");
+  const [coachInfo, setCoachInfo] = useState({
+    nameSurname: "دانا لاجوردی",
+    username: "Dana_Laj",
+    password: "********",
+    phoneNumber: "989123456789+",
+    email: "Dana.Laj@gmail.com",
+    birthDate: "1365/7/18",
+    gender: "آقا",
+    height: "175",
+    weight: "65",
+    speciality: "زیبایی اندام",
+    status: "در دسترش",
+    about:
+      "دانا با بیش از ۱۵ سال تجربه در زمینه بدنسازی و تمرینات قدرتی، یکی از مربیان پیشرو در این حوزه به شمار می‌رود. او کار خود را به عنوان مربی شخصی در باشگاه‌های کوچک شروع کرد و به تدریج توانست با تدوین برنامه‌های تمرینی تخصصی برای ورزشکاران حرفه‌ای، شهرت زیادی کسب کند. دانا به بهینه‌سازی قدرت بدنی علاقه ویژه‌ای دارد و موفق شده چندین قهرمان مسابقات بدنسازی را آماده کند.",
+    image: "/Images/Coach-Dana-Lajevardi.png",
+  });
 
-  async function userSet() {
-    console.log("salam");
-    const res = await axios.get(
-      "http://fitplan.localhost/api/v1/user/get_user_info",
-      {
-        headers: {
-          Authorization: `Bearer ${JSON.parse(value)}`,
-        },
-      }
-    );
-    const data = res.data;
-    setUserInfo((prevState) => ({
-      ...prevState,
-      nameSurname: data.name,
-      username: data.user_name,
-      password: data.password,
-      phoneNumber: data.phone_number,
-      email: data.email,
-      birthDate: data.date_of_birth,
-      gender: data.gender,
-      height: data.height,
-      weight: data.weight,
-    }));
-  }
+  const value = localStorage.getItem("token").toString();
 
   async function coachSet() {
     console.log("salam");
     const res = await axios.get(
-      "http://fitplan.localhost/api/v1/user/get_user_coach",
+      "http://fitplan.localhost/api/v1/coach/get_coach_info",
       {
         headers: {
           Authorization: `Bearer ${JSON.parse(value)}`,
@@ -94,7 +55,7 @@ export default function Coach_trainee_chat() {
     }));
   }
 
-  const [tempInfo, setTempInfo] = useState(userInfo);
+  const [tempInfo, setTempInfo] = useState(coachInfo);
   const [profilePhoto, setProfilePhoto] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -102,9 +63,13 @@ export default function Coach_trainee_chat() {
   const [message, setMessage] = useState("");
   const socket = useRef(null);
   const navigate = useNavigate();
+  const { traineeID } = useParams();
 
+  
   // --- WebSocket Connection and Message Handling ---
   useEffect(() => {
+    console.log(traineeID);
+    
     const value = JSON.parse(localStorage.getItem("token"));
 
     // Check if token exists before trying to connect
@@ -115,12 +80,11 @@ export default function Coach_trainee_chat() {
       return;
     }
 
-
     // 1. Fetch previous messages from the backend API
     const fetchPreviousMessages = async () => {
       try {
         const response = await axios.get(
-          "http://chat.localhost/api/v1/user/chat/messages?limit=50&offset=0",
+          `http://chat.localhost/api/v1/coach/chat/messages/${traineeID}?limit=50&offset=0`,
           {
             headers: {
               Authorization: `Bearer ${value}`,
@@ -128,9 +92,9 @@ export default function Coach_trainee_chat() {
           }
         );
 
-        const formattedMessages = response.data.map(msg => ({
+        const formattedMessages = response.data.map((msg) => ({
           text: msg.content,
-          sender: msg.sender_type === "coach" ? "them" : "me",
+          sender: msg.sender_type === "coach" ? "me" : "them",
           timestamp: new Date(msg.created_at).toLocaleTimeString(),
         }));
 
@@ -142,7 +106,7 @@ export default function Coach_trainee_chat() {
 
     fetchPreviousMessages();
 
-    const endpoint = `ws://chat.localhost/api/v1/user/ws/chat?token=${value}`;
+    const endpoint = `ws://chat.localhost/api/v1/coach/ws/chat/${traineeID}?token=${value}`;
     socket.current = new WebSocket(endpoint);
 
     socket.current.onopen = () => {
@@ -153,13 +117,11 @@ export default function Coach_trainee_chat() {
       const data = JSON.parse(event.data);
       console.log("Received message:", data);
 
-      // Add a timestamp and determine the sender based on the API response
       const newMessage = {
         text: data.content,
-        sender: data.sender_type === "coach" ? "them" : "me",
+        sender: data.sender_type === "user" ? "them" : "me",
         timestamp: new Date().toLocaleTimeString(),
       };
-
       setMessages((prev) => [...prev, newMessage]);
     };
 
@@ -177,25 +139,22 @@ export default function Coach_trainee_chat() {
         socket.current.close();
       }
     };
-  }, []);
+  }, [traineeID]); // Add traineeID to the dependency array to re-run the effect if the user changes
 
+  // --- Local Storage Management and sendMessage function)
 
+  // --- Send Message Function ---
   const sendMessage = () => {
-    // Prevent sending empty messages
     if (message.trim() === "") return;
-  
-    // Check if WebSocket is open before sending
+
     if (socket.current && socket.current.readyState === WebSocket.OPEN) {
-      // The API expects a JSON object with 'content' and 'sender_type'
       const messageToSend = {
         content: message,
-        sender_type: "user",
+        sender_type: "coach", // The coach is sending the message
+        recipient_id: traineeID, // The message should be sent to this user
       };
       
       socket.current.send(JSON.stringify(messageToSend));
-      
-      // Do NOT update the UI here. The message will be received
-      // back through the `socket.onmessage` event handler.
       
       setMessage("");
     } else {
@@ -204,13 +163,12 @@ export default function Coach_trainee_chat() {
   };
 
   const toggleMenu = () => {
-    setIsOpen(!isOpen);
+    setIsMenuOpen(!isMenuOpen);
   };
 
   const closeMenu = () => {
-    setIsOpen(false);
+    setIsMenuOpen(false);
   };
-
   const handleNavigate = (e) => {
     navigate("./user_login");
   };
@@ -220,16 +178,28 @@ export default function Coach_trainee_chat() {
       <div className="max-lg:hidden fixed top-[48px] right-[51px] w-[320px] h-[700px] overflow-hidden bg-coal rounded-[15px] shadow-lg font-iranyekan">
         {/* Static Header Section */}
         <div className="flex flex-col items-center bg-coal">
-          <img
-            src="/Images/payton-tuttle-RFFR1JjkJx8-unsplash.jpg"
-            alt="User Avatar"
-            className="w-full max-h-[220px] object-cover"
-          />
+          {coachInfo.image && coachInfo.image.trim() ? (
+            <img
+              src={coachInfo.image}
+              alt={coachInfo.nameSurname}
+              className="w-full max-h-[220px] object-cover object-top"
+            />
+          ) : (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              height="220px"
+              viewBox="0 -960 960 960"
+              width="full"
+              fill="#e8eaed"
+            >
+              <path d="M480-492.31q-57.75 0-98.87-41.12Q340-574.56 340-632.31q0-57.75 41.13-98.87 41.12-41.13 98.87-41.13 57.75 0 98.87 41.13Q620-690.06 620-632.31q0 57.75-41.13 98.88-41.12 41.12-98.87 41.12ZM180-248.46v-28.16q0-29.38 15.96-54.42 15.96-25.04 42.66-38.5 59.3-29.07 119.65-43.61 60.35-14.54 121.73-14.54t121.73 14.54q60.35 14.54 119.65 43.61 26.7 13.46 42.66 38.5Q780-306 780-276.62v28.16q0 25.3-17.73 43.04-17.73 17.73-43.04 17.73H240.77q-25.31 0-43.04-17.73Q180-223.16 180-248.46Zm60 .77h480v-28.93q0-12.15-7.04-22.5-7.04-10.34-19.11-16.88-51.7-25.46-105.42-38.58Q534.7-367.69 480-367.69q-54.7 0-108.43 13.11-53.72 13.12-105.42 38.58-12.07 6.54-19.11 16.88-7.04 10.35-7.04 22.5v28.93Zm240-304.62q33 0 56.5-23.5t23.5-56.5q0-33-23.5-56.5t-56.5-23.5q-33 0-56.5 23.5t-23.5 56.5q0 33 23.5 56.5t56.5 23.5Zm0-80Zm0 384.62Z" />
+            </svg>
+          )}
           <p className="mt-3 text-lg font-semibold text-superRed">
-            {userInfo.nameSurname}
+            {coachInfo.nameSurname}
           </p>
           <p className="mt-2 text-lg text-superRed font-light">
-            {userInfo.username}@
+            {coachInfo.username}@
           </p>
         </div>
 
@@ -237,8 +207,8 @@ export default function Coach_trainee_chat() {
         <div className="overflow-y-auto font-medium max-h-[330px] scrollbar-thin scrollbar-thumb-superRed scrollbar-track-coal">
           <div className="flex flex-col gap-1 p-2">
             <a
-              href="/user_panel"
-              className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
+              href="/coach_panel"
+              className="w-[90%] border-crimsonRed bg-crimsonRed text-black text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
             >
               <p>اطلاعات کاربر</p>
               <svg
@@ -246,41 +216,30 @@ export default function Coach_trainee_chat() {
                 height="35px"
                 viewBox="0 -960 960 960"
                 width="35px"
-                fill="#e8eaed"
+                fill="#000000"
               >
                 <path d="M480-492.31q-57.75 0-98.87-41.12Q340-574.56 340-632.31q0-57.75 41.13-98.87 41.12-41.13 98.87-41.13 57.75 0 98.87 41.13Q620-690.06 620-632.31q0 57.75-41.13 98.88-41.12 41.12-98.87 41.12ZM180-248.46v-28.16q0-29.38 15.96-54.42 15.96-25.04 42.66-38.5 59.3-29.07 119.65-43.61 60.35-14.54 121.73-14.54t121.73 14.54q60.35 14.54 119.65 43.61 26.7 13.46 42.66 38.5Q780-306 780-276.62v28.16q0 25.3-17.73 43.04-17.73 17.73-43.04 17.73H240.77q-25.31 0-43.04-17.73Q180-223.16 180-248.46Zm60 .77h480v-28.93q0-12.15-7.04-22.5-7.04-10.34-19.11-16.88-51.7-25.46-105.42-38.58Q534.7-367.69 480-367.69q-54.7 0-108.43 13.11-53.72 13.12-105.42 38.58-12.07 6.54-19.11 16.88-7.04 10.35-7.04 22.5v28.93Zm240-304.62q33 0 56.5-23.5t23.5-56.5q0-33-23.5-56.5t-56.5-23.5q-33 0-56.5 23.5t-23.5 56.5q0 33 23.5 56.5t56.5 23.5Zm0-80Zm0 384.62Z" />
               </svg>
             </a>
             <a
-              href="/user_panel/user_coach"
-              className="w-[90%] border-[2px] border-crimsonRed bg-crimsonRed text-black text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
+              href="/coach_panel/coach_trainees"
+              className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
             >
-              <p>مربی</p>
+              <p>شاگردان</p>
               <div className="h-[30px]">
-                <img
-                  src="/Images/bodybuilding-Black.png"
-                  alt="coaches_icon"
-                  className="h-full"
-                />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="24px"
+                  viewBox="0 -960 960 960"
+                  width="24px"
+                  fill="#e8eaed"
+                >
+                  <path d="m216-160-56-56 384-384H440v80h-80v-160h233q16 0 31 6t26 17l120 119q27 27 66 42t84 16v80q-62 0-112.5-19T718-476l-40-42-88 88 90 90-262 151-40-69 172-99-68-68-266 265Zm-96-280v-80h200v80H120ZM40-560v-80h200v80H40Zm739-80q-33 0-57-23.5T698-720q0-33 24-56.5t57-23.5q33 0 57 23.5t24 56.5q0 33-24 56.5T779-640Zm-659-40v-80h200v80H120Z" />
+                </svg>
               </div>
             </a>
             <a
-              href="/user_panel/user_tutorial"
-              className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
-            >
-              <p>آموزش حرکات</p>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                height="24px"
-                viewBox="0 -960 960 960"
-                width="24px"
-                fill="#e8eaed"
-              >
-                <path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h480q33 0 56.5 23.5T720-720v180l126-126q10-10 22-5t12 19v344q0 14-12 19t-22-5L720-420v180q0 33-23.5 56.5T640-160H160Zm0-80h480v-480H160v480Zm0 0v-480 480Z" />
-              </svg>
-            </a>
-            <a
-              href="/user_panel/user_mealPlan"
+              href="/coach_panel/coach_mealplan"
               className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
             >
               <p>برنامه غذایی</p>
@@ -298,7 +257,7 @@ export default function Coach_trainee_chat() {
               </svg>
             </a>
             <a
-              href="/user_panel/user_exercisePlan"
+              href="/coach_panel/coach_exePlan"
               className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
             >
               <p>برنامه تمرینی</p>
@@ -327,8 +286,8 @@ export default function Coach_trainee_chat() {
                 </defs>
               </svg>
             </a>
-            <a
-              href="/user_panel/user_transactions"
+            {/* <a
+              href="/coach_panel/coach_transactions"
               className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
             >
               <p>تراکنش‌ها</p>
@@ -344,7 +303,7 @@ export default function Coach_trainee_chat() {
                   fill="#FFF7ED"
                 />
               </svg>
-            </a>
+            </a> */}
             <a
               href="/"
               className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
@@ -372,11 +331,13 @@ export default function Coach_trainee_chat() {
           خروج
         </a>
       </div>
+
       <div className="flex flex-col gap-5 justify-start w-[95%] py-[40px]">
         <div className="flex justify-between">
           <h1 className="text-[45px] font-bold text-mintCream">
-            گفتگو با مربی
+            اطلاعات کاربر
           </h1>
+          {/* <a href="/user_panel/info_edit" className="text-superRed text-[25px] font-semibold border-[2px] border-superRed rounded-[15px] max-h-[59px] pt-2 px-8 hover:bg-superRed hover:text-black transition-all duration-300">ویرایش</a> */}
           <div className=" text-white font-iranyekan">
             {/* Navbar */}
             <nav className="flex lg:hidden items-center justify-between p-4 bg-black">
@@ -409,23 +370,35 @@ export default function Coach_trainee_chat() {
               </div>
 
               <div className="flex flex-col items-center bg-coal">
-                <img
-                  src="/Images/payton-tuttle-RFFR1JjkJx8-unsplash.jpg"
-                  alt="User Avatar"
-                  className="w-full max-h-[250px] object-contain"
-                />
+                {coachInfo.image && coachInfo.image.trim() ? (
+                  <img
+                    src={coachInfo.image}
+                    alt={coachInfo.nameSurname}
+                    className="w-full max-h-[250px] object-cover"
+                  />
+                ) : (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="250px"
+                    viewBox="0 -960 960 960"
+                    width="full"
+                    fill="#e8eaed"
+                  >
+                    <path d="M480-492.31q-57.75 0-98.87-41.12Q340-574.56 340-632.31q0-57.75 41.13-98.87 41.12-41.13 98.87-41.13 57.75 0 98.87 41.13Q620-690.06 620-632.31q0 57.75-41.13 98.88-41.12 41.12-98.87 41.12ZM180-248.46v-28.16q0-29.38 15.96-54.42 15.96-25.04 42.66-38.5 59.3-29.07 119.65-43.61 60.35-14.54 121.73-14.54t121.73 14.54q60.35 14.54 119.65 43.61 26.7 13.46 42.66 38.5Q780-306 780-276.62v28.16q0 25.3-17.73 43.04-17.73 17.73-43.04 17.73H240.77q-25.31 0-43.04-17.73Q180-223.16 180-248.46Zm60 .77h480v-28.93q0-12.15-7.04-22.5-7.04-10.34-19.11-16.88-51.7-25.46-105.42-38.58Q534.7-367.69 480-367.69q-54.7 0-108.43 13.11-53.72 13.12-105.42 38.58-12.07 6.54-19.11 16.88-7.04 10.35-7.04 22.5v28.93Zm240-304.62q33 0 56.5-23.5t23.5-56.5q0-33-23.5-56.5t-56.5-23.5q-33 0-56.5 23.5t-23.5 56.5q0 33 23.5 56.5t56.5 23.5Zm0-80Zm0 384.62Z" />
+                  </svg>
+                )}
                 <p className="mt-3 text-lg font-semibold text-superRed">
-                  {userInfo.nameSurname}
+                  {coachInfo.nameSurname}
                 </p>
                 <p className="mt-2 text-lg text-superRed font-light">
-                  {userInfo.username}@
+                  {coachInfo.username}@
                 </p>
               </div>
               <div className="overflow-y-auto font-medium max-h-[330px] scrollbar-thin scrollbar-thumb-superRed scrollbar-track-coal">
                 <div className="flex flex-col gap-1 p-2">
                   <a
-                    href="/user_panel"
-                    className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
+                    href="/coach_panel"
+                    className="w-[90%] border-crimsonRed bg-crimsonRed text-black text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
                   >
                     <p>اطلاعات کاربر</p>
                     <svg
@@ -433,41 +406,31 @@ export default function Coach_trainee_chat() {
                       height="35px"
                       viewBox="0 -960 960 960"
                       width="35px"
-                      fill="#e8eaed"
+                      fill="#000000"
                     >
                       <path d="M480-492.31q-57.75 0-98.87-41.12Q340-574.56 340-632.31q0-57.75 41.13-98.87 41.12-41.13 98.87-41.13 57.75 0 98.87 41.13Q620-690.06 620-632.31q0 57.75-41.13 98.88-41.12 41.12-98.87 41.12ZM180-248.46v-28.16q0-29.38 15.96-54.42 15.96-25.04 42.66-38.5 59.3-29.07 119.65-43.61 60.35-14.54 121.73-14.54t121.73 14.54q60.35 14.54 119.65 43.61 26.7 13.46 42.66 38.5Q780-306 780-276.62v28.16q0 25.3-17.73 43.04-17.73 17.73-43.04 17.73H240.77q-25.31 0-43.04-17.73Q180-223.16 180-248.46Zm60 .77h480v-28.93q0-12.15-7.04-22.5-7.04-10.34-19.11-16.88-51.7-25.46-105.42-38.58Q534.7-367.69 480-367.69q-54.7 0-108.43 13.11-53.72 13.12-105.42 38.58-12.07 6.54-19.11 16.88-7.04 10.35-7.04 22.5v28.93Zm240-304.62q33 0 56.5-23.5t23.5-56.5q0-33-23.5-56.5t-56.5-23.5q-33 0-56.5 23.5t-23.5 56.5q0 33 23.5 56.5t56.5 23.5Zm0-80Zm0 384.62Z" />
                     </svg>
                   </a>
                   <a
-                    href="/user_panel/user_coach"
-                    className="w-[90%] border-[2px] border-crimsonRed bg-crimsonRed text-black text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
-                  >
-                    <p>مربی</p>
-                    <div className="h-[30px]">
-                      <img
-                        src="/Images/bodybuilding-Black.png"
-                        alt="coaches_icon"
-                        className="h-full"
-                      />
-                    </div>
-                  </a>
-                  <a
-                    href="/user_panel/user_tutorial"
+                    href="/coach_panel/coach_trainees"
                     className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
                   >
-                    <p>آموزش حرکات</p>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      height="24px"
-                      viewBox="0 -960 960 960"
-                      width="24px"
-                      fill="#e8eaed"
-                    >
-                      <path d="M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h480q33 0 56.5 23.5T720-720v180l126-126q10-10 22-5t12 19v344q0 14-12 19t-22-5L720-420v180q0 33-23.5 56.5T640-160H160Zm0-80h480v-480H160v480Zm0 0v-480 480Z" />
-                    </svg>
+                    <p>شاگردان</p>
+                    <div className="h-[30px]">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        height="24px"
+                        viewBox="0 -960 960 960"
+                        width="24px"
+                        fill="#e8eaed"
+                      >
+                        <path d="m216-160-56-56 384-384H440v80h-80v-160h233q16 0 31 6t26 17l120 119q27 27 66 42t84 16v80q-62 0-112.5-19T718-476l-40-42-88 88 90 90-262 151-40-69 172-99-68-68-266 265Zm-96-280v-80h200v80H120ZM40-560v-80h200v80H40Zm739-80q-33 0-57-23.5T698-720q0-33 24-56.5t57-23.5q33 0 57 23.5t24 56.5q0 33-24 56.5T779-640Zm-659-40v-80h200v80H120Z" />
+                      </svg>
+                    </div>
                   </a>
+
                   <a
-                    href="/user_panel/user_mealPlan"
+                    href="/coach_panel/coach_mealPlan"
                     className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
                   >
                     <p>برنامه غذایی</p>
@@ -485,7 +448,7 @@ export default function Coach_trainee_chat() {
                     </svg>
                   </a>
                   <a
-                    href="/user_panel/user_exercisePlan"
+                    href="/coach_panel/coach_exePlan"
                     className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
                   >
                     <p>برنامه تمرینی</p>
@@ -514,8 +477,8 @@ export default function Coach_trainee_chat() {
                       </defs>
                     </svg>
                   </a>
-                  <a
-                    href="/user_panel/user_transactions"
+                  {/* <a
+                    href="/coach_panel/coach_transactions"
                     className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
                   >
                     <p>تراکنش‌ها</p>
@@ -531,7 +494,7 @@ export default function Coach_trainee_chat() {
                         fill="#FFF7ED"
                       />
                     </svg>
-                  </a>
+                  </a> */}
                   <a
                     href="/"
                     className="w-[90%] border-[2px] border-crimsonRed bg-coal text-mintCream text-[20px] flex justify-between rounded-[10px] max-h-[58px] mx-auto mt-3 py-3 px-3 hover:bg-superRed hover:border-superRed transition-all duration-300"
@@ -561,6 +524,7 @@ export default function Coach_trainee_chat() {
             </div>
           </div>
         </div>
+       
         <div className="max-md:flex-col max-md:justify-start max-md:gap-3 max-md:text-center max-md:overflow-y-auto border mb-[22px] rounded-[10px] h-[618px] overflow-hidden flex-col text-mintCream relative">
           <div
             dir="ltr"
@@ -590,7 +554,7 @@ export default function Coach_trainee_chat() {
                     {msg.text}
                   </div>
                   <div className="chat-footer opacity-50">
-                    {msg.sender === "me" ? "Seen" : "Delivered"}
+                    {msg.sender === "user" ? "Seen" : "Delivered"}
                   </div>
                 </div>
               ))}
