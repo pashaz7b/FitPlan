@@ -23,7 +23,7 @@ import User_exercisePlan from "./pages/user_exercisePlan";
 import Exerciseplan_req from "./pages/exercisePlan_req";
 import Coach_info_edit from "./pages/Coach/coach_info_edit";
 import Coach_trainees from "./pages/Coach/coach_trainees";
-import Coach_mealplan from "./pages/Coach/coach_mealPlan";
+import Coach_mealplan from "./pages/Coach/coach_mealplan";
 import Coach_exeplan from "./pages/Coach/coach_exePlan";
 import Coach_transactions from "./pages/Coach/coach_transactions";
 import Admin_info_edit from "./pages/Admin/admin_info_edit";
