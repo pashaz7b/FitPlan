@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import fit_logo from "/Images/Fit-Logo-Resized.png";
 import axios from "axios";
 
-export default function User_coach_chat() {
+export default function Coach_trainee_chat() {
   const [userInfo, setUserInfo] = useState({
     nameSurname: "آونگ روزبه",
     username: "AAAvng",
